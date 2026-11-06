@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json.schemastore.org/dotnetcli.host",
+  "symbolInfo": {
+    "Framework": {
+      "longName": "framework",
+      "shortName": "f"
+    },
+    "IncludeApi": {
+      "longName": "api",
+      "shortName": ""
+    },
+    "IncludeInternal": {
+      "longName": "internal",
+      "shortName": ""
+    },
+    "IncludeExternal": {
+      "longName": "external",
+      "shortName": ""
+    },
+    "IncludeServices": {
+      "longName": "services",
+      "shortName": ""
+    },
+    "IncludeSqlRepository": {
+      "longName": "sql-repository",
+      "shortName": ""
+    },
+    "DatabaseProvider": {
+      "longName": "database",
+      "shortName": "db"
+    },
+    "SqlServerVersion": {
+      "longName": "sql-version",
+      "shortName": ""
+    },
+    "PostgresVersion": {
+      "longName": "postgres-version",
+      "shortName": ""
+    },
+    "DbAuthentication": {
+      "longName": "db-auth",
+      "shortName": ""
+    },
+    "DbServer": {
+      "longName": "db-server",
+      "shortName": ""
+    },
+    "DbName": {
+      "longName": "db-name",
+      "shortName": ""
+    },
+    "DbUser": {
+      "longName": "db-user",
+      "shortName": ""
+    },
+    "DbPassword": {
+      "longName": "db-password",
+      "shortName": ""
+    },
+    "ConnectionString": {
+      "longName": "connection-string",
+      "shortName": ""
+    },
+    "JQueryVersion": {
+      "longName": "jquery",
+      "shortName": ""
+    },
+    "JQueryUIVersion": {
+      "longName": "jquery-ui",
+      "shortName": ""
+    },
+    "BootstrapVersion": {
+      "longName": "bootstrap",
+      "shortName": ""
+    },
+    "FontAwesomeVersion": {
+      "longName": "fontawesome",
+      "shortName": ""
+    },
+    "ClientLibraryDelivery": {
+      "longName": "client-libs",
+      "shortName": ""
+    },
+    "skipRestore": {
+      "longName": "no-restore",
+      "shortName": ""
+    }
+  },
+  "usageExamples": [
+    "--api --internal --external --database SqlServer --sql-version SqlServer2022",
+    "--database PostgreSQL --postgres-version 17 --bootstrap 5.3.8 --jquery 3.7.1"
+  ]
+}

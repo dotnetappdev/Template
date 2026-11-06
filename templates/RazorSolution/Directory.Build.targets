@@ -1,0 +1,33 @@
+<Project>
+  <!--
+    LibMan (Microsoft.Web.LibraryManager.Build) restores libman.json before each build of the Razor Pages sites.
+    When several sites restore a library version that is not in the LibMan cache yet, parallel builds can collide
+    on the same cache file ("The process cannot access the file ..."). This override of the package's
+    LibraryManagerRestore target retries the restore, so the first build of a new solution does not fail.
+  -->
+  <Target Name="LibraryManagerRestore"
+          Condition="'$(LibraryRestore)' != 'False' And '$(BuildingForLiveUnitTesting)' != 'true' And Exists('$(MSBuildProjectDirectory)/libman.json') And '$(_LibraryTaskAssembly)' != ''">
+
+    <Microsoft.Web.LibraryManager.Build.RestoreTask FileName="libman.json" ProjectDirectory="$(MSBuildProjectDirectory)"
+                                                    ProviderAssemblies="$(LibraryProviderAssemblies)" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="FilesWritten" ItemName="_FilesWritten" />
+    </Microsoft.Web.LibraryManager.Build.RestoreTask>
+    <PropertyGroup>
+      <_LibManRestoreSucceeded>$(MSBuildLastTaskResult)</_LibManRestoreSucceeded>
+    </PropertyGroup>
+
+    <Message Importance="high" Text="LibMan restore of $(MSBuildProjectName) collided with another build; retrying."
+             Condition="'$(_LibManRestoreSucceeded)' != 'true'" />
+    <Microsoft.Web.LibraryManager.Build.RestoreTask FileName="libman.json" ProjectDirectory="$(MSBuildProjectDirectory)"
+                                                    ProviderAssemblies="$(LibraryProviderAssemblies)"
+                                                    Condition="'$(_LibManRestoreSucceeded)' != 'true'">
+      <Output TaskParameter="FilesWritten" ItemName="_FilesWritten" />
+    </Microsoft.Web.LibraryManager.Build.RestoreTask>
+
+    <ItemGroup>
+      <FilesForPackagingFromProject Include="%(_FilesWritten.Identity)">
+        <DestinationRelativePath>%(_FilesWritten.Identity)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+  </Target>
+</Project>

@@ -1,0 +1,35 @@
+<Project>
+  <!--
+    Central Package Management: every NuGet version used by the solution lives here.
+    Upgrade a package by changing its version once, in this file.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+<!--#if (UseSqlRepository) -->
+    <!-- Entity Framework Core (matches the target framework) -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="__EFCORE_VERSION__" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="__EFCORE_VERSION__" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="__EFCORE_VERSION__" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="__EFCORE_VERSION__" />
+<!--#if (UseSqlServer) -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="__EFCORE_VERSION__" />
+<!--#elseif (UsePostgreSql) -->
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="__NPGSQL_VERSION__" />
+<!--#elseif (UseSqlite) -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="__EFCORE_VERSION__" />
+<!--#endif -->
+<!--#endif -->
+<!--#if (IncludeApi) -->
+
+    <!-- API -->
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="__SWASHBUCKLE_VERSION__" />
+<!--#endif -->
+<!--#if (UseLibMan) -->
+
+    <!-- Restores libman.json (jQuery, jQuery UI, Bootstrap, Font Awesome) on build -->
+    <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
+<!--#endif -->
+  </ItemGroup>
+</Project>

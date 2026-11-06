@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>TemplateApp.Internal</RootNamespace>
+    <UserSecretsId>7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E02</UserSecretsId>
+  </PropertyGroup>
+<!--#if (UseLibMan) -->
+
+  <ItemGroup>
+    <!-- Restores the client libraries in libman.json into wwwroot/lib on build. -->
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
+  </ItemGroup>
+<!--#endif -->
+<!--#if (UseSqlRepository) -->
+
+  <ItemGroup>
+<!--#if (UseServices) -->
+    <ProjectReference Include="..\TemplateApp.Services\TemplateApp.Services.csproj" />
+<!--#endif -->
+    <ProjectReference Include="..\TemplateApp.SqlRepository\TemplateApp.SqlRepository.csproj" />
+  </ItemGroup>
+<!--#endif -->
+
+</Project>

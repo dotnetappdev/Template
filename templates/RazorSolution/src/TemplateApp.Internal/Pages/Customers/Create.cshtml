@@ -1,0 +1,45 @@
+@page
+@model TemplateApp.Internal.Pages.Customers.CreateModel
+@{
+    ViewData["Title"] = "New customer";
+}
+
+<h1 class="h2"><i class="fas fa-user-plus me-2 mr-2"></i>New customer</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.FirstName" class="form-label"></label>
+                <input asp-for="Input.FirstName" class="form-control" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.LastName" class="form-label"></label>
+                <input asp-for="Input.LastName" class="form-control" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.Company" class="form-label"></label>
+                <input asp-for="Input.Company" class="form-control" />
+                <span asp-validation-for="Input.Company" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="Input.IsActive" class="form-check-input" />
+                <label asp-for="Input.IsActive" class="form-check-label"></label>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1 mr-1"></i>Save</button>
+            <a asp-page="Index" class="btn btn-link">Back to list</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

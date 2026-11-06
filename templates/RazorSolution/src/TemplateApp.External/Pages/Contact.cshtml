@@ -1,0 +1,39 @@
+@page
+@model ContactModel
+@{
+    ViewData["Title"] = "Contact us";
+}
+
+<h1 class="h2"><i class="fas fa-envelope me-2 mr-2"></i>Contact us</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form method="post">
+            <div class="mb-3 form-group">
+                <label asp-for="Input.Name" class="form-label"></label>
+                <input asp-for="Input.Name" class="form-control" />
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.PreferredDate" class="form-label"></label>
+                <input asp-for="Input.PreferredDate" type="text" class="form-control js-datepicker" autocomplete="off" />
+                <span asp-validation-for="Input.PreferredDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-group">
+                <label asp-for="Input.Message" class="form-label"></label>
+                <textarea asp-for="Input.Message" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Input.Message" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1 mr-1"></i>Send</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

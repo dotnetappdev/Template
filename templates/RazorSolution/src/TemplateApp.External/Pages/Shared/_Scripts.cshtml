@@ -1,0 +1,10 @@
+@* jQuery __JQUERY_VERSION__, jQuery UI __JQUERYUI_VERSION__ and Bootstrap __BOOTSTRAP_VERSION__ (bundle includes Popper). *@
+@*#if (UseCdn)*@
+<script src="https://cdn.jsdelivr.net/npm/jquery@@__JQUERY_VERSION__/dist/jquery.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-ui@@__JQUERYUI_VERSION__/dist/jquery-ui.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@@__BOOTSTRAP_VERSION__/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+@*#else*@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@*#endif*@

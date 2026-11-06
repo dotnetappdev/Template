@@ -1,0 +1,17 @@
+## .NET / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.rsuser
+TestResults/
+publish/
+
+## Client libraries restored by LibMan (libman.json)
+**/wwwroot/lib/
+
+## Local databases
+*.db
+*.db-shm
+*.db-wal

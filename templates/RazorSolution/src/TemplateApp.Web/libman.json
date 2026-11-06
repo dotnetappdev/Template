@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "jquery@__JQUERY_VERSION__",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [ "dist/jquery.min.js", "dist/jquery.min.map" ]
+    },
+    {
+      "library": "jquery-ui@__JQUERYUI_VERSION__",
+      "destination": "wwwroot/lib/jquery-ui/",
+      "files": [
+        "dist/jquery-ui.min.js",
+        "dist/themes/base/jquery-ui.min.css",
+        "dist/themes/base/images/ui-icons_444444_256x240.png",
+        "dist/themes/base/images/ui-icons_555555_256x240.png",
+        "dist/themes/base/images/ui-icons_777620_256x240.png",
+        "dist/themes/base/images/ui-icons_777777_256x240.png",
+        "dist/themes/base/images/ui-icons_cc0000_256x240.png",
+        "dist/themes/base/images/ui-icons_ffffff_256x240.png"
+      ]
+    },
+    {
+      "library": "bootstrap@__BOOTSTRAP_VERSION__",
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [ "dist/css/bootstrap.min.css", "dist/css/bootstrap.min.css.map", "dist/js/bootstrap.bundle.min.js", "dist/js/bootstrap.bundle.min.js.map" ]
+    },
+    {
+      "library": "@fortawesome/fontawesome-free@__FONTAWESOME_VERSION__",
+      "destination": "wwwroot/lib/fontawesome/",
+      "files": [
+        "css/all.min.css",
+        "webfonts/fa-brands-400.woff2",
+        "webfonts/fa-regular-400.woff2",
+        "webfonts/fa-solid-900.woff2"
+      ]
+    },
+    {
+      "library": "jquery-validation@1.22.1",
+      "destination": "wwwroot/lib/jquery-validation/",
+      "files": [ "dist/jquery.validate.min.js" ]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
+      "files": [ "dist/jquery.validate.unobtrusive.min.js" ]
+    }
+  ]
+}

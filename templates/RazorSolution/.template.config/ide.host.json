@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json.schemastore.org/ide.host",
+  "order": 0,
+  "icon": "icon.png",
+  "learnMoreLink": "https://github.com/dotnetappdev/Template",
+  "uiFilters": [
+    "oneaspnet"
+  ],
+  "unsupportedHosts": [
+    {
+      "id": "vs",
+      "version": "(,17.3)"
+    }
+  ],
+  "symbolInfo": [
+    {
+      "id": "Framework",
+      "isVisible": true
+    },
+    {
+      "id": "IncludeApi",
+      "name": {
+        "text": "Create ProjectName.API"
+      },
+      "description": {
+        "text": "Adds an ASP.NET Core Web API project with controllers and Swagger."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeInternal",
+      "name": {
+        "text": "Create ProjectName.Internal"
+      },
+      "description": {
+        "text": "Adds an internal (staff / back-office) Razor Pages web site."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeExternal",
+      "name": {
+        "text": "Create ProjectName.External"
+      },
+      "description": {
+        "text": "Adds an external (public / customer facing) Razor Pages web site."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeServices",
+      "name": {
+        "text": "Create ProjectName.Services"
+      },
+      "description": {
+        "text": "Adds the business services layer (interfaces + implementations). Also adds ProjectName.SqlRepository."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeSqlRepository",
+      "name": {
+        "text": "Create ProjectName.SqlRepository"
+      },
+      "description": {
+        "text": "Adds the EF Core data project: ApplicationDbContext, entities and the repositories (IRepository<T>)."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "DatabaseProvider",
+      "name": {
+        "text": "Database"
+      },
+      "description": {
+        "text": "The database provider used by EF Core."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "SqlServerVersion",
+      "name": {
+        "text": "SQL Server version"
+      },
+      "description": {
+        "text": "The SQL Server version EF Core targets (compatibility level). Used only when the database is SQL Server."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "PostgresVersion",
+      "name": {
+        "text": "PostgreSQL version"
+      },
+      "description": {
+        "text": "The PostgreSQL version EF Core targets. Used only when the database is PostgreSQL."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "DbAuthentication",
+      "name": {
+        "text": "Database authentication"
+      },
+      "description": {
+        "text": "Windows/Integrated (Entra ID on Azure SQL) or a SQL login."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "DbServer",
+      "name": {
+        "text": "Database server"
+      },
+      "description": {
+        "text": "Leave blank for (localdb)\\MSSQLLocalDB, your-server.database.windows.net or localhost."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "DbName",
+      "name": {
+        "text": "Database name"
+      },
+      "description": {
+        "text": "Leave blank to use the project name."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "DbUser",
+      "name": {
+        "text": "Database user"
+      },
+      "description": {
+        "text": "For a SQL login or PostgreSQL. Leave blank for sa / postgres."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "DbPassword",
+      "name": {
+        "text": "Database password"
+      },
+      "description": {
+        "text": "Development only. Move real secrets to user-secrets or Key Vault."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "ConnectionString",
+      "name": {
+        "text": "Connection string (optional)"
+      },
+      "description": {
+        "text": "A full connection string. If you enter one, the database server, name, user and password fields are ignored."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "JQueryVersion",
+      "name": {
+        "text": "jQuery version"
+      },
+      "description": {
+        "text": "jQuery version for the Razor Pages sites."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "JQueryUIVersion",
+      "name": {
+        "text": "jQuery UI version"
+      },
+      "description": {
+        "text": "jQuery UI version (base theme)."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "BootstrapVersion",
+      "name": {
+        "text": "Bootstrap version"
+      },
+      "description": {
+        "text": "Bootstrap version. The layout markup adapts to Bootstrap 4 or 5."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "FontAwesomeVersion",
+      "name": {
+        "text": "Font Awesome version"
+      },
+      "description": {
+        "text": "Font Awesome Free version."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "ClientLibraryDelivery",
+      "name": {
+        "text": "Client library delivery"
+      },
+      "description": {
+        "text": "LibMan (local copies in wwwroot/lib, restored on build) or CDN links."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "skipRestore",
+      "isVisible": false
+    }
+  ]
+}

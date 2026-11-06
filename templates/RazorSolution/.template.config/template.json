@@ -1,0 +1,558 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "dotnetappdev",
+  "classifications": [ "Web", "Razor Pages", "Web API", "Entity Framework", "Solution" ],
+  "name": "Razor Pages Solution (Web, API, Internal, External, Services, SqlRepository)",
+  "description": "Razor Pages solution (no Areas) with optional API, Internal and External sites, a Services layer, and an EF Core SqlRepository project that uses the repository pattern. You can pick the .NET (LTS/STS), database and version, connection string, and the jQuery, jQuery UI, Bootstrap and Font Awesome versions.",
+  "identity": "DotNetAppDev.RazorSolution.CSharp",
+  "groupIdentity": "DotNetAppDev.RazorSolution",
+  "shortName": "razorsln",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "TemplateApp",
+  "preferNameDirectory": true,
+  "defaultName": "MyCompany.Portal",
+  "guids": [
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F60",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F61",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F62",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F63",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F64",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F65",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F66",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F67",
+    "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E01",
+    "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E02",
+    "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E03",
+    "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E04"
+  ],
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "exclude": [
+        ".template.config/**",
+        "**/bin/**",
+        "**/obj/**",
+        "**/.vs/**",
+        "**/*.user",
+        "**/*.db",
+        "**/wwwroot/lib/**"
+      ],
+      "copyOnly": [ "**/*.png", "**/*.ico", "**/*.woff2" ],
+      "modifiers": [
+        {
+          "condition": "(HostIdentifier == \"vs\")",
+          "exclude": [ "TemplateApp.sln" ]
+        },
+        {
+          "condition": "(!IncludeApi)",
+          "exclude": [ "src/TemplateApp.API/**" ]
+        },
+        {
+          "condition": "(!IncludeInternal)",
+          "exclude": [ "src/TemplateApp.Internal/**" ]
+        },
+        {
+          "condition": "(!IncludeExternal)",
+          "exclude": [ "src/TemplateApp.External/**" ]
+        },
+        {
+          "condition": "(!UseServices)",
+          "exclude": [ "src/TemplateApp.Services/**" ]
+        },
+        {
+          "condition": "(!UseSqlRepository)",
+          "exclude": [
+            "src/TemplateApp.SqlRepository/**",
+            "src/TemplateApp.Web/Pages/Customers/**",
+            "src/TemplateApp.Internal/Pages/Customers/**",
+            "src/TemplateApp.API/Controllers/CustomersController.cs"
+          ]
+        },
+        {
+          "condition": "(UseCdn)",
+          "exclude": [ "**/libman.json", "Directory.Build.targets" ]
+        }
+      ]
+    }
+  ],
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The .NET version (target framework) for every project.",
+      "displayName": "Framework",
+      "datatype": "choice",
+      "choices": [
+        { "choice": "net8.0", "displayName": ".NET 8.0 (Long Term Support)", "description": ".NET 8.0 (LTS)" },
+        { "choice": "net9.0", "displayName": ".NET 9.0 (Standard Term Support)", "description": ".NET 9.0 (STS)" },
+        { "choice": "net10.0", "displayName": ".NET 10.0 (Long Term Support)", "description": ".NET 10.0 (LTS)" },
+        { "choice": "net11.0", "displayName": ".NET 11.0 (Standard Term Support - Preview)", "description": ".NET 11.0 (STS, preview packages)" }
+      ],
+      "replaces": "net8.0",
+      "defaultValue": "net8.0"
+    },
+
+    "IncludeApi": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Create ProjectName.API",
+      "description": "Adds an ASP.NET Core Web API project (controllers + Swagger)."
+    },
+    "IncludeInternal": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Create ProjectName.Internal",
+      "description": "Adds an internal (staff/back-office) Razor Pages web site."
+    },
+    "IncludeExternal": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Create ProjectName.External",
+      "description": "Adds an external (public/customer facing) Razor Pages web site."
+    },
+    "IncludeServices": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Create ProjectName.Services",
+      "description": "Adds a business/services layer (service interfaces + implementations). Also adds ProjectName.SqlRepository."
+    },
+    "IncludeSqlRepository": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Create ProjectName.SqlRepository",
+      "description": "Adds the EF Core data project: ApplicationDbContext, entities, IRepository<T> and the repositories."
+    },
+    "UseServices": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeServices)"
+    },
+    "UseSqlRepository": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeSqlRepository || IncludeServices)"
+    },
+
+    "DatabaseProvider": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "SqlServer",
+      "displayName": "Database",
+      "description": "The EF Core database provider used by ProjectName.SqlRepository.",
+      "choices": [
+        { "choice": "SqlServer", "displayName": "SQL Server / Azure SQL", "description": "Microsoft SQL Server or Azure SQL Database" },
+        { "choice": "PostgreSQL", "displayName": "PostgreSQL", "description": "PostgreSQL via Npgsql" },
+        { "choice": "Sqlite", "displayName": "SQLite", "description": "SQLite file database" }
+      ]
+    },
+    "SqlServerVersion": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "SqlServer2022",
+      "displayName": "SQL Server version",
+      "description": "The SQL Server version to target. EF Core uses its compatibility level to decide which SQL it generates. Used only when the database is SQL Server.",
+      "choices": [
+        { "choice": "SqlServer2016", "displayName": "SQL Server 2016 (compat 130)", "description": "SQL Server 2016" },
+        { "choice": "SqlServer2017", "displayName": "SQL Server 2017 (compat 140)", "description": "SQL Server 2017" },
+        { "choice": "SqlServer2019", "displayName": "SQL Server 2019 (compat 150)", "description": "SQL Server 2019" },
+        { "choice": "SqlServer2022", "displayName": "SQL Server 2022 (compat 160)", "description": "SQL Server 2022" },
+        { "choice": "SqlServer2025", "displayName": "SQL Server 2025 (compat 170)", "description": "SQL Server 2025" },
+        { "choice": "AzureSql", "displayName": "Azure SQL Database", "description": "Azure SQL Database (adds retry on failure)" }
+      ]
+    },
+    "PostgresVersion": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "17",
+      "displayName": "PostgreSQL version",
+      "description": "The PostgreSQL server version to target. Used only when the database is PostgreSQL.",
+      "replaces": "__POSTGRES_MAJOR__",
+      "choices": [
+        { "choice": "14", "displayName": "PostgreSQL 14", "description": "PostgreSQL 14" },
+        { "choice": "15", "displayName": "PostgreSQL 15", "description": "PostgreSQL 15" },
+        { "choice": "16", "displayName": "PostgreSQL 16", "description": "PostgreSQL 16" },
+        { "choice": "17", "displayName": "PostgreSQL 17", "description": "PostgreSQL 17" },
+        { "choice": "18", "displayName": "PostgreSQL 18", "description": "PostgreSQL 18" }
+      ]
+    },
+    "DbAuthentication": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "Integrated",
+      "displayName": "Database authentication",
+      "description": "How the connection string signs in. PostgreSQL always uses a user name and password.",
+      "choices": [
+        { "choice": "Integrated", "displayName": "Windows / Integrated (Entra ID for Azure SQL)", "description": "Trusted_Connection (SQL Server) or Active Directory Default (Azure SQL)" },
+        { "choice": "SqlLogin", "displayName": "SQL login (user name + password)", "description": "User Id / Password in the connection string" }
+      ]
+    },
+    "DbServer": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Database server",
+      "description": "Server/host for the connection string. Leave blank for the default: (localdb)\\MSSQLLocalDB, your-server.database.windows.net or localhost."
+    },
+    "DbName": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Database name",
+      "description": "Database name. Leave blank to use the project name."
+    },
+    "DbUser": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Database user",
+      "description": "User name for a SQL login or PostgreSQL. Leave blank for sa / postgres."
+    },
+    "DbPassword": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Database password",
+      "description": "Password for a SQL login or PostgreSQL (development only; use user-secrets or Key Vault for real secrets)."
+    },
+    "ConnectionString": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Connection string (overrides the fields above)",
+      "description": "A full connection string. If you enter one, the server, database, user and password fields are ignored."
+    },
+
+    "JQueryVersion": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "3.7.1",
+      "displayName": "jQuery version",
+      "description": "The jQuery version restored into wwwroot/lib (or loaded from the CDN).",
+      "replaces": "__JQUERY_VERSION__",
+      "choices": [
+        { "choice": "4.0.0", "displayName": "jQuery 4.0.0", "description": "jQuery 4.0.0" },
+        { "choice": "3.7.1", "displayName": "jQuery 3.7.1", "description": "jQuery 3.7.1" },
+        { "choice": "3.6.4", "displayName": "jQuery 3.6.4", "description": "jQuery 3.6.4" }
+      ]
+    },
+    "JQueryUIVersion": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "1.14.2",
+      "displayName": "jQuery UI version",
+      "description": "The jQuery UI version (base theme).",
+      "replaces": "__JQUERYUI_VERSION__",
+      "choices": [
+        { "choice": "1.14.2", "displayName": "jQuery UI 1.14.2", "description": "jQuery UI 1.14.2" },
+        { "choice": "1.13.3", "displayName": "jQuery UI 1.13.3", "description": "jQuery UI 1.13.3" }
+      ]
+    },
+    "BootstrapVersion": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "5.3.8",
+      "displayName": "Bootstrap version",
+      "description": "The Bootstrap version. The markup adapts to Bootstrap 4 or 5.",
+      "replaces": "__BOOTSTRAP_VERSION__",
+      "choices": [
+        { "choice": "5.3.8", "displayName": "Bootstrap 5.3.8", "description": "Bootstrap 5.3.8" },
+        { "choice": "5.2.3", "displayName": "Bootstrap 5.2.3", "description": "Bootstrap 5.2.3" },
+        { "choice": "4.6.2", "displayName": "Bootstrap 4.6.2", "description": "Bootstrap 4.6.2" }
+      ]
+    },
+    "FontAwesomeVersion": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "6.7.2",
+      "displayName": "Font Awesome version",
+      "description": "The Font Awesome Free version.",
+      "replaces": "__FONTAWESOME_VERSION__",
+      "choices": [
+        { "choice": "7.3.1", "displayName": "Font Awesome 7.3.1", "description": "Font Awesome Free 7.3.1" },
+        { "choice": "6.7.2", "displayName": "Font Awesome 6.7.2", "description": "Font Awesome Free 6.7.2" },
+        { "choice": "5.15.4", "displayName": "Font Awesome 5.15.4", "description": "Font Awesome Free 5.15.4" }
+      ]
+    },
+    "ClientLibraryDelivery": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "LibMan",
+      "displayName": "Client library delivery",
+      "description": "Where the front-end libraries come from.",
+      "choices": [
+        { "choice": "LibMan", "displayName": "LibMan (restored into wwwroot/lib on build)", "description": "libman.json + Microsoft.Web.LibraryManager.Build" },
+        { "choice": "Cdn", "displayName": "CDN (jsDelivr links in _Layout)", "description": "Load the libraries from cdn.jsdelivr.net" }
+      ]
+    },
+
+    "HostIdentifier": {
+      "type": "bind",
+      "binding": "host:HostIdentifier"
+    },
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Skips the automatic restore of the solution on create.",
+      "defaultValue": "false"
+    },
+
+    "UseSqlServer": { "type": "computed", "datatype": "bool", "value": "(DatabaseProvider == \"SqlServer\")" },
+    "UsePostgreSql": { "type": "computed", "datatype": "bool", "value": "(DatabaseProvider == \"PostgreSQL\")" },
+    "UseSqlite": { "type": "computed", "datatype": "bool", "value": "(DatabaseProvider == \"Sqlite\")" },
+    "UseAzureSql": { "type": "computed", "datatype": "bool", "value": "(DatabaseProvider == \"SqlServer\" && SqlServerVersion == \"AzureSql\")" },
+    "UseIntegratedAuth": { "type": "computed", "datatype": "bool", "value": "(DbAuthentication == \"Integrated\")" },
+    "HasCustomConnectionString": { "type": "computed", "datatype": "bool", "value": "(ConnectionString != \"\")" },
+    "Bootstrap4": { "type": "computed", "datatype": "bool", "value": "(BootstrapVersion == \"4.6.2\")" },
+    "UseCdn": { "type": "computed", "datatype": "bool", "value": "(ClientLibraryDelivery == \"Cdn\")" },
+    "UseLibMan": { "type": "computed", "datatype": "bool", "value": "(ClientLibraryDelivery == \"LibMan\")" },
+    "IsPreviewFramework": { "type": "computed", "datatype": "bool", "value": "(Framework == \"net11.0\")" },
+
+    "EfCoreVersion": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__EFCORE_VERSION__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(Framework == \"net8.0\")", "value": "8.0.33" },
+          { "condition": "(Framework == \"net9.0\")", "value": "9.0.22" },
+          { "condition": "(Framework == \"net10.0\")", "value": "10.0.14" },
+          { "condition": "(Framework == \"net11.0\")", "value": "11.0.0-rc.3.26522.148" }
+        ]
+      }
+    },
+    "NpgsqlVersion": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__NPGSQL_VERSION__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(Framework == \"net8.0\")", "value": "8.0.11" },
+          { "condition": "(Framework == \"net9.0\")", "value": "9.0.4" },
+          { "condition": "(Framework == \"net10.0\")", "value": "10.0.3" },
+          { "condition": "(Framework == \"net11.0\")", "value": "11.0.0-rc.3" }
+        ]
+      }
+    },
+    "SwashbuckleVersion": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__SWASHBUCKLE_VERSION__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(Framework == \"net8.0\" || Framework == \"net9.0\")", "value": "6.9.0" },
+          { "condition": "(true)", "value": "10.3.1" }
+        ]
+      }
+    },
+    "SqlCompatibilityLevel": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__SQL_COMPAT_LEVEL__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(SqlServerVersion == \"SqlServer2016\")", "value": "130" },
+          { "condition": "(SqlServerVersion == \"SqlServer2017\")", "value": "140" },
+          { "condition": "(SqlServerVersion == \"SqlServer2019\")", "value": "150" },
+          { "condition": "(SqlServerVersion == \"SqlServer2025\")", "value": "170" },
+          { "condition": "(true)", "value": "160" }
+        ]
+      }
+    },
+
+    "DefaultDbServer": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(DatabaseProvider == \"SqlServer\" && SqlServerVersion == \"AzureSql\")", "value": "your-server.database.windows.net" },
+          { "condition": "(DatabaseProvider == \"SqlServer\")", "value": "(localdb)\\MSSQLLocalDB" },
+          { "condition": "(true)", "value": "localhost" }
+        ]
+      }
+    },
+    "DefaultDbUser": {
+      "type": "generated",
+      "generator": "switch",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          { "condition": "(DatabaseProvider == \"PostgreSQL\")", "value": "postgres" },
+          { "condition": "(true)", "value": "sa" }
+        ]
+      }
+    },
+    "DefaultDbPassword": {
+      "type": "generated",
+      "generator": "constant",
+      "parameters": { "value": "Your_password123" }
+    },
+    "DbServerValue": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": { "sourceVariableName": "DbServer", "defaultValue": "", "fallbackVariableName": "DefaultDbServer" }
+    },
+    "DbNameValue": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": { "sourceVariableName": "DbName", "defaultValue": "", "fallbackVariableName": "name" }
+    },
+    "DbUserValue": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": { "sourceVariableName": "DbUser", "defaultValue": "", "fallbackVariableName": "DefaultDbUser" }
+    },
+    "DbPasswordValue": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": { "sourceVariableName": "DbPassword", "defaultValue": "", "fallbackVariableName": "DefaultDbPassword" }
+    },
+    "DbServerEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__DB_SERVER__",
+      "parameters": {
+        "source": "DbServerValue",
+        "steps": [ { "regex": "\\\\", "replacement": "\\\\" }, { "regex": "\"", "replacement": "\\\"" } ]
+      }
+    },
+    "DbNameEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__DB_NAME__",
+      "parameters": {
+        "source": "DbNameValue",
+        "steps": [ { "regex": "\\\\", "replacement": "\\\\" }, { "regex": "\"", "replacement": "\\\"" } ]
+      }
+    },
+    "DbUserEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__DB_USER__",
+      "parameters": {
+        "source": "DbUserValue",
+        "steps": [ { "regex": "\\\\", "replacement": "\\\\" }, { "regex": "\"", "replacement": "\\\"" } ]
+      }
+    },
+    "DbPasswordEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__DB_PASSWORD__",
+      "parameters": {
+        "source": "DbPasswordValue",
+        "steps": [ { "regex": "\\\\", "replacement": "\\\\" }, { "regex": "\"", "replacement": "\\\"" } ]
+      }
+    },
+    "ConnectionStringEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__CUSTOM_CONNECTION_STRING__",
+      "parameters": {
+        "source": "ConnectionString",
+        "steps": [ { "regex": "\\\\", "replacement": "\\\\" }, { "regex": "\"", "replacement": "\\\"" } ]
+      }
+    },
+
+    "HttpPortWeb": { "type": "generated", "generator": "port", "replaces": "__HTTP_PORT_WEB__", "parameters": { "low": 5000, "high": 5299 } },
+    "HttpsPortWeb": { "type": "generated", "generator": "port", "replaces": "__HTTPS_PORT_WEB__", "parameters": { "low": 7000, "high": 7299 } },
+    "HttpPortApi": { "type": "generated", "generator": "port", "replaces": "__HTTP_PORT_API__", "parameters": { "low": 5300, "high": 5499 } },
+    "HttpsPortApi": { "type": "generated", "generator": "port", "replaces": "__HTTPS_PORT_API__", "parameters": { "low": 7300, "high": 7499 } },
+    "HttpPortInternal": { "type": "generated", "generator": "port", "replaces": "__HTTP_PORT_INTERNAL__", "parameters": { "low": 5500, "high": 5699 } },
+    "HttpsPortInternal": { "type": "generated", "generator": "port", "replaces": "__HTTPS_PORT_INTERNAL__", "parameters": { "low": 7500, "high": 7699 } },
+    "HttpPortExternal": { "type": "generated", "generator": "port", "replaces": "__HTTP_PORT_EXTERNAL__", "parameters": { "low": 5700, "high": 5899 } },
+    "HttpsPortExternal": { "type": "generated", "generator": "port", "replaces": "__HTTPS_PORT_EXTERNAL__", "parameters": { "low": 7700, "high": 7899 } },
+
+    "copyrightYear": {
+      "type": "generated",
+      "generator": "now",
+      "replaces": "__COPYRIGHT_YEAR__",
+      "parameters": { "format": "yyyy" }
+    }
+  },
+  "SpecialCustomOperations": {
+    "**/*.sln": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "trim": true,
+            "wholeLine": true,
+            "evaluator": "C++"
+          }
+        }
+      ]
+    },
+    "**/*.http": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "trim": true,
+            "wholeLine": true,
+            "evaluator": "C++"
+          }
+        }
+      ]
+    },
+    "**/libman.json": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "//#if" ],
+            "else": [ "//#else" ],
+            "elseif": [ "//#elseif" ],
+            "endif": [ "//#endif" ],
+            "trim": true,
+            "wholeLine": true,
+            "evaluator": "C++"
+          }
+        }
+      ]
+    }
+  },
+  "primaryOutputs": [
+    { "path": "src/TemplateApp.Web/TemplateApp.Web.csproj" },
+    { "condition": "(IncludeApi)", "path": "src/TemplateApp.API/TemplateApp.API.csproj" },
+    { "condition": "(IncludeInternal)", "path": "src/TemplateApp.Internal/TemplateApp.Internal.csproj" },
+    { "condition": "(IncludeExternal)", "path": "src/TemplateApp.External/TemplateApp.External.csproj" },
+    { "condition": "(UseServices)", "path": "src/TemplateApp.Services/TemplateApp.Services.csproj" },
+    { "condition": "(UseSqlRepository)", "path": "src/TemplateApp.SqlRepository/TemplateApp.SqlRepository.csproj" }
+  ],
+  "postActions": [
+    {
+      "id": "restore",
+      "condition": "(!skipRestore && HostIdentifier != \"vs\")",
+      "description": "Restore NuGet packages required by this solution.",
+      "manualInstructions": [ { "text": "Run 'dotnet restore'" } ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    }
+  ]
+}

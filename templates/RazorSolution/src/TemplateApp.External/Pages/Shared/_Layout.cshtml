@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TemplateApp</title>
+    <partial name="_Styles" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header>
+        <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm mb-4">
+            <div class="container">
+                <a class="navbar-brand" asp-page="/Index"><i class="fas fa-globe me-2 mr-2"></i>TemplateApp</a>
+@*#if (Bootstrap4)*@
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+@*#else*@
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+@*#endif*@
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mr-auto">
+                        <li class="nav-item"><a class="nav-link" asp-page="/Index"><i class="fas fa-home me-1 mr-1"></i>Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Contact"><i class="fas fa-envelope me-1 mr-1"></i>Contact</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Privacy"><i class="fas fa-lock me-1 mr-1"></i>Privacy</a></li>
+                    </ul>
+                    <span class="navbar-text small">External / public site</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="container flex-grow-1 pb-4">
+        @if (TempData["Message"] is string message)
+        {
+            <div class="alert alert-success" role="alert"><i class="fas fa-check-circle me-2 mr-2"></i>@message</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="border-top py-3 text-muted small">
+        <div class="container d-flex justify-content-between">
+            <span>&copy; @DateTime.Now.Year - TemplateApp</span>
+            <a asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <partial name="_Scripts" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

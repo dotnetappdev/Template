@@ -1,0 +1,15 @@
+@* Front-end libraries: Bootstrap __BOOTSTRAP_VERSION__, jQuery UI __JQUERYUI_VERSION__ and Font Awesome __FONTAWESOME_VERSION__. *@
+@*#if (UseCdn)*@
+@* Loaded from the jsDelivr CDN. To change a version, edit the URLs below (and in _Scripts.cshtml). *@
+@*#else*@
+@* Restored by LibMan (libman.json) into wwwroot/lib on build. To change a version, edit libman.json. *@
+@*#endif*@
+@*#if (UseCdn)*@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@@__BOOTSTRAP_VERSION__/dist/css/bootstrap.min.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-ui@@__JQUERYUI_VERSION__/dist/themes/base/jquery-ui.min.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@__FONTAWESOME_VERSION__/css/all.min.css" crossorigin="anonymous" />
+@*#else*@
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/lib/jquery-ui/dist/themes/base/jquery-ui.min.css" />
+<link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+@*#endif*@

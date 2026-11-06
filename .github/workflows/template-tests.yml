@@ -1,0 +1,27 @@
+name: Template tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+            11.0.x
+          dotnet-quality: preview
+      - name: Instantiate and build every option combination
+        run: tests/test-template.sh
+      - name: Pack
+        run: dotnet pack DotNetAppDev.RazorSolution.Templates.csproj -c Release -o artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: template-package
+          path: artifacts/*.nupkg
