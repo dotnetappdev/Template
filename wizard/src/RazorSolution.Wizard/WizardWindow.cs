@@ -43,8 +43,8 @@ public sealed class WizardWindow : Window
         _generator = new SolutionGenerator(ExtensionPaths.TemplatePackage);
 
         Title = $"Razor Pages Solution – {state.SolutionName}";
-        Width = 940;
-        Height = 680;
+        Width = 1060;
+        Height = 760;
         MinWidth = 780;
         MinHeight = 520;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -244,9 +244,25 @@ public sealed class WizardWindow : Window
 
     private UIElement BuildFieldsPage(StepInfo step)
     {
-        var panel = new StackPanel { MaxWidth = 620, HorizontalAlignment = HorizontalAlignment.Left };
+        var tiles = _state.Metadata.Tiles;
+        var groups = tiles.GroupsFor(step.Id);
+        var grouped = groups.SelectMany(g => g.Value).ToList();
+        var panel = new StackPanel { HorizontalAlignment = HorizontalAlignment.Stretch };
+
         foreach (var id in step.Fields)
         {
+            if (grouped.Contains(id))
+            {
+                // Feature/project toggles are drawn as a block of tiles where the group's first field appears.
+                var group = groups.First(g => g.Value.Contains(id));
+                if (group.Value.First(f => step.Fields.Contains(f)) == id)
+                {
+                    panel.Children.Add(BuildToggleGroup(group.Key, group.Value.Where(step.Fields.Contains)));
+                }
+
+                continue;
+            }
+
             var row = BuildField(_state.Metadata.Fields[id]);
             _fieldRows[id] = row;
             panel.Children.Add(row);
@@ -260,9 +276,25 @@ public sealed class WizardWindow : Window
         return panel;
     }
 
+    private UIElement BuildToggleGroup(string title, IEnumerable<string> fieldIds)
+    {
+        var group = new StackPanel { Margin = new Thickness(0, 0, 0, 8) };
+        group.Children.Add(Ui.Text(title, 13, FontWeights.SemiBold, margin: new Thickness(0, 0, 0, 8)));
+        var wrap = new WrapPanel();
+        foreach (var id in fieldIds)
+        {
+            var tile = Tiles.FeatureTile(_state.Metadata.Fields[id], _state);
+            _fieldRows[id] = tile;
+            wrap.Children.Add(tile);
+        }
+
+        group.Children.Add(wrap);
+        return group;
+    }
+
     private FrameworkElement BuildField(FieldInfo field)
     {
-        var row = new StackPanel { Margin = new Thickness(0, 0, 0, 10) };
+        var row = new StackPanel { Margin = new Thickness(0, 0, 0, 14) };
 
         if (field.Kind == FieldKind.Bool)
         {
@@ -277,10 +309,17 @@ public sealed class WizardWindow : Window
             return row;
         }
 
-        var header = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 4) };
-        header.Children.Add(new TextBlock { Text = field.Label });
+        var header = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
+        header.Children.Add(new TextBlock { Text = field.Label, FontSize = 13, FontWeight = FontWeights.SemiBold });
         header.Children.Add(Ui.Info(field.Description));
         row.Children.Add(header);
+
+        var layout = _state.Metadata.Tiles.LayoutOf(field.Id);
+        if (field.Kind == FieldKind.Choice && layout != TileLayout.None)
+        {
+            row.Children.Add(Tiles.ChoiceTiles(field, _state, layout));
+            return row;
+        }
 
         if (field.Kind == FieldKind.Choice)
         {
@@ -298,13 +337,13 @@ public sealed class WizardWindow : Window
         }
         else if (_state.Metadata.PasswordFields.Contains(field.Id))
         {
-            var password = new PasswordBox { Password = _state[field.Id], Height = 26, VerticalContentAlignment = VerticalAlignment.Center };
+            var password = new PasswordBox { Password = _state[field.Id], Height = 28, Width = 560, HorizontalAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center };
             password.PasswordChanged += (_, _) => _state[field.Id] = password.Password;
             row.Children.Add(password);
         }
         else
         {
-            var text = new TextBox { Text = _state[field.Id], Height = 26, VerticalContentAlignment = VerticalAlignment.Center };
+            var text = new TextBox { Text = _state[field.Id], Height = 28, MaxWidth = 560, HorizontalAlignment = HorizontalAlignment.Left, Width = 560, VerticalContentAlignment = VerticalAlignment.Center };
             text.TextChanged += (_, _) => _state[field.Id] = text.Text;
             row.Children.Add(text);
         }

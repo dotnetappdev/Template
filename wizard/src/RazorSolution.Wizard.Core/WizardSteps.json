@@ -5,28 +5,91 @@
       "id": "projects",
       "title": "Projects",
       "subtitle": "Pick the .NET version and the projects to create. The sites only talk to the API, so the API is created whenever a site is selected.",
-      "fields": [ "Framework", "IncludeInternal", "IncludeExternal", "IncludeApi", "IncludeServices", "IncludeSqlRepository", "IncludeTests" ]
+      "fields": [
+        "Framework",
+        "IncludeInternal",
+        "IncludeExternal",
+        "IncludeApi",
+        "IncludeServices",
+        "IncludeSqlRepository",
+        "IncludeTests"
+      ]
     },
     {
       "id": "database",
       "title": "Database",
       "subtitle": "Choose the database the API uses and test the connection before you create the solution.",
-      "when": [ { "IncludeSqlRepository": [ "true" ] }, { "IncludeServices": [ "true" ] } ],
-      "fields": [ "DatabaseProvider", "SqlServerVersion", "PostgresVersion", "DbAuthentication", "DbServer", "DbName", "DbUser", "DbPassword", "ConnectionString", "SeedSampleData" ],
+      "when": [
+        {
+          "IncludeSqlRepository": [
+            "true"
+          ]
+        },
+        {
+          "IncludeServices": [
+            "true"
+          ]
+        }
+      ],
+      "fields": [
+        "DatabaseProvider",
+        "SqlServerVersion",
+        "PostgresVersion",
+        "DbAuthentication",
+        "DbServer",
+        "DbName",
+        "DbUser",
+        "DbPassword",
+        "ConnectionString",
+        "SeedSampleData"
+      ],
       "testConnection": true
     },
     {
       "id": "api",
       "title": "API & security",
       "subtitle": "Options for ProjectName.API and how staff sign in to the Internal site.",
-      "fields": [ "IncludeSwagger", "IncludeApiKey", "IncludeHealthChecks", "IncludeSerilog", "InternalAuthentication", "EntraTenantId", "EntraClientId", "IncludeResilience" ]
+      "fields": [
+        "IncludeSwagger",
+        "IncludeApiKey",
+        "IncludeHealthChecks",
+        "IncludeSerilog",
+        "InternalAuthentication",
+        "EntraTenantId",
+        "EntraClientId",
+        "IncludeResilience"
+      ]
     },
     {
       "id": "frontend",
       "title": "Front end",
       "subtitle": "Client-side libraries for the Internal and External sites. LibMan restores them into wwwroot/lib on build.",
-      "when": [ { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ],
-      "fields": [ "JQueryVersion", "JQueryUIVersion", "JQueryUITheme", "BootstrapVersion", "BootstrapTheme", "FontAwesomeVersion", "IncludeJQueryValidation", "IncludeDataTables", "IncludeSelect2", "IncludeToastr", "IncludeSweetAlert", "IncludeChartJs" ]
+      "when": [
+        {
+          "IncludeInternal": [
+            "true"
+          ]
+        },
+        {
+          "IncludeExternal": [
+            "true"
+          ]
+        }
+      ],
+      "fields": [
+        "JQueryVersion",
+        "JQueryUIVersion",
+        "JQueryUITheme",
+        "BootstrapVersion",
+        "BootstrapTheme",
+        "FontAwesomeVersion",
+        "IncludeJQueryValidation",
+        "IncludeDataTables",
+        "IncludeSelect2",
+        "IncludeToastr",
+        "IncludeSweetAlert",
+        "IncludeChartJs"
+      ]
     },
     {
       "id": "summary",
@@ -36,19 +99,816 @@
     }
   ],
   "fieldRules": {
-    "IncludeTests": [ { "IncludeServices": [ "true" ] } ],
-    "SqlServerVersion": [ { "DatabaseProvider": [ "SqlServer" ] } ],
-    "PostgresVersion": [ { "DatabaseProvider": [ "PostgreSQL" ] } ],
-    "DbAuthentication": [ { "DatabaseProvider": [ "SqlServer" ] } ],
-    "DbServer": [ { "DatabaseProvider": [ "SqlServer", "PostgreSQL" ] } ],
-    "DbUser": [ { "DatabaseProvider": [ "PostgreSQL" ] }, { "DatabaseProvider": [ "SqlServer" ], "DbAuthentication": [ "SqlLogin" ] } ],
-    "DbPassword": [ { "DatabaseProvider": [ "PostgreSQL" ] }, { "DatabaseProvider": [ "SqlServer" ], "DbAuthentication": [ "SqlLogin" ] } ],
-    "IncludeSwagger": [ { "IncludeApi": [ "true" ] }, { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ],
-    "IncludeApiKey": [ { "IncludeApi": [ "true" ] }, { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ],
-    "InternalAuthentication": [ { "IncludeInternal": [ "true" ] } ],
-    "EntraTenantId": [ { "IncludeInternal": [ "true" ], "InternalAuthentication": [ "EntraId" ] } ],
-    "EntraClientId": [ { "IncludeInternal": [ "true" ], "InternalAuthentication": [ "EntraId" ] } ],
-    "IncludeResilience": [ { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ]
+    "IncludeTests": [
+      {
+        "IncludeServices": [
+          "true"
+        ]
+      }
+    ],
+    "SqlServerVersion": [
+      {
+        "DatabaseProvider": [
+          "SqlServer"
+        ]
+      }
+    ],
+    "PostgresVersion": [
+      {
+        "DatabaseProvider": [
+          "PostgreSQL"
+        ]
+      }
+    ],
+    "DbAuthentication": [
+      {
+        "DatabaseProvider": [
+          "SqlServer"
+        ]
+      }
+    ],
+    "DbServer": [
+      {
+        "DatabaseProvider": [
+          "SqlServer",
+          "PostgreSQL"
+        ]
+      }
+    ],
+    "DbUser": [
+      {
+        "DatabaseProvider": [
+          "PostgreSQL"
+        ]
+      },
+      {
+        "DatabaseProvider": [
+          "SqlServer"
+        ],
+        "DbAuthentication": [
+          "SqlLogin"
+        ]
+      }
+    ],
+    "DbPassword": [
+      {
+        "DatabaseProvider": [
+          "PostgreSQL"
+        ]
+      },
+      {
+        "DatabaseProvider": [
+          "SqlServer"
+        ],
+        "DbAuthentication": [
+          "SqlLogin"
+        ]
+      }
+    ],
+    "IncludeSwagger": [
+      {
+        "IncludeApi": [
+          "true"
+        ]
+      },
+      {
+        "IncludeInternal": [
+          "true"
+        ]
+      },
+      {
+        "IncludeExternal": [
+          "true"
+        ]
+      }
+    ],
+    "IncludeApiKey": [
+      {
+        "IncludeApi": [
+          "true"
+        ]
+      },
+      {
+        "IncludeInternal": [
+          "true"
+        ]
+      },
+      {
+        "IncludeExternal": [
+          "true"
+        ]
+      }
+    ],
+    "InternalAuthentication": [
+      {
+        "IncludeInternal": [
+          "true"
+        ]
+      }
+    ],
+    "EntraTenantId": [
+      {
+        "IncludeInternal": [
+          "true"
+        ],
+        "InternalAuthentication": [
+          "EntraId"
+        ]
+      }
+    ],
+    "EntraClientId": [
+      {
+        "IncludeInternal": [
+          "true"
+        ],
+        "InternalAuthentication": [
+          "EntraId"
+        ]
+      }
+    ],
+    "IncludeResilience": [
+      {
+        "IncludeInternal": [
+          "true"
+        ]
+      },
+      {
+        "IncludeExternal": [
+          "true"
+        ]
+      }
+    ]
   },
-  "passwordFields": [ "DbPassword" ]
+  "passwordFields": [
+    "DbPassword"
+  ],
+  "tiles": {
+    "$comment": "Big-tile presentation for the wizard (WPF) and the web configurator. 'fields': per-field layout (large = icon + text, compact = small version tiles, swatch = color theme tiles). 'choices': per field and choice extras (badge, note, icon, swatch colors). 'icons': per bool field.",
+    "fields": {
+      "Framework": "large",
+      "DatabaseProvider": "large",
+      "SqlServerVersion": "compact",
+      "PostgresVersion": "compact",
+      "DbAuthentication": "large",
+      "InternalAuthentication": "large",
+      "JQueryVersion": "compact",
+      "JQueryUIVersion": "compact",
+      "JQueryUITheme": "swatch",
+      "BootstrapVersion": "compact",
+      "BootstrapTheme": "swatch",
+      "FontAwesomeVersion": "compact"
+    },
+    "choices": {
+      "Framework": {
+        "net8.0": {
+          "badge": "LTS",
+          "note": "Long Term Support · support ends 10 Nov 2026",
+          "icon": {
+            "fa": "fa-solid fa-cube",
+            "glyph": "E7B8",
+            "color": "#512BD4"
+          }
+        },
+        "net9.0": {
+          "badge": "STS",
+          "note": "Standard Term Support · support ends 10 Nov 2026",
+          "icon": {
+            "fa": "fa-solid fa-cube",
+            "glyph": "E7B8",
+            "color": "#6B4FD8"
+          }
+        },
+        "net10.0": {
+          "badge": "LTS",
+          "note": "Long Term Support · supported until Nov 2028",
+          "recommended": true,
+          "icon": {
+            "fa": "fa-solid fa-cube",
+            "glyph": "E7B8",
+            "color": "#3A1FAE"
+          }
+        },
+        "net11.0": {
+          "badge": "STS · Preview",
+          "note": "Standard Term Support · preview packages",
+          "icon": {
+            "fa": "fa-solid fa-flask",
+            "glyph": "E7B8",
+            "color": "#8A6BE8"
+          }
+        }
+      },
+      "DatabaseProvider": {
+        "SqlServer": {
+          "note": "SQL Server 2014–2025, LocalDB or Azure SQL",
+          "icon": {
+            "fa": "fa-solid fa-server",
+            "glyph": "E968",
+            "color": "#CC2927"
+          }
+        },
+        "PostgreSQL": {
+          "note": "PostgreSQL 14–18 via Npgsql",
+          "icon": {
+            "fa": "fa-solid fa-database",
+            "glyph": "E8F1",
+            "color": "#336791"
+          }
+        },
+        "Sqlite": {
+          "note": "A local file – no server needed",
+          "icon": {
+            "fa": "fa-solid fa-file-lines",
+            "glyph": "E8A5",
+            "color": "#0F80CC"
+          }
+        }
+      },
+      "SqlServerVersion": {
+        "SqlServer2014": {
+          "badge": "120"
+        },
+        "SqlServer2016": {
+          "badge": "130"
+        },
+        "SqlServer2017": {
+          "badge": "140"
+        },
+        "SqlServer2019": {
+          "badge": "150"
+        },
+        "SqlServer2022": {
+          "badge": "160"
+        },
+        "SqlServer2025": {
+          "badge": "170",
+          "note": "Latest"
+        },
+        "AzureSql": {
+          "badge": "Cloud",
+          "icon": {
+            "fa": "fa-solid fa-cloud",
+            "glyph": "E753",
+            "color": "#0078D4"
+          }
+        }
+      },
+      "DbAuthentication": {
+        "Integrated": {
+          "note": "Trusted connection (Entra ID on Azure SQL) – no password",
+          "icon": {
+            "fa": "fa-brands fa-windows",
+            "glyph": "E7EF",
+            "color": "#0078D4"
+          }
+        },
+        "SqlLogin": {
+          "note": "User name and password in the connection string",
+          "icon": {
+            "fa": "fa-solid fa-key",
+            "glyph": "E8D7",
+            "color": "#B7791F"
+          }
+        }
+      },
+      "InternalAuthentication": {
+        "None": {
+          "note": "Anyone who can reach the site",
+          "icon": {
+            "fa": "fa-solid fa-lock-open",
+            "glyph": "E785",
+            "color": "#6B7280"
+          }
+        },
+        "Windows": {
+          "note": "Negotiate / Kerberos – domain accounts",
+          "icon": {
+            "fa": "fa-brands fa-windows",
+            "glyph": "E7EF",
+            "color": "#0078D4"
+          }
+        },
+        "EntraId": {
+          "note": "Microsoft Entra ID (Microsoft.Identity.Web)",
+          "icon": {
+            "fa": "fa-solid fa-id-badge",
+            "glyph": "E8D7",
+            "color": "#0F6CBD"
+          }
+        }
+      },
+      "JQueryVersion": {
+        "4.0.0": {
+          "badge": "Latest"
+        },
+        "3.7.1": {
+          "badge": "Recommended"
+        }
+      },
+      "JQueryUIVersion": {
+        "1.14.2": {
+          "badge": "Latest"
+        },
+        "1.12.1": {
+          "badge": "Legacy"
+        }
+      },
+      "BootstrapVersion": {
+        "5.3.8": {
+          "badge": "Latest"
+        },
+        "4.6.2": {
+          "badge": "v4"
+        }
+      },
+      "FontAwesomeVersion": {
+        "7.3.1": {
+          "badge": "Latest"
+        },
+        "5.15.4": {
+          "badge": "v5"
+        },
+        "none": {
+          "badge": "No icons"
+        }
+      },
+      "JQueryUITheme": {
+        "base": {
+          "swatch": [
+            "#e9e9e9",
+            "#007fff",
+            "#ffffff"
+          ]
+        },
+        "black-tie": {
+          "swatch": [
+            "#333333",
+            "#ffffff",
+            "#f9f9f9"
+          ]
+        },
+        "blitzer": {
+          "swatch": [
+            "#cc0000",
+            "#ffffff",
+            "#ffffff"
+          ]
+        },
+        "cupertino": {
+          "swatch": [
+            "#deedf7",
+            "#3baae3",
+            "#f2f5f7"
+          ]
+        },
+        "dark-hive": {
+          "swatch": [
+            "#444444",
+            "#0972a5",
+            "#000000"
+          ]
+        },
+        "dot-luv": {
+          "swatch": [
+            "#0b3e6f",
+            "#292929",
+            "#111111"
+          ]
+        },
+        "eggplant": {
+          "swatch": [
+            "#30273a",
+            "#5f5964",
+            "#3d3644"
+          ]
+        },
+        "excite-bike": {
+          "swatch": [
+            "#f9f9f9",
+            "#e69700",
+            "#eeeeee"
+          ]
+        },
+        "flick": {
+          "swatch": [
+            "#dddddd",
+            "#ffffff",
+            "#ffffff"
+          ]
+        },
+        "hot-sneaks": {
+          "swatch": [
+            "#35414f",
+            "#db4865",
+            "#ffffff"
+          ]
+        },
+        "humanity": {
+          "swatch": [
+            "#cb842e",
+            "#f4f0ec",
+            "#f4f0ec"
+          ]
+        },
+        "le-frog": {
+          "swatch": [
+            "#3a8104",
+            "#285c00",
+            "#285c00"
+          ]
+        },
+        "mint-choc": {
+          "swatch": [
+            "#453326",
+            "#201913",
+            "#201913"
+          ]
+        },
+        "overcast": {
+          "swatch": [
+            "#dddddd",
+            "#999999",
+            "#c9c9c9"
+          ]
+        },
+        "pepper-grinder": {
+          "swatch": [
+            "#ffffff",
+            "#eceadf",
+            "#eceadf"
+          ]
+        },
+        "redmond": {
+          "swatch": [
+            "#5c9ccc",
+            "#f5f8f9",
+            "#fcfdfd"
+          ]
+        },
+        "smoothness": {
+          "swatch": [
+            "#cccccc",
+            "#ffffff",
+            "#ffffff"
+          ]
+        },
+        "south-street": {
+          "swatch": [
+            "#ece8da",
+            "#fafaf4",
+            "#f5f3e5"
+          ]
+        },
+        "start": {
+          "swatch": [
+            "#2191c0",
+            "#6eac2c",
+            "#fcfdfd"
+          ]
+        },
+        "sunny": {
+          "swatch": [
+            "#817865",
+            "#ffffff",
+            "#feeebd"
+          ]
+        },
+        "swanky-purse": {
+          "swatch": [
+            "#261803",
+            "#443113",
+            "#443113"
+          ]
+        },
+        "trontastic": {
+          "swatch": [
+            "#9fda58",
+            "#4c4c4c",
+            "#000000"
+          ]
+        },
+        "ui-darkness": {
+          "swatch": [
+            "#333333",
+            "#f58400",
+            "#000000"
+          ]
+        },
+        "ui-lightness": {
+          "swatch": [
+            "#f6a828",
+            "#ffffff",
+            "#eeeeee"
+          ]
+        },
+        "vader": {
+          "swatch": [
+            "#888888",
+            "#121212",
+            "#121212"
+          ]
+        }
+      },
+      "BootstrapTheme": {
+        "cerulean": {
+          "swatch": [
+            "#2fa4e7",
+            "#fff",
+            "#e9ecef"
+          ]
+        },
+        "cosmo": {
+          "swatch": [
+            "#2780e3",
+            "#fff",
+            "#373a3c"
+          ]
+        },
+        "darkly": {
+          "swatch": [
+            "#375a7f",
+            "#222",
+            "#444"
+          ]
+        },
+        "flatly": {
+          "swatch": [
+            "#2c3e50",
+            "#fff",
+            "#95a5a6"
+          ]
+        },
+        "journal": {
+          "swatch": [
+            "#eb6864",
+            "#fff",
+            "#aaa"
+          ]
+        },
+        "litera": {
+          "swatch": [
+            "#4582ec",
+            "#fff",
+            "#adb5bd"
+          ]
+        },
+        "lumen": {
+          "swatch": [
+            "#158cba",
+            "#fff",
+            "#f0f0f0"
+          ]
+        },
+        "lux": {
+          "swatch": [
+            "#1a1a1a",
+            "#fff",
+            "#fff"
+          ]
+        },
+        "materia": {
+          "swatch": [
+            "#2196f3",
+            "#fff",
+            "#fff"
+          ]
+        },
+        "minty": {
+          "swatch": [
+            "#78c2ad",
+            "#fff",
+            "#f3969a"
+          ]
+        },
+        "pulse": {
+          "swatch": [
+            "#593196",
+            "#fff",
+            "#a991d4"
+          ]
+        },
+        "sandstone": {
+          "swatch": [
+            "#325d88",
+            "#fff",
+            "#8e8c84"
+          ]
+        },
+        "simplex": {
+          "swatch": [
+            "#d9230f",
+            "#fcfcfc",
+            "#fff"
+          ]
+        },
+        "slate": {
+          "swatch": [
+            "#3a3f44",
+            "#272b30",
+            "#7a8288"
+          ]
+        },
+        "spacelab": {
+          "swatch": [
+            "#446e9b",
+            "#fff",
+            "#999"
+          ]
+        },
+        "superhero": {
+          "swatch": [
+            "#df6919",
+            "#0f2537",
+            "#4e5d6c"
+          ]
+        },
+        "united": {
+          "swatch": [
+            "#e95420",
+            "#fff",
+            "#aea79f"
+          ]
+        },
+        "yeti": {
+          "swatch": [
+            "#008cba",
+            "#fff",
+            "#eee"
+          ]
+        },
+        "default": {
+          "swatch": [
+            "#0d6efd",
+            "#fff",
+            "#6c757d"
+          ]
+        }
+      }
+    },
+    "icons": {
+      "IncludeInternal": {
+        "fa": "fa-solid fa-user-shield",
+        "glyph": "E7EF",
+        "color": "#5C2D91"
+      },
+      "IncludeExternal": {
+        "fa": "fa-solid fa-globe",
+        "glyph": "E774",
+        "color": "#0F6CBD"
+      },
+      "IncludeApi": {
+        "fa": "fa-solid fa-plug",
+        "glyph": "E943",
+        "color": "#107C10"
+      },
+      "IncludeServices": {
+        "fa": "fa-solid fa-gears",
+        "glyph": "E713",
+        "color": "#B7791F"
+      },
+      "IncludeSqlRepository": {
+        "fa": "fa-solid fa-database",
+        "glyph": "E8F1",
+        "color": "#CC2927"
+      },
+      "IncludeTests": {
+        "fa": "fa-solid fa-vial-circle-check",
+        "glyph": "E9D9",
+        "color": "#0E7490"
+      },
+      "SeedSampleData": {
+        "fa": "fa-solid fa-seedling",
+        "glyph": "E8F1",
+        "color": "#107C10"
+      },
+      "IncludeSwagger": {
+        "fa": "fa-solid fa-book-open",
+        "glyph": "E8A5",
+        "color": "#85EA2D"
+      },
+      "IncludeApiKey": {
+        "fa": "fa-solid fa-key",
+        "glyph": "E8D7",
+        "color": "#B7791F"
+      },
+      "IncludeHealthChecks": {
+        "fa": "fa-solid fa-heart-pulse",
+        "glyph": "E95E",
+        "color": "#C42B1C"
+      },
+      "IncludeSerilog": {
+        "fa": "fa-solid fa-scroll",
+        "glyph": "E81C",
+        "color": "#1F6FEB"
+      },
+      "IncludeResilience": {
+        "fa": "fa-solid fa-rotate",
+        "glyph": "E72C",
+        "color": "#0E7490"
+      },
+      "IncludeJQueryValidation": {
+        "fa": "fa-solid fa-circle-check",
+        "glyph": "E73E",
+        "color": "#107C10"
+      },
+      "IncludeDataTables": {
+        "fa": "fa-solid fa-table",
+        "glyph": "E8CB",
+        "color": "#1F6FEB"
+      },
+      "IncludeSelect2": {
+        "fa": "fa-solid fa-list-check",
+        "glyph": "E8FD",
+        "color": "#5C2D91"
+      },
+      "IncludeToastr": {
+        "fa": "fa-solid fa-bell",
+        "glyph": "EA8F",
+        "color": "#B7791F"
+      },
+      "IncludeSweetAlert": {
+        "fa": "fa-solid fa-triangle-exclamation",
+        "glyph": "E7BA",
+        "color": "#C42B1C"
+      },
+      "IncludeChartJs": {
+        "fa": "fa-solid fa-chart-column",
+        "glyph": "E9D2",
+        "color": "#FF6384"
+      }
+    },
+    "shortLabels": {
+      "IncludeInternal": "Internal site",
+      "IncludeExternal": "External site",
+      "IncludeApi": "API",
+      "IncludeServices": "Services",
+      "IncludeSqlRepository": "SqlRepository",
+      "IncludeTests": "Tests",
+      "SeedSampleData": "Sample data",
+      "IncludeSwagger": "Swagger UI",
+      "IncludeApiKey": "API key",
+      "IncludeHealthChecks": "Health checks",
+      "IncludeSerilog": "Serilog",
+      "IncludeResilience": "Resilience",
+      "IncludeJQueryValidation": "jQuery Validation",
+      "IncludeDataTables": "DataTables",
+      "IncludeSelect2": "Select2",
+      "IncludeToastr": "Toastr",
+      "IncludeSweetAlert": "SweetAlert2",
+      "IncludeChartJs": "Chart.js"
+    },
+    "groups": {
+      "projects": [
+        [
+          "Projects",
+          [
+            "IncludeInternal",
+            "IncludeExternal",
+            "IncludeApi",
+            "IncludeServices",
+            "IncludeSqlRepository",
+            "IncludeTests"
+          ]
+        ]
+      ],
+      "api": [
+        [
+          "API",
+          [
+            "IncludeSwagger",
+            "IncludeApiKey",
+            "IncludeHealthChecks",
+            "IncludeSerilog"
+          ]
+        ],
+        [
+          "Sites",
+          [
+            "IncludeResilience"
+          ]
+        ]
+      ],
+      "frontend": [
+        [
+          "Plugins",
+          [
+            "IncludeJQueryValidation",
+            "IncludeDataTables",
+            "IncludeSelect2",
+            "IncludeToastr",
+            "IncludeSweetAlert",
+            "IncludeChartJs"
+          ]
+        ]
+      ],
+      "database": [
+        [
+          "Options",
+          [
+            "SeedSampleData"
+          ]
+        ]
+      ]
+    }
+  }
 }

@@ -1,0 +1,33 @@
+name: Configurator (GitHub Pages)
+
+# Publishes configurator/ (the browser version of the wizard) to GitHub Pages.
+# One-time setup: repository Settings > Pages > Source: "GitHub Actions".
+on:
+  push:
+    branches: [ main, master ]
+    paths: [ "configurator/**", "templates/RazorSolution/.template.config/**", "wizard/src/RazorSolution.Wizard.Core/WizardSteps.json" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Regenerate wizard-data.js from the template
+        run: node configurator/build-data.js
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: configurator
+      - id: deployment
+        uses: actions/deploy-pages@v4

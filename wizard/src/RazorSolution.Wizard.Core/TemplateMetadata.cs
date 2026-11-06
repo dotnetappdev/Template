@@ -111,7 +111,8 @@ public sealed class TemplateMetadata
         IReadOnlyDictionary<string, FieldInfo> fields,
         IReadOnlyList<StepInfo> steps,
         IReadOnlyDictionary<string, IReadOnlyList<Condition>> fieldRules,
-        IReadOnlyCollection<string> passwordFields)
+        IReadOnlyCollection<string> passwordFields,
+        TileHints tiles)
     {
         TemplateName = templateName;
         ShortName = shortName;
@@ -120,7 +121,11 @@ public sealed class TemplateMetadata
         Steps = steps;
         FieldRules = fieldRules;
         PasswordFields = passwordFields;
+        Tiles = tiles;
     }
+
+    /// <summary>How each option is drawn as a tile (icons, badges, swatches, groups).</summary>
+    public TileHints Tiles { get; }
 
     public string TemplateName { get; }
 
@@ -231,7 +236,8 @@ public sealed class TemplateMetadata
             fields,
             steps,
             rules,
-            passwords);
+            passwords,
+            TileHints.Parse(stepsDoc["tiles"] as JObject));
     }
 
     private static IReadOnlyList<Condition> ParseConditions(JArray? array) =>

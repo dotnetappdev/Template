@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Razor Solution Builder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a builder in a "window" — step rail left, tile canvas right, action bar pinned under the canvas. */
+:root {
+  --bg: #f6f5f8;
+  --surface: #ffffff;
+  --rail: #efedf3;
+  --ink: #1d1a24;
+  --muted: #5f5a6b;
+  --line: #dcd8e3;
+  --accent: #5c2d91;
+  --accent-soft: #f2ecfa;
+  --accent-hover: #b49ad6;
+  --focus: #0f6cbd;
+  --ok: #107c10;
+  --bad: #c42b1c;
+  --code-bg: #f3f1f6;
+  --font-ui: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131118; --surface: #1c1922; --rail: #18151e; --ink: #ece9f2; --muted: #a59fb3; --line: #34303d;
+    --accent: #b392f0; --accent-soft: #2a2238; --accent-hover: #6f55a0; --focus: #4cc2ff; --ok: #6ccb5f; --bad: #ff8a7a;
+    --code-bg: #24202b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131118; --surface: #1c1922; --rail: #18151e; --ink: #ece9f2; --muted: #a59fb3; --line: #34303d;
+  --accent: #b392f0; --accent-soft: #2a2238; --accent-hover: #6f55a0; --focus: #4cc2ff; --ok: #6ccb5f; --bad: #ff8a7a;
+  --code-bg: #24202b; color-scheme: dark;
+}
+* { box-sizing: border-box }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--font-ui);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+}
+.app { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px }
+header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 24px }
+header.top h1 { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance }
+header.top p { margin: 4px 0 0; color: var(--muted); max-width: 70ch }
+.pkg { font: 12px var(--font-mono); color: var(--muted) }
+.window { display: grid; grid-template-columns: 230px minmax(0, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-height: 640px }
+nav.rail { background: var(--rail); border-right: 1px solid var(--line); padding: 20px 14px; display: flex; flex-direction: column; gap: 4px }
+nav.rail .who { padding: 0 8px 14px }
+nav.rail .who b { display: block; font-size: 15px }
+nav.rail .who span { font: 12px var(--font-mono); color: var(--muted); word-break: break-all }
+.stepbtn { all: unset; cursor: pointer; display: flex; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 8px; color: var(--ink) }
+.stepbtn .n { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 600 12px var(--font-mono); border: 1.5px solid var(--line); color: var(--muted); flex: none }
+.stepbtn.done .n { background: var(--accent); border-color: var(--accent); color: var(--surface) }
+.stepbtn.cur { background: var(--accent-soft); color: var(--accent); font-weight: 600 }
+.stepbtn.cur .n { border-color: var(--accent); color: var(--accent) }
+.stepbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
+main.canvas { display: flex; flex-direction: column; min-width: 0 }
+.page { padding: 24px 28px; flex: 1; display: grid; gap: 22px; align-content: start }
+.page h2 { margin: 0; font-size: 22px; font-weight: 700; text-wrap: balance }
+.page .sub { margin: 4px 0 0; color: var(--muted); max-width: 72ch }
+.field { display: grid; gap: 8px; min-width: 0 }
+.field > .label { font-weight: 600; font-size: 14px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap }
+.field > .label small { font-weight: 400; color: var(--muted); font-size: 12px }
+.tiles { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) }
+.tiles.compact { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)) }
+.tiles.swatch { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)) }
+.tile { all: unset; box-sizing: border-box; position: relative; cursor: pointer; border: 2px solid var(--line); border-radius: 10px; background: var(--surface); padding: 12px; display: flex; gap: 12px; align-items: center; min-width: 0; transition: border-color .12s, background-color .12s }
+.tile:hover { border-color: var(--accent-hover) }
+.tile:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
+.tile[aria-checked="true"], .tile[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft) }
+.tile .tick { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: var(--surface); display: none; place-items: center; font-size: 10px }
+.tile[aria-checked="true"] .tick, .tile[aria-pressed="true"] .tick { display: grid }
+.ico { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; flex: none; font-size: 17px }
+.tile .t { display: grid; gap: 2px; min-width: 0; padding-right: 16px }
+.tile .t b { font-size: 14px; font-weight: 600 }
+.tile .t span { font-size: 12px; color: var(--muted) }
+.badge { display: inline-block; font: 500 11px var(--font-mono); padding: 1px 7px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; letter-spacing: .02em }
+.badge.rec { background: var(--ok); color: var(--surface); justify-self: start }
+.tiles.compact .tile { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 28px 10px 12px }
+.tiles.swatch .tile { flex-direction: column; align-items: stretch; gap: 8px; padding: 8px }
+.sw { display: grid; grid-template-columns: 2fr 1fr 1fr; height: 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line) }
+.sw i { display: block }
+.tiles.swatch .tile b { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.group h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted) }
+input[type=text], input[type=password] { font: 14px var(--font-ui); color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%; max-width: 560px }
+input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; border-color: transparent }
+.help { font-size: 12px; color: var(--muted); max-width: 72ch }
+.row2 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
+.panel { border: 1px solid var(--line); background: var(--code-bg); border-radius: 10px; padding: 14px; display: grid; gap: 10px; min-width: 0 }
+.panel h4 { margin: 0; font-size: 14px }
+pre, code { font-family: var(--font-mono) }
+pre { margin: 0; font-size: 12.5px; white-space: pre-wrap; word-break: break-all; color: var(--ink) }
+.bar { border-top: 1px solid var(--line); padding: 12px 20px; display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-wrap: wrap; background: var(--surface) }
+.bar .hint { margin-right: auto; color: var(--muted); font-size: 12px }
+.btn { all: unset; box-sizing: border-box; cursor: pointer; padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--line); font-weight: 600; background: var(--surface); color: var(--ink) }
+.btn:hover { border-color: var(--accent-hover) }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: var(--surface) }
+.btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
+.btn[disabled] { opacity: .45; cursor: default }
+.btn.sm { padding: 5px 12px; font-size: 12px }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap }
+.tabs .btn[aria-selected="true"] { border-color: var(--accent); color: var(--accent) }
+dl.sum { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 16px; margin: 0 }
+dl.sum dt { color: var(--muted); font-weight: 600 }
+dl.sum dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
+.note { font-size: 12px; color: var(--muted) }
+.status { font-size: 12px; color: var(--ok) }
+@media (max-width: 760px) {
+  .window { grid-template-columns: minmax(0, 1fr) }
+  nav.rail { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 10px }
+  nav.rail .who { display: none }
+  .stepbtn { white-space: nowrap }
+  .page { padding: 18px 16px }
+  dl.sum { grid-template-columns: minmax(0, 1fr) }
+  .bar .hint { flex-basis: 100% }
+}
+@media (prefers-reduced-motion: reduce) { .tile { transition: none } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>Razor Solution Builder</h1>
+      <p>Pick your .NET version, projects, database and client libraries. Each choice is a tile. The last step gives you the <code>dotnet new</code> command that creates the solution.</p>
+    </div>
+    <div class="pkg" id="pkg"></div>
+  </header>
+  <div class="window">
+    <nav class="rail" id="rail" aria-label="Steps"></nav>
+    <main class="canvas">
+      <section class="page" id="page" aria-live="polite"></section>
+      <div class="bar">
+        <span class="hint" id="hint"></span>
+        <button class="btn" id="back" type="button">Back</button>
+        <button class="btn pri" id="next" type="button">Next</button>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" crossorigin="anonymous"></script>
+<script src="wizard-data.js"></script>
+<script>
+(function () {
+  'use strict';
+  const D = window.WIZARD_DATA;
+  const T = D.tiles || {};
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------------------------------------------------------------- state
+  const STORE = 'razor-solution-builder';
+  const v = {};
+  for (const f of Object.values(D.fields)) v[f.id] = f.default;
+  let name = D.defaultName, outDir = '', stepIndex = 0, shell = 'pwsh';
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+    if (saved) { Object.assign(v, saved.v || {}); name = saved.name || name; outDir = saved.outDir || ''; shell = saved.shell || shell; v.DbPassword = ''; }
+  } catch (e) { /* storage unavailable: start from defaults */ }
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify({ v: { ...v, DbPassword: '' }, name, outDir, shell })); } catch (e) { } };
+
+  const matches = conds => !conds || !conds.length || conds.some(c => Object.entries(c).every(([k, vals]) => vals.includes(v[k])));
+  const visibleSteps = () => D.steps.filter(s => matches(s.when));
+  const fieldVisible = id => matches((D.fieldRules || {})[id]);
+  const usesDb = () => v.IncludeSqlRepository === 'true' || v.IncludeServices === 'true';
+  const createsApi = () => v.IncludeApi === 'true' || v.IncludeInternal === 'true' || v.IncludeExternal === 'true';
+
+  // ---------------------------------------------------------------- connection string (same rules as the template)
+  function connectionString(mask) {
+    if (v.ConnectionString.trim()) return v.ConnectionString.trim();
+    const p = v.DatabaseProvider, azure = p === 'SqlServer' && v.SqlServerVersion === 'AzureSql', integrated = v.DbAuthentication === 'Integrated';
+    const server = v.DbServer.trim() || (p === 'SqlServer' ? (azure ? 'your-server.database.windows.net' : '(localdb)\\MSSQLLocalDB') : 'localhost');
+    const db = v.DbName.trim() || name, user = v.DbUser.trim() || (p === 'PostgreSQL' ? 'postgres' : 'sa');
+    const pw = mask && v.DbPassword ? '****' : (v.DbPassword || 'Your_password123');
+    if (p === 'Sqlite') return `Data Source=${db}.db`;
+    if (p === 'PostgreSQL') return `Host=${server};Port=5432;Database=${db};Username=${user};Password=${pw}`;
+    if (azure) return integrated
+      ? `Server=tcp:${server},1433;Database=${db};Authentication=Active Directory Default;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30`
+      : `Server=tcp:${server},1433;Database=${db};User ID=${user};Password=${pw};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30`;
+    return integrated
+      ? `Server=${server};Database=${db};Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True`
+      : `Server=${server};Database=${db};User Id=${user};Password=${pw};MultipleActiveResultSets=true;TrustServerCertificate=True`;
+  }
+
+  // ---------------------------------------------------------------- command line
+  const quote = {
+    pwsh: a => /^[\w.\-\/:\\]+$/.test(a) ? a : `'${a.replace(/'/g, "''")}'`,
+    bash: a => /^[\w.\-\/:]+$/.test(a) ? a : `'${a.replace(/'/g, "'\\''")}'`,
+    cmd: a => /^[\w.\-\/:\\]+$/.test(a) ? a : `"${a.replace(/"/g, '\\"')}"`,
+  };
+  function args(maskPassword) {
+    const a = ['new', D.shortName, '-n', name];
+    if (outDir.trim()) a.push('-o', outDir.trim());
+    for (const f of Object.values(D.fields)) {
+      if (v[f.id] === f.default) continue;
+      a.push(f.cli, maskPassword && (D.passwordFields || []).includes(f.id) ? '****' : v[f.id]);
+    }
+    return a;
+  }
+  const command = (sh, mask) => 'dotnet ' + args(mask).map(quote[sh]).join(' ');
+  function script(sh) {
+    const install = `dotnet new install ${D.packageId}`;
+    if (sh === 'bash') return `#!/usr/bin/env bash\nset -e\n# Install the template once (skip if "dotnet new list ${D.shortName}" already shows it)\ndotnet new list ${D.shortName} >/dev/null 2>&1 || ${install}\n${command('bash')}`;
+    if (sh === 'cmd') return `@echo off\nrem Install the template once (skip if "dotnet new list ${D.shortName}" already shows it)\ndotnet new list ${D.shortName} >nul 2>&1 || ${install}\n${command('cmd')}`;
+    return `# Install the template once (skip if "dotnet new list ${D.shortName}" already shows it)\ndotnet new list ${D.shortName} *> $null; if ($LASTEXITCODE -ne 0) { ${install} }\n${command('pwsh')}`;
+  }
+  function testSnippet() {
+    const cs = connectionString(false);
+    if (v.DatabaseProvider === 'Sqlite') return null;
+    if (v.DatabaseProvider === 'PostgreSQL') {
+      const m = k => (cs.match(new RegExp(k + '=([^;]*)')) || [])[1] || '';
+      return { lang: 'bash / PowerShell (needs psql)', text: `psql "host=${m('Host')} port=${m('Port') || 5432} dbname=postgres user=${m('Username')}" -c "select version();"` };
+    }
+    if (/Active Directory/.test(cs)) return { lang: 'note', text: 'Entra ID (Active Directory Default) sign-in cannot be tested with this snippet. Use the Visual Studio wizard\'s Test connection, or sign in with Azure Data Studio / SSMS.' };
+    const sys = cs.replace(/;?MultipleActiveResultSets=true/i, '').replace(/Database=[^;]*/i, 'Database=master');
+    return { lang: 'Windows PowerShell (no install needed)', text: `$c = New-Object System.Data.SqlClient.SqlConnection '${sys.replace(/'/g, "''")}'\n$c.Open(); "Connected: " + $c.ServerVersion; $c.Close()` };
+  }
+
+  // ---------------------------------------------------------------- tiles
+  function iconHtml(icon, fallback) {
+    const color = icon?.color || 'var(--accent)';
+    const inner = icon?.fa ? `<i class="${esc(icon.fa)}" aria-hidden="true"></i>` : `<b>${esc(fallback.split(/[ .\-]/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join(''))}</b>`;
+    return `<span class="ico" style="background:${esc(color)}">${inner}</span>`;
+  }
+  const hintFor = (id, value) => ((T.choices || {})[id] || {})[value] || {};
+  function choiceTiles(f) {
+    const layout = (T.fields || {})[f.id];
+    const cls = layout === 'compact' ? 'compact' : layout === 'swatch' ? 'swatch' : '';
+    const items = f.choices.map(c => {
+      const h = hintFor(f.id, c.value), on = v[f.id] === c.value;
+      let body;
+      if (layout === 'swatch') {
+        const sw = (h.swatch && h.swatch.length ? h.swatch : ['#ddd']).concat(['transparent', 'transparent']).slice(0, 3);
+        body = `<span class="sw">${sw.map(x => `<i style="background:${esc(x)}"></i>`).join('')}</span><b>${esc(c.display.replace('Bootswatch ', ''))}</b>`;
+      } else if (layout === 'compact') {
+        body = `<b>${esc(c.display)}</b>${h.badge ? `<span class="badge">${esc(h.badge)}</span>` : ''}`;
+      } else {
+        body = `${iconHtml(h.icon, c.display)}<span class="t"><b>${esc(c.display)} ${h.badge ? `<span class="badge">${esc(h.badge)}</span>` : ''}</b>${h.note ? `<span>${esc(h.note)}</span>` : ''}${h.recommended ? '<span class="badge rec">Recommended</span>' : ''}</span>`;
+      }
+      return `<button type="button" class="tile" role="radio" aria-checked="${on}" data-field="${esc(f.id)}" data-value="${esc(c.value)}" title="${esc(h.note || f.description)}"><span class="tick" aria-hidden="true">✓</span>${body}</button>`;
+    }).join('');
+    return `<div class="tiles ${cls}" role="radiogroup" aria-label="${esc(f.label)}">${items}</div>`;
+  }
+  function toggleTile(f) {
+    const icon = (T.icons || {})[f.id], short = (T.shortLabels || {})[f.id] || f.label;
+    const m = f.label.match(/\(([^)]+)\)\s*$/);
+    const pkg = m ? m[1] : f.description;
+    return `<button type="button" class="tile" aria-pressed="${v[f.id] === 'true'}" data-toggle="${esc(f.id)}" title="${esc(f.description)}" ${fieldVisible(f.id) ? '' : 'hidden'}><span class="tick" aria-hidden="true">✓</span>${iconHtml(icon, short)}<span class="t"><b>${esc(short)}</b><span>${esc(pkg)}</span></span></button>`;
+  }
+  function fieldHtml(f) {
+    if (!fieldVisible(f.id)) return '';
+    const label = `<div class="label">${esc(f.label)}</div>`;
+    if (f.kind === 'choice') return `<div class="field">${label}${choiceTiles(f)}</div>`;
+    if (f.kind === 'bool') return `<div class="field"><div class="tiles">${toggleTile(f)}</div></div>`;
+    const pw = (D.passwordFields || []).includes(f.id);
+    return `<div class="field"><label class="label" for="f-${esc(f.id)}">${esc(f.label)}</label><input id="f-${esc(f.id)}" type="${pw ? 'password' : 'text'}" data-text="${esc(f.id)}" value="${esc(v[f.id])}" autocomplete="off" spellcheck="false"><div class="help">${esc(f.description)}</div></div>`;
+  }
+
+  // ---------------------------------------------------------------- pages
+  function render() {
+    const steps = visibleSteps();
+    stepIndex = Math.min(stepIndex, steps.length - 1);
+    const step = steps[stepIndex];
+
+    $('#pkg').textContent = `dotnet new ${D.shortName} · ${D.packageId}`;
+    $('#rail').innerHTML = `<div class="who"><b>${esc(D.templateName.split(' (')[0])}</b><span>${esc(name || '(no name)')}</span></div>` +
+      steps.map((s, i) => `<button type="button" class="stepbtn ${i === stepIndex ? 'cur' : ''} ${i < stepIndex ? 'done' : ''}" data-step="${i}" ${i === stepIndex ? 'aria-current="step"' : ''}><span class="n">${i < stepIndex ? '✓' : i + 1}</span>${esc(s.title)}</button>`).join('');
+
+    let html = `<div><h2>${esc(step.title)}</h2><p class="sub">${esc(step.subtitle)}</p></div>`;
+    if (step.id === 'projects') {
+      html += `<div class="row2"><div class="field"><label class="label" for="sol-name">Solution name</label><input id="sol-name" type="text" value="${esc(name)}" autocomplete="off" spellcheck="false"><div class="help">Projects are named ${esc(name || 'Name')}.Internal, ${esc(name || 'Name')}.API, …</div></div>
+        <div class="field"><label class="label" for="sol-out">Folder <small>optional</small></label><input id="sol-out" type="text" value="${esc(outDir)}" placeholder="./${esc(name)}" autocomplete="off" spellcheck="false"><div class="help">Where to create the solution. Leave blank for a folder named after the solution.</div></div></div>`;
+    }
+    if (step.id === 'summary') {
+      html += summaryHtml();
+    } else {
+      const groups = (T.groups || {})[step.id] || [];
+      const grouped = new Set(groups.flatMap(g => g[1]));
+      const rendered = new Set();
+      for (const id of step.fields) {
+        if (grouped.has(id)) {
+          const g = groups.find(x => x[1].includes(id));
+          if (!rendered.has(g[0])) {
+            rendered.add(g[0]);
+            const ids = g[1].filter(x => step.fields.includes(x));
+            html += `<div class="group"><h3>${esc(g[0])}</h3><div class="tiles">${ids.map(x => toggleTile(D.fields[x])).join('')}</div></div>`;
+          }
+          continue;
+        }
+        html += fieldHtml(D.fields[id]);
+      }
+      if (step.testConnection) html += connectionHtml();
+    }
+    $('#page').innerHTML = html;
+
+    $('#back').disabled = stepIndex === 0;
+    $('#next').textContent = stepIndex === steps.length - 1 ? 'Copy command' : 'Next';
+    $('#hint').textContent = `Step ${stepIndex + 1} of ${steps.length}`;
+    save();
+  }
+
+  function connectionHtml() {
+    const t = testSnippet();
+    return `<div class="panel"><h4>Connection string the API will use</h4><pre>${esc(connectionString(true))}</pre>
+      ${t ? `<div class="note">Test it from a terminal (${esc(t.lang)}). The Visual Studio wizard has a built-in Test connection button.</div><pre id="test-snippet">${esc(t.text)}</pre><div><button type="button" class="btn sm" data-copy="test-snippet">Copy test command</button> <span class="status" id="copied-test-snippet"></span></div>`
+          : '<div class="note">SQLite needs no server: the API creates the database file on first run.</div>'}</div>`;
+  }
+
+  function summaryHtml() {
+    const projects = [];
+    if (v.IncludeInternal === 'true') projects.push('Internal');
+    if (v.IncludeExternal === 'true') projects.push('External');
+    if (createsApi()) projects.push('API');
+    if (v.IncludeServices === 'true') projects.push('Services');
+    if (usesDb()) projects.push('SqlRepository');
+    if (v.IncludeTests === 'true' && v.IncludeServices === 'true') projects.push('Tests');
+    const disp = id => (D.fields[id].choices.find(c => c.value === v[id]) || {}).display || v[id];
+    const projectToggles = ['IncludeInternal', 'IncludeExternal', 'IncludeApi', 'IncludeServices', 'IncludeSqlRepository', 'IncludeTests'];
+    const extras = Object.values(D.fields)
+      .filter(f => f.kind === 'bool' && v[f.id] === 'true' && !projectToggles.includes(f.id) && fieldVisible(f.id))
+      .map(f => (T.shortLabels || {})[f.id] || f.label);
+    const site = v.IncludeInternal === 'true' || v.IncludeExternal === 'true';
+    const tab = s => `<button type="button" class="btn sm" role="tab" aria-selected="${shell === s}" data-shell="${s}">${{ pwsh: 'PowerShell', bash: 'bash / zsh', cmd: 'cmd' }[s]}</button>`;
+    return `<dl class="sum">
+        <dt>Solution</dt><dd>${esc(name)}${outDir ? ` in <code>${esc(outDir)}</code>` : ''}</dd>
+        <dt>Framework</dt><dd>${esc(disp('Framework'))}</dd>
+        <dt>Projects</dt><dd>${esc(projects.map(p => `${name}.${p}`).join(', '))}</dd>
+        ${usesDb() ? `<dt>Database</dt><dd><code>${esc(connectionString(true))}</code></dd>` : ''}
+        ${v.IncludeInternal === 'true' ? `<dt>Internal sign-in</dt><dd>${esc(disp('InternalAuthentication'))}</dd>` : ''}
+        ${site ? `<dt>Front end</dt><dd>${esc(`${disp('JQueryVersion')}, ${disp('JQueryUIVersion')} (${disp('JQueryUITheme')} theme), ${disp('BootstrapVersion')} (${disp('BootstrapTheme')}), ${disp('FontAwesomeVersion')}`)}</dd>` : ''}
+        <dt>Extras</dt><dd>${esc(extras.join(', ') || 'None')}</dd>
+      </dl>
+      <div class="panel">
+        <div class="tabs" role="tablist" aria-label="Shell">${tab('pwsh')}${tab('bash')}${tab('cmd')}</div>
+        <h4>Create the solution</h4><pre id="cmd-line">${esc(command(shell, false))}</pre>
+        <div><button type="button" class="btn sm" data-copy="cmd-line">Copy command</button> <span class="status" id="copied-cmd-line"></span></div>
+        <h4>Or as a script that installs the template first</h4><pre id="cmd-script">${esc(script(shell))}</pre>
+        <div><button type="button" class="btn sm" data-copy="cmd-script">Copy script</button> <span class="status" id="copied-cmd-script"></span></div>
+        ${v.DbPassword ? '<div class="note">The command contains your database password. It will end up in your shell history; consider user-secrets instead.</div>' : ''}
+      </div>`;
+  }
+
+  // ---------------------------------------------------------------- events
+  async function copy(id) {
+    const el = document.getElementById(id), text = el.textContent, status = document.getElementById('copied-' + id);
+    try { await navigator.clipboard.writeText(text); if (status) status.textContent = 'Copied'; }
+    catch (e) {
+      const range = document.createRange(); range.selectNodeContents(el);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+      if (status) status.textContent = 'Selected. Press Ctrl+C to copy';
+    }
+  }
+
+  document.addEventListener('click', e => {
+    const t = e.target.closest('button');
+    if (!t) return;
+    if (t.dataset.field) { v[t.dataset.field] = t.dataset.value; render(); refocus(t); }
+    else if (t.dataset.toggle) { v[t.dataset.toggle] = v[t.dataset.toggle] === 'true' ? 'false' : 'true'; render(); refocus(t); }
+    else if (t.dataset.step) { stepIndex = +t.dataset.step; render(); window.scrollTo({ top: 0 }); }
+    else if (t.dataset.shell) { shell = t.dataset.shell; render(); }
+    else if (t.dataset.copy) { copy(t.dataset.copy); }
+    else if (t.id === 'back' && stepIndex > 0) { stepIndex--; render(); }
+    else if (t.id === 'next') {
+      if (stepIndex < visibleSteps().length - 1) { stepIndex++; render(); }
+      else copy('cmd-line');
+    }
+  });
+  function refocus(t) {
+    const sel = t.dataset.field ? `[data-field="${t.dataset.field}"][data-value="${CSS.escape(t.dataset.value)}"]` : `[data-toggle="${t.dataset.toggle}"]`;
+    document.querySelector(sel)?.focus();
+  }
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if (t.id === 'sol-name') { name = t.value.trim(); $('#rail .who span').textContent = name || '(no name)'; save(); }
+    else if (t.id === 'sol-out') { outDir = t.value; save(); }
+    else if (t.dataset.text) {
+      v[t.dataset.text] = t.value; save();
+      const pre = document.querySelector('.panel pre');
+      if (pre) { pre.textContent = connectionString(true); const s = testSnippet(); const ts = document.getElementById('test-snippet'); if (ts && s) ts.textContent = s.text; }
+    }
+  });
+  // Arrow keys move between tiles in a radio group.
+  document.addEventListener('keydown', e => {
+    const t = e.target.closest('.tile[role=radio]');
+    if (!t || !['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(e.key)) return;
+    const all = [...t.parentElement.querySelectorAll('.tile')];
+    const i = all.indexOf(t) + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1);
+    if (all[i]) { e.preventDefault(); all[i].click(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

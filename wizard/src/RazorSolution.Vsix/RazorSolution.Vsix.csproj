@@ -80,6 +80,7 @@
   <!-- Build the extra VSIX content: template zip, connection tester and template package. -->
   <Target Name="BuildWizardContent" BeforeTargets="GetVsixSourceItems;CreateVsixContainer">
     <RemoveDir Directories="$(GeneratedVsixContent)" />
+    <MakeDir Directories="$(GeneratedVsixContent)ProjectTemplates;$(GeneratedVsixContent)Templates" />
     <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\ProjectTemplates\RazorSolutionWizard"
                   DestinationFile="$(GeneratedVsixContent)ProjectTemplates\RazorSolutionWizard.zip" Overwrite="true" />
     <Exec Command="dotnet publish &quot;$(RepoRoot)wizard\src\RazorSolution.ConnectionTester\RazorSolution.ConnectionTester.csproj&quot; -c Release -o &quot;$(GeneratedVsixContent)Tools\ConnectionTester&quot; --nologo" />

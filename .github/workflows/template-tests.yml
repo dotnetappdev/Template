@@ -17,6 +17,8 @@ jobs:
             10.0.x
             11.0.x
           dotnet-quality: preview
+      - name: Web configurator data is up to date with the template
+        run: node configurator/build-data.js && git diff --exit-code configurator/wizard-data.js
       - name: Instantiate and build every option combination
         run: tests/test-template.sh
       - name: Pack
