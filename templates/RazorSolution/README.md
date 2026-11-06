@@ -1,64 +1,124 @@
 # TemplateApp
 
-An ASP.NET Core Razor Pages solution (no Areas) targeting **net8.0**.
+An ASP.NET Core solution targeting **net8.0**. The front end is two independent Razor Pages sites (no Areas), and every piece of data goes through one API.
 
-## Projects
+## Architecture
+
+```
+<!--#if (IncludeInternal) -->
+  TemplateApp.Internal (Razor Pages) --HTTP--+
+<!--#endif -->
+<!--#if (IncludeExternal) -->
+  TemplateApp.External (Razor Pages) --HTTP--+
+<!--#endif -->
+                                              |
+                                              v
+                                   TemplateApp.API (controllers)
+<!--#if (UseServices) -->
+                                              |
+                                              v
+                                   TemplateApp.Services (ICustomerService ...)
+<!--#endif -->
+<!--#if (UseSqlRepository) -->
+                                              |
+                                              v
+                                   TemplateApp.SqlRepository (IRepository<T> -> ApplicationDbContext -> database)
+<!--#endif -->
+```
+
+The sites do **not** reference Services, SqlRepository or EF Core. Each one calls the API through its own typed `HttpClient` clients in `ApiClients/` (for example `ICustomerApiClient` and `IStatusApiClient`), so the two sites can be deployed, scaled and versioned on their own.
 
 | Project | Purpose |
 | --- | --- |
-| `src/TemplateApp.Web` | Main Razor Pages web site. |
-<!--#if (IncludeApi) -->
-| `src/TemplateApp.API` | ASP.NET Core Web API (controllers + Swagger UI at `/swagger`). |
-<!--#endif -->
 <!--#if (IncludeInternal) -->
-| `src/TemplateApp.Internal` | Internal (staff / back-office) Razor Pages web site. |
+| `src/TemplateApp.Internal` | Internal (staff / back-office) Razor Pages site. Calls the API only. |
 <!--#endif -->
 <!--#if (IncludeExternal) -->
-| `src/TemplateApp.External` | External (public / customer facing) Razor Pages web site. |
+| `src/TemplateApp.External` | External (public / customer facing) Razor Pages site. Calls the API only. |
+<!--#endif -->
+<!--#if (UseApi) -->
+| `src/TemplateApp.API` | ASP.NET Core Web API: controllers, Swagger UI at `/swagger`. The only project that uses the data layer. |
 <!--#endif -->
 <!--#if (UseServices) -->
-| `src/TemplateApp.Services` | Business logic. Service interfaces (`Interfaces/`) and their implementations. Hosts depend on `ICustomerService` and so on, never on EF Core. |
+| `src/TemplateApp.Services` | Business logic: service interfaces (`Interfaces/`) and implementations. |
 <!--#endif -->
 <!--#if (UseSqlRepository) -->
-| `src/TemplateApp.SqlRepository` | EF Core: `ApplicationDbContext`, entities, entity configurations, and the repository pattern (`IRepository<T>`, `ICustomerRepository`, `Repository<T>`, `CustomerRepository`). |
+| `src/TemplateApp.SqlRepository` | EF Core: `ApplicationDbContext`, entities, configurations, `IRepository<T>` / `Repository<T>`, `ICustomerRepository` / `CustomerRepository`. |
 <!--#endif -->
 
 Shared build settings are in `Directory.Build.props`. Every NuGet version is set once, in `Directory.Packages.props` (Central Package Management).
 
+## Run it
+
+Start the API first, then the site(s).
+
+**Visual Studio:** right-click the solution → **Configure Startup Projects…** → **Multiple startup projects**. Set `TemplateApp.API` and the site project(s) to **Start**, with the API at the top of the list, then press F5. Visual Studio saves this choice in the `.vs` folder, so you only do it once.
+
+**Command line** (one terminal each):
+
+```
+dotnet run --project src/TemplateApp.API --launch-profile https
+<!--#if (IncludeInternal) -->
+dotnet run --project src/TemplateApp.Internal --launch-profile https
+<!--#endif -->
+<!--#if (IncludeExternal) -->
+dotnet run --project src/TemplateApp.External --launch-profile https
+<!--#endif -->
+```
+
+If the development HTTPS certificate is not trusted yet, run `dotnet dev-certs https --trust` once.
+
+### How the sites find the API
+
+* `Api:BaseUrl` in each site's `appsettings.Development.json` points at the API's **https** launch profile (`https://localhost:__HTTPS_PORT_API__/`).
+* The sites' **http** launch profile overrides it with `Api__BaseUrl=http://localhost:__HTTP_PORT_API__/`, so http-only runs work too.
+* For production, set `Api:BaseUrl` in `appsettings.json`, as an environment variable (`Api__BaseUrl`) or in your hosting configuration.
+
+### Adding an API client to a site
+
+1. Add the request and response models to `ApiClients/Models`.
+2. Add an interface (`IOrderApiClient`) and an implementation that takes `HttpClient` in its constructor.
+3. Register it in `ApiClients/ApiClientServiceCollectionExtensions.cs`: `services.AddApiClient<IOrderApiClient, OrderApiClient>();`
+4. Inject the interface into your page model.
+
 <!--#if (UseSqlRepository) -->
-## Layers
-
-```
-<!--#if (UseServices) -->
-Web / Internal / External / API  ->  Services (ICustomerService)  ->  SqlRepository (ICustomerRepository -> ApplicationDbContext)
-<!--#else -->
-Web / Internal / External / API  ->  SqlRepository (ICustomerRepository -> ApplicationDbContext)
-<!--#endif -->
-```
+## Data layer
 
 <!--#if (UseServices) -->
-* Registration: `builder.Services.AddApplicationServices(builder.Configuration)` in each host's `Program.cs`. It also calls `AddSqlRepository(...)`.
+The API registers everything with `builder.Services.AddApplicationServices(builder.Configuration)` (Services), which calls `AddSqlRepository(...)`.
 <!--#else -->
-* Registration: `builder.Services.AddSqlRepository(builder.Configuration)` in each host's `Program.cs`.
+The API registers everything with `builder.Services.AddSqlRepository(builder.Configuration)`.
 <!--#endif -->
-* Add an entity: create it in `SqlRepository/Entities` (inherit `BaseEntity`), add an `IEntityTypeConfiguration<T>` in `Configurations`, add a `DbSet` to `ApplicationDbContext`, add `IXxxRepository : IRepository<Xxx>` and `XxxRepository : Repository<Xxx>, IXxxRepository`, then register it in `SqlRepository/Extensions/ServiceCollectionExtensions.cs`.
 
-## Database
+To add an entity:
+
+1. Create it in `SqlRepository/Entities`, inheriting `BaseEntity`.
+2. Add an `IEntityTypeConfiguration<T>` in `Configurations`.
+3. Add a `DbSet` to `ApplicationDbContext`.
+4. Add `IXxxRepository : IRepository<Xxx>` and `XxxRepository : Repository<Xxx>, IXxxRepository`.
+5. Register the repository in `SqlRepository/Extensions/ServiceCollectionExtensions.cs`.
+<!--#if (UseServices) -->
+6. Add a service in Services, then a controller in the API.
+<!--#else -->
+6. Add a controller in the API.
+<!--#endif -->
+
+### Database
 
 <!--#if (UseSqlServer) -->
-* Provider: **SQL Server** (`Microsoft.EntityFrameworkCore.SqlServer`), compatibility level **__SQL_COMPAT_LEVEL__**. To change the level, edit `UseCompatibilityLevel(...)` in `SqlRepository/Extensions/ServiceCollectionExtensions.cs`.
+* Provider: **SQL Server** (`Microsoft.EntityFrameworkCore.SqlServer`), compatibility level **__SQL_COMPAT_LEVEL__**. To change it, edit `UseCompatibilityLevel(...)` in `SqlRepository/Extensions/ServiceCollectionExtensions.cs`.
 <!--#elseif (UsePostgreSql) -->
 * Provider: **PostgreSQL** (`Npgsql.EntityFrameworkCore.PostgreSQL`), version **__POSTGRES_MAJOR__**. To change it, edit `SetPostgresVersion(...)` in `SqlRepository/Extensions/ServiceCollectionExtensions.cs`.
 <!--#else -->
 * Provider: **SQLite** (`Microsoft.EntityFrameworkCore.Sqlite`).
 <!--#endif -->
-* Connection string: `ConnectionStrings:DefaultConnection` in each host's `appsettings.json`. Keep real passwords out of source control. Use user-secrets, for example:
+* Connection string: `ConnectionStrings:DefaultConnection` in `src/TemplateApp.API/appsettings.json`. Only the API has one. Keep real passwords out of source control, for example:
 
   ```
-  dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<your connection string>" --project src/TemplateApp.Web
+  dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<your connection string>" --project src/TemplateApp.API
   ```
 
-* In Development, every host calls `InitialiseDatabaseAsync()` at startup. While there are no migrations, it creates the database with `EnsureCreated`. Once a migration exists, it switches to `Migrate`. It also seeds a few sample customers.
+* In Development, the API calls `InitialiseDatabaseAsync()` at startup. While there are no migrations, it creates the database with `EnsureCreated`. Once a migration exists, it switches to `Migrate`. It also seeds a few sample customers.
 
 ### Migrations
 
@@ -68,15 +128,15 @@ dotnet ef migrations add InitialCreate --project src/TemplateApp.SqlRepository
 dotnet ef database update --project src/TemplateApp.SqlRepository
 ```
 
-At design time, `ApplicationDbContextFactory` reads the `ConnectionStrings__DefaultConnection` environment variable, or uses the default from `DatabaseDefaults.cs`.
-If you created the database with `EnsureCreated` before adding your first migration, drop the development database first.
+At design time, `ApplicationDbContextFactory` reads the `ConnectionStrings__DefaultConnection` environment variable, or uses the default from `DatabaseDefaults.cs`. If you created the database with `EnsureCreated` before adding your first migration, drop the development database first.
 
 In Visual Studio's Package Manager Console, choose **TemplateApp.SqlRepository** as the default project and run `Add-Migration InitialCreate`, then `Update-Database`.
 <!--#endif -->
 
-## Front end
+<!--#if (HasSite) -->
+## Front end (LibMan)
 
-Razor Pages sites use:
+Both sites use:
 
 * jQuery **__JQUERY_VERSION__**
 * jQuery UI **__JQUERYUI_VERSION__** (base theme)
@@ -84,27 +144,15 @@ Razor Pages sites use:
 * Font Awesome Free **__FONTAWESOME_VERSION__**
 * jQuery Validation + jQuery Validation Unobtrusive (forms)
 
-<!--#if (UseLibMan) -->
-The libraries are listed in each site's `libman.json`. They are restored into `wwwroot/lib` on build (the `Microsoft.Web.LibraryManager.Build` package) and when you save `libman.json` in Visual Studio. To change a version, edit the `library` entry, for example `"bootstrap@5.3.8"`. Right-click `libman.json` → **Manage Client-Side Libraries** to browse versions. `wwwroot/lib` is git-ignored.
-<!--#else -->
-The libraries load from the jsDelivr CDN in `Pages/Shared/_Styles.cshtml`, `_Scripts.cshtml` and `_ValidationScriptsPartial.cshtml`. To change a version, edit the URLs. Consider adding `integrity` (SRI) hashes for production.
-<!--#endif -->
+They are listed in each site's `libman.json` and restored into `wwwroot/lib`:
 
-Site-wide scripts are in `wwwroot/js/site.js`: the jQuery UI date picker (`.js-datepicker`), dialogs (`.js-open-dialog`) and autocomplete.
+* **On build:** the `Microsoft.Web.LibraryManager.Build` package restores them, so a fresh clone builds with no extra steps. `wwwroot/lib` is git-ignored.
+* **In Visual Studio:** saving `libman.json` restores straight away. Right-click `libman.json` → **Restore Client-Side Libraries**, or right-click the project → **Add → Client-Side Library…** to add a new one.
+* **From the command line:** `dotnet tool install -g Microsoft.Web.LibraryManager.Cli`, then `libman restore` or `libman install bootstrap@5.3.8 --provider jsdelivr --destination wwwroot/lib/bootstrap`.
 
-## Run
+To upgrade a library, change the `@version` in `libman.json` in **both** sites and build.
 
-```
-dotnet run --project src/TemplateApp.Web
-<!--#if (IncludeApi) -->
-dotnet run --project src/TemplateApp.API
-<!--#endif -->
-<!--#if (IncludeInternal) -->
-dotnet run --project src/TemplateApp.Internal
-<!--#endif -->
-<!--#if (IncludeExternal) -->
-dotnet run --project src/TemplateApp.External
-<!--#endif -->
-```
+The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.cshtml` and `_ValidationScriptsPartial.cshtml`. Site-wide scripts are in `wwwroot/js/site.js`: the jQuery UI date picker (`.js-datepicker`), dialogs (`.js-open-dialog`) and autocomplete.
 
-In Visual Studio, right-click the solution → **Configure Startup Projects** → **Multiple startup projects** to run several sites at once.
+`Directory.Build.targets` retries the LibMan restore once. This is in case two sites restore a new library version at the same moment during a parallel build.
+<!--#endif -->

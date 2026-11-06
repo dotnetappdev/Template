@@ -27,12 +27,13 @@ run_case() {
 
 run_case Default
 run_case Net9Postgres -f net9.0 --database PostgreSQL --postgres-version 16 --jquery 4.0.0 --bootstrap 5.2.3 --fontawesome 7.3.1
-run_case Net10Sqlite -f net10.0 --database Sqlite --client-libs Cdn --bootstrap 4.6.2 --fontawesome 5.15.4
+run_case Net10Sqlite -f net10.0 --database Sqlite --bootstrap 4.6.2 --fontawesome 5.15.4
 run_case Net11Azure -f net11.0 --database SqlServer --sql-version AzureSql --db-auth SqlLogin \
   --db-server my-srv.database.windows.net --db-user app --db-password 'P@ss"w\rd'
-run_case WebOnly --api false --internal false --external false --services false --sql-repository false
-run_case RepoNoServices --services false --sql-version SqlServer2016 --db-auth SqlLogin --jquery-ui 1.13.3
-run_case CustomConn --internal false \
-  --connection-string 'Server=.\SQLEXPRESS;Database=Custom;Trusted_Connection=True;TrustServerCertificate=True'
+run_case InternalOnlyNoData --external false --services false --sql-repository false
+run_case ExternalOnly --internal false --jquery-ui 1.13.3
+run_case ApiOnly --internal false --external false
+run_case RepoNoServices --services false --sql-version SqlServer2016 --db-auth SqlLogin
+run_case CustomConn --connection-string 'Server=.\SQLEXPRESS;Database=Custom;Trusted_Connection=True;TrustServerCertificate=True'
 
 exit $failed

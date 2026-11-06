@@ -12,8 +12,8 @@
     <PackageVersion>1.0.0</PackageVersion>
     <Title>Razor Pages Solution Template</Title>
     <Authors>dotnetappdev</Authors>
-    <Description>Razor Pages (no Areas) solution template with optional ProjectName.API, .Internal, .External, .Services and .SqlRepository (EF Core + repository pattern) projects. You can pick the .NET (LTS/STS), database and version, connection string, and the jQuery, jQuery UI, Bootstrap and Font Awesome versions.</Description>
-    <PackageTags>dotnet-new;templates;razor-pages;aspnetcore;efcore;repository-pattern;jquery;bootstrap;fontawesome</PackageTags>
+    <Description>Razor Pages solution template: two independent sites (ProjectName.Internal, ProjectName.External, no Areas) that only talk to ProjectName.API, which sits on ProjectName.Services and ProjectName.SqlRepository (EF Core + repository pattern). You can pick the .NET (LTS/STS), database and version, connection string, and the jQuery, jQuery UI, Bootstrap and Font Awesome versions (LibMan).</Description>
+    <PackageTags>dotnet-new;templates;razor-pages;aspnetcore;webapi;efcore;repository-pattern;libman;jquery;bootstrap;fontawesome</PackageTags>
     <PackageProjectUrl>https://github.com/dotnetappdev/Template</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>

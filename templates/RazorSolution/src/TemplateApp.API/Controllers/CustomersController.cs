@@ -85,8 +85,18 @@ public class CustomersController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Customer>> Create(Customer customer, CancellationToken cancellationToken)
     {
+        if (await _customers.ExistsAsync(c => c.Email == customer.Email, cancellationToken))
+        {
+            return Conflict(new ProblemDetails
+            {
+                Title = "Duplicate customer",
+                Detail = $"A customer with the email '{customer.Email}' already exists.",
+            });
+        }
+
         await _customers.AddAsync(customer, cancellationToken);
         await _customers.SaveChangesAsync(cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = customer.Id }, customer);

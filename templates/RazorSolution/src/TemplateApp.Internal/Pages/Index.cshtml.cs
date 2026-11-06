@@ -1,17 +1,22 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TemplateApp.Internal.ApiClients;
+using TemplateApp.Internal.ApiClients.Models;
 
 namespace TemplateApp.Internal.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    private readonly IStatusApiClient _status;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IndexModel(IStatusApiClient status)
     {
-        _logger = logger;
+        _status = status;
     }
 
-    public void OnGet()
+    public ApiStatus? ApiStatus { get; private set; }
+
+    public async Task OnGetAsync(CancellationToken cancellationToken)
     {
+        ApiStatus = await _status.GetAsync(cancellationToken);
     }
 }

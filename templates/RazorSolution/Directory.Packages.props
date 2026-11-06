@@ -21,14 +21,14 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="__EFCORE_VERSION__" />
 <!--#endif -->
 <!--#endif -->
-<!--#if (IncludeApi) -->
+<!--#if (UseApi) -->
 
     <!-- API -->
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="__SWASHBUCKLE_VERSION__" />
 <!--#endif -->
-<!--#if (UseLibMan) -->
+<!--#if (HasSite) -->
 
-    <!-- Restores libman.json (jQuery, jQuery UI, Bootstrap, Font Awesome) on build -->
+    <!-- Restores each site's libman.json (jQuery, jQuery UI, Bootstrap, Font Awesome) on build -->
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
 <!--#endif -->
   </ItemGroup>

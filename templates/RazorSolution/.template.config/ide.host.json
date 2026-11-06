@@ -18,23 +18,12 @@
       "isVisible": true
     },
     {
-      "id": "IncludeApi",
-      "name": {
-        "text": "Create ProjectName.API"
-      },
-      "description": {
-        "text": "Adds an ASP.NET Core Web API project with controllers and Swagger."
-      },
-      "isVisible": true,
-      "persistenceScope": "templateGroup"
-    },
-    {
       "id": "IncludeInternal",
       "name": {
         "text": "Create ProjectName.Internal"
       },
       "description": {
-        "text": "Adds an internal (staff / back-office) Razor Pages web site."
+        "text": "Internal (staff / back-office) Razor Pages site. It talks only to ProjectName.API."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -45,7 +34,18 @@
         "text": "Create ProjectName.External"
       },
       "description": {
-        "text": "Adds an external (public / customer facing) Razor Pages web site."
+        "text": "External (public / customer facing) Razor Pages site. It talks only to ProjectName.API."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeApi",
+      "name": {
+        "text": "Create ProjectName.API"
+      },
+      "description": {
+        "text": "Web API with controllers and Swagger. Always created when Internal or External is selected, because the sites only talk to the API."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -56,7 +56,7 @@
         "text": "Create ProjectName.Services"
       },
       "description": {
-        "text": "Adds the business services layer (interfaces + implementations). Also adds ProjectName.SqlRepository."
+        "text": "Business services used by the API (interfaces + implementations). Also adds ProjectName.SqlRepository."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -67,7 +67,7 @@
         "text": "Create ProjectName.SqlRepository"
       },
       "description": {
-        "text": "Adds the EF Core data project: ApplicationDbContext, entities and the repositories (IRepository<T>)."
+        "text": "EF Core data project used by the API: ApplicationDbContext, entities and the repositories (IRepository<T>)."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -206,17 +206,6 @@
       },
       "description": {
         "text": "Font Awesome Free version."
-      },
-      "isVisible": true,
-      "persistenceScope": "templateGroup"
-    },
-    {
-      "id": "ClientLibraryDelivery",
-      "name": {
-        "text": "Client library delivery"
-      },
-      "description": {
-        "text": "LibMan (local copies in wwwroot/lib, restored on build) or CDN links."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"

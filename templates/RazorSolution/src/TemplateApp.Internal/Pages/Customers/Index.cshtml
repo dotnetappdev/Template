@@ -17,7 +17,11 @@
     </div>
 </form>
 
-@if (Model.Customers.Count == 0)
+@if (Model.ApiError is not null)
+{
+    <div class="alert alert-warning"><i class="fas fa-plug me-2 mr-2"></i>@Model.ApiError</div>
+}
+else if (Model.Customers.Count == 0)
 {
     <div class="alert alert-info"><i class="fas fa-info-circle me-2 mr-2"></i>No customers found.</div>
 }

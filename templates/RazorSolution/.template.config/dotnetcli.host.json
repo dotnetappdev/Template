@@ -77,17 +77,13 @@
       "longName": "fontawesome",
       "shortName": ""
     },
-    "ClientLibraryDelivery": {
-      "longName": "client-libs",
-      "shortName": ""
-    },
     "skipRestore": {
       "longName": "no-restore",
       "shortName": ""
     }
   },
   "usageExamples": [
-    "--api --internal --external --database SqlServer --sql-version SqlServer2022",
-    "--database PostgreSQL --postgres-version 17 --bootstrap 5.3.8 --jquery 3.7.1"
+    "--database SqlServer --sql-version SqlServer2022",
+    "--external false --database PostgreSQL --postgres-version 17 --bootstrap 5.3.8 --jquery 3.7.1"
   ]
 }

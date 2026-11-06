@@ -6,10 +6,14 @@
 
 <div class="p-4 p-md-5 mb-4 bg-light rounded-3 border">
     <h1 class="display-5"><i class="fas fa-user-shield text-primary me-2 mr-2"></i>TemplateApp Internal</h1>
-    <p class="lead">Internal staff / back-office site: an ASP.NET Core Razor Pages site (no Areas).</p>
+    <p class="lead">Internal staff / back-office site: an ASP.NET Core Razor Pages site (no Areas) that gets all of its data from TemplateApp.API.</p>
 @*#if (UseSqlRepository)*@
     <a asp-page="/Customers/Index" class="btn btn-primary btn-lg"><i class="fas fa-users me-2 mr-2"></i>View customers</a>
 @*#endif*@
+</div>
+
+<div class="mb-4">
+    <partial name="_ApiStatus" model="Model.ApiStatus" />
 </div>
 
 <div class="row">
@@ -38,7 +42,7 @@
             <div class="card-body">
                 <h5 class="card-title"><i class="fab fa-font-awesome text-primary me-2 mr-2"></i>Font Awesome</h5>
                 <p class="card-text">Font Awesome Free __FONTAWESOME_VERSION__ icons:</p>
-                <p class="fs-3 h3 mb-0">
+                <p class="h3 mb-0">
                     <i class="fas fa-home"></i> <i class="fas fa-users"></i> <i class="fas fa-database"></i>
                     <i class="fas fa-lock"></i> <i class="fab fa-github"></i>
                 </p>

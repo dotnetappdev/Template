@@ -1,43 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-#if (UseServices)
-using TemplateApp.Services.Interfaces;
-using TemplateApp.Services.Models;
-#else
-using TemplateApp.SqlRepository.Entities;
-using TemplateApp.SqlRepository.Interfaces;
-#endif
+using TemplateApp.Internal.ApiClients;
+using TemplateApp.Internal.ApiClients.Models;
 
 namespace TemplateApp.Internal.Pages.Customers;
 
 public class IndexModel : PageModel
 {
-#if (UseServices)
-    private readonly ICustomerService _customers;
+    private readonly ICustomerApiClient _customers;
+    private readonly ILogger<IndexModel> _logger;
 
-    public IndexModel(ICustomerService customers)
+    public IndexModel(ICustomerApiClient customers, ILogger<IndexModel> logger)
     {
         _customers = customers;
+        _logger = logger;
     }
 
-    public IReadOnlyList<CustomerDto> Customers { get; private set; } = [];
-#else
-    private readonly ICustomerRepository _customers;
+    public IReadOnlyList<CustomerModel> Customers { get; private set; } = [];
 
-    public IndexModel(ICustomerRepository customers)
-    {
-        _customers = customers;
-    }
-
-    public IReadOnlyList<Customer> Customers { get; private set; } = [];
-#endif
+    public string? ApiError { get; private set; }
 
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        Customers = await _customers.SearchAsync(Search ?? string.Empty, cancellationToken);
+        try
+        {
+            Customers = await _customers.SearchAsync(Search, cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Could not load customers from the API.");
+            ApiError = "Customers could not be loaded because TemplateApp.API is not reachable.";
+        }
     }
 
     /// <summary>
@@ -45,7 +41,7 @@ public class IndexModel : PageModel
     /// </summary>
     public async Task<JsonResult> OnGetAutocompleteAsync(string? term, CancellationToken cancellationToken)
     {
-        var matches = await _customers.SearchAsync(term ?? string.Empty, cancellationToken);
+        var matches = await _customers.SearchAsync(term, cancellationToken);
 
         return new JsonResult(matches
             .Take(10)

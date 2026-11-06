@@ -1,0 +1,16 @@
+@model TemplateApp.External.ApiClients.Models.ApiStatus?
+@* Shows whether TemplateApp.API is reachable. Pass the result of IStatusApiClient.GetAsync(). *@
+@if (Model is null)
+{
+    <div class="alert alert-warning mb-0" role="alert">
+        <i class="fas fa-plug me-2 mr-2"></i>
+        <strong>API offline.</strong> Start <code>TemplateApp.API</code> (or check <code>Api:BaseUrl</code> in appsettings).
+    </div>
+}
+else
+{
+    <div class="alert alert-success mb-0" role="alert">
+        <i class="fas fa-plug me-2 mr-2"></i>
+        <strong>API online</strong>: @Model.Application on @Model.Framework
+    </div>
+}

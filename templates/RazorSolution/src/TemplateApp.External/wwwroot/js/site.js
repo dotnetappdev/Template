@@ -24,7 +24,7 @@ $(function () {
         });
     });
 
-    // jQuery UI autocomplete fed by a Razor Page handler (see Pages/Customers/Index.cshtml.cs).
+    // jQuery UI autocomplete fed by a Razor Page handler (for example Pages/Customers/Index.cshtml.cs).
     $('.js-customer-autocomplete').each(function () {
         var $input = $(this);
         $input.autocomplete({
