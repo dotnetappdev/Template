@@ -13,6 +13,9 @@ public class ContactRequest
     [Required, EmailAddress, StringLength(256)]
     public string Email { get; set; } = string.Empty;
 
+    [StringLength(50)]
+    public string? Topic { get; set; }
+
     [StringLength(20)]
     public string? PreferredDate { get; set; }
 

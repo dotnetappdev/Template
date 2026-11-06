@@ -5,11 +5,11 @@
     "Web",
     "Razor Pages",
     "Web API",
-    "Entity Framework",
-    "Solution"
+    "EF Core",
+    "LibMan"
   ],
   "name": "Razor Pages Solution (Internal, External, API, Services, SqlRepository)",
-  "description": "Two independent Razor Pages sites (Internal and External, no Areas) that talk only to ProjectName.API. The API sits on a Services layer and an EF Core SqlRepository project that uses the repository pattern. You can pick the .NET (LTS/STS), database and version, connection string, and the jQuery, jQuery UI, Bootstrap and Font Awesome versions (restored with LibMan).",
+  "description": "Two independent Razor Pages sites (Internal and External, no Areas) that only talk to ProjectName.API, on top of a Services layer and an EF Core SqlRepository (repository pattern). Pick the .NET version (LTS/STS), SQL Server / PostgreSQL / SQLite and version, connection string, authentication, and jQuery, jQuery UI (+theme), Bootstrap (+Bootswatch theme), Font Awesome, DataTables, Select2, Toastr, SweetAlert2 and Chart.js via LibMan.",
   "identity": "DotNetAppDev.RazorSolution.CSharp",
   "groupIdentity": "DotNetAppDev.RazorSolution",
   "shortName": "razorsln",
@@ -30,7 +30,9 @@
     "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F67",
     "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E02",
     "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E03",
-    "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E04"
+    "7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E04",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68",
+    "3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F69"
   ],
   "sources": [
     {
@@ -96,6 +98,20 @@
             "src/TemplateApp.Internal/ApiClients/CustomerApiClient.cs",
             "src/TemplateApp.Internal/ApiClients/Models/CustomerModels.cs",
             "src/TemplateApp.API/Controllers/CustomersController.cs"
+          ]
+        },
+        {
+          "condition": "(!UseTests)",
+          "exclude": [
+            "tests/**"
+          ]
+        },
+        {
+          "condition": "(!UseApiKey)",
+          "exclude": [
+            "src/TemplateApp.API/Security/**",
+            "src/TemplateApp.Internal/ApiClients/ApiKeyHandler.cs",
+            "src/TemplateApp.External/ApiClients/ApiKeyHandler.cs"
           ]
         }
       ]
@@ -167,6 +183,13 @@
       "displayName": "Create ProjectName.SqlRepository",
       "description": "Adds the EF Core data project used by the API: ApplicationDbContext, entities, IRepository<T> and the repositories."
     },
+    "IncludeTests": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Create ProjectName.Tests (xUnit + NSubstitute)",
+      "description": "Adds an xUnit test project with NSubstitute mocks for ProjectName.Services (needs Services)."
+    },
     "UseServices": {
       "type": "computed",
       "datatype": "bool",
@@ -218,6 +241,11 @@
       "displayName": "SQL Server version",
       "description": "The SQL Server version to target. EF Core uses its compatibility level to decide which SQL it generates. Used only when the database is SQL Server.",
       "choices": [
+        {
+          "choice": "SqlServer2014",
+          "displayName": "SQL Server 2014 (compat 120)",
+          "description": "SQL Server 2014"
+        },
         {
           "choice": "SqlServer2016",
           "displayName": "SQL Server 2016 (compat 130)",
@@ -339,13 +367,92 @@
       "displayName": "Connection string (overrides the fields above)",
       "description": "A full connection string. If you enter one, the server, database, user and password fields are ignored."
     },
+    "SeedSampleData": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Seed sample data (customers)",
+      "description": "Seeds a few sample customers when the API starts in Development."
+    },
+    "IncludeSwagger": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Add Swagger UI to the API (Swashbuckle.AspNetCore)",
+      "description": "Adds Swagger / OpenAPI documentation at /swagger in Development."
+    },
+    "IncludeApiKey": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Secure the API with an API key (X-Api-Key)",
+      "description": "The API requires an X-Api-Key header; Internal and External send it automatically (key generated per solution)."
+    },
+    "IncludeHealthChecks": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Add health check endpoints /health (Microsoft.Extensions.Diagnostics.HealthChecks)",
+      "description": "Adds /health to every project; the API also checks the database (HealthChecks.EntityFrameworkCore)."
+    },
+    "IncludeSerilog": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Add Serilog logging (Serilog.AspNetCore)",
+      "description": "Structured logging to the console and rolling files, configured in appsettings.json."
+    },
+    "IncludeResilience": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Add retries / circuit breaker to API clients (Microsoft.Extensions.Http.Resilience)",
+      "description": "Adds the standard resilience handler (Polly) to the sites' typed HttpClients."
+    },
+    "InternalAuthentication": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "None",
+      "displayName": "Internal site authentication",
+      "description": "How staff sign in to ProjectName.Internal.",
+      "choices": [
+        {
+          "choice": "None",
+          "displayName": "None",
+          "description": "None"
+        },
+        {
+          "choice": "Windows",
+          "displayName": "Windows authentication (Negotiate / Kerberos)",
+          "description": "Windows authentication (Negotiate / Kerberos)"
+        },
+        {
+          "choice": "EntraId",
+          "displayName": "Microsoft Entra ID (Microsoft.Identity.Web)",
+          "description": "Microsoft Entra ID (Microsoft.Identity.Web)"
+        }
+      ]
+    },
+    "EntraTenantId": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Entra ID tenant ID (optional)",
+      "description": "Directory (tenant) ID for Microsoft Entra ID sign-in. Can be set later in appsettings.json."
+    },
+    "EntraClientId": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Entra ID client ID (optional)",
+      "description": "Application (client) ID of the app registration for the Internal site. Can be set later in appsettings.json."
+    },
     "JQueryVersion": {
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "3.7.1",
       "displayName": "jQuery version",
-      "description": "The jQuery version restored into wwwroot/lib (or loaded from the CDN).",
-      "replaces": "__JQUERY_VERSION__",
+      "description": "jQuery version restored by LibMan (jsDelivr).",
       "choices": [
         {
           "choice": "4.0.0",
@@ -358,19 +465,34 @@
           "description": "jQuery 3.7.1"
         },
         {
+          "choice": "3.7.0",
+          "displayName": "jQuery 3.7.0",
+          "description": "jQuery 3.7.0"
+        },
+        {
           "choice": "3.6.4",
           "displayName": "jQuery 3.6.4",
           "description": "jQuery 3.6.4"
+        },
+        {
+          "choice": "3.6.0",
+          "displayName": "jQuery 3.6.0",
+          "description": "jQuery 3.6.0"
+        },
+        {
+          "choice": "3.5.1",
+          "displayName": "jQuery 3.5.1",
+          "description": "jQuery 3.5.1"
         }
-      ]
+      ],
+      "replaces": "__JQUERY_VERSION__"
     },
     "JQueryUIVersion": {
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "1.14.2",
       "displayName": "jQuery UI version",
-      "description": "The jQuery UI version (base theme).",
-      "replaces": "__JQUERYUI_VERSION__",
+      "description": "jQuery UI version restored by LibMan (cdnjs, includes all themes).",
       "choices": [
         {
           "choice": "1.14.2",
@@ -378,19 +500,169 @@
           "description": "jQuery UI 1.14.2"
         },
         {
+          "choice": "1.14.1",
+          "displayName": "jQuery UI 1.14.1",
+          "description": "jQuery UI 1.14.1"
+        },
+        {
           "choice": "1.13.3",
           "displayName": "jQuery UI 1.13.3",
           "description": "jQuery UI 1.13.3"
+        },
+        {
+          "choice": "1.13.2",
+          "displayName": "jQuery UI 1.13.2",
+          "description": "jQuery UI 1.13.2"
+        },
+        {
+          "choice": "1.12.1",
+          "displayName": "jQuery UI 1.12.1",
+          "description": "jQuery UI 1.12.1"
         }
-      ]
+      ],
+      "replaces": "__JQUERYUI_VERSION__"
+    },
+    "JQueryUITheme": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "base",
+      "displayName": "jQuery UI theme",
+      "description": "jQuery UI ThemeRoller theme used by the date picker, dialog, autocomplete, etc.",
+      "choices": [
+        {
+          "choice": "base",
+          "displayName": "Base (default)",
+          "description": "Base (default)"
+        },
+        {
+          "choice": "black-tie",
+          "displayName": "Black Tie",
+          "description": "Black Tie"
+        },
+        {
+          "choice": "blitzer",
+          "displayName": "Blitzer",
+          "description": "Blitzer"
+        },
+        {
+          "choice": "cupertino",
+          "displayName": "Cupertino",
+          "description": "Cupertino"
+        },
+        {
+          "choice": "dark-hive",
+          "displayName": "Dark Hive",
+          "description": "Dark Hive"
+        },
+        {
+          "choice": "dot-luv",
+          "displayName": "Dot Luv",
+          "description": "Dot Luv"
+        },
+        {
+          "choice": "eggplant",
+          "displayName": "Eggplant",
+          "description": "Eggplant"
+        },
+        {
+          "choice": "excite-bike",
+          "displayName": "Excite Bike",
+          "description": "Excite Bike"
+        },
+        {
+          "choice": "flick",
+          "displayName": "Flick",
+          "description": "Flick"
+        },
+        {
+          "choice": "hot-sneaks",
+          "displayName": "Hot Sneaks",
+          "description": "Hot Sneaks"
+        },
+        {
+          "choice": "humanity",
+          "displayName": "Humanity",
+          "description": "Humanity"
+        },
+        {
+          "choice": "le-frog",
+          "displayName": "Le Frog",
+          "description": "Le Frog"
+        },
+        {
+          "choice": "mint-choc",
+          "displayName": "Mint Choc",
+          "description": "Mint Choc"
+        },
+        {
+          "choice": "overcast",
+          "displayName": "Overcast",
+          "description": "Overcast"
+        },
+        {
+          "choice": "pepper-grinder",
+          "displayName": "Pepper Grinder",
+          "description": "Pepper Grinder"
+        },
+        {
+          "choice": "redmond",
+          "displayName": "Redmond",
+          "description": "Redmond"
+        },
+        {
+          "choice": "smoothness",
+          "displayName": "Smoothness",
+          "description": "Smoothness"
+        },
+        {
+          "choice": "south-street",
+          "displayName": "South Street",
+          "description": "South Street"
+        },
+        {
+          "choice": "start",
+          "displayName": "Start",
+          "description": "Start"
+        },
+        {
+          "choice": "sunny",
+          "displayName": "Sunny",
+          "description": "Sunny"
+        },
+        {
+          "choice": "swanky-purse",
+          "displayName": "Swanky Purse",
+          "description": "Swanky Purse"
+        },
+        {
+          "choice": "trontastic",
+          "displayName": "Trontastic",
+          "description": "Trontastic"
+        },
+        {
+          "choice": "ui-darkness",
+          "displayName": "Ui Darkness",
+          "description": "Ui Darkness"
+        },
+        {
+          "choice": "ui-lightness",
+          "displayName": "Ui Lightness",
+          "description": "Ui Lightness"
+        },
+        {
+          "choice": "vader",
+          "displayName": "Vader",
+          "description": "Vader"
+        }
+      ],
+      "replaces": "__JQUERYUI_THEME__"
     },
     "BootstrapVersion": {
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "5.3.8",
       "displayName": "Bootstrap version",
-      "description": "The Bootstrap version. The markup adapts to Bootstrap 4 or 5.",
-      "replaces": "__BOOTSTRAP_VERSION__",
+      "description": "Bootstrap version restored by LibMan. The markup adapts to Bootstrap 4 or 5.",
       "choices": [
         {
           "choice": "5.3.8",
@@ -398,41 +670,229 @@
           "description": "Bootstrap 5.3.8"
         },
         {
+          "choice": "5.3.7",
+          "displayName": "Bootstrap 5.3.7",
+          "description": "Bootstrap 5.3.7"
+        },
+        {
+          "choice": "5.3.3",
+          "displayName": "Bootstrap 5.3.3",
+          "description": "Bootstrap 5.3.3"
+        },
+        {
           "choice": "5.2.3",
           "displayName": "Bootstrap 5.2.3",
           "description": "Bootstrap 5.2.3"
+        },
+        {
+          "choice": "5.1.3",
+          "displayName": "Bootstrap 5.1.3",
+          "description": "Bootstrap 5.1.3"
         },
         {
           "choice": "4.6.2",
           "displayName": "Bootstrap 4.6.2",
           "description": "Bootstrap 4.6.2"
         }
-      ]
+      ],
+      "replaces": "__BOOTSTRAP_VERSION__"
+    },
+    "BootstrapTheme": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "default",
+      "displayName": "Bootstrap theme",
+      "description": "Plain Bootstrap or a free Bootswatch theme (bootswatch, same version as Bootstrap).",
+      "choices": [
+        {
+          "choice": "default",
+          "displayName": "Default Bootstrap",
+          "description": "Default Bootstrap"
+        },
+        {
+          "choice": "cerulean",
+          "displayName": "Bootswatch Cerulean",
+          "description": "Bootswatch Cerulean"
+        },
+        {
+          "choice": "cosmo",
+          "displayName": "Bootswatch Cosmo",
+          "description": "Bootswatch Cosmo"
+        },
+        {
+          "choice": "darkly",
+          "displayName": "Bootswatch Darkly",
+          "description": "Bootswatch Darkly"
+        },
+        {
+          "choice": "flatly",
+          "displayName": "Bootswatch Flatly",
+          "description": "Bootswatch Flatly"
+        },
+        {
+          "choice": "journal",
+          "displayName": "Bootswatch Journal",
+          "description": "Bootswatch Journal"
+        },
+        {
+          "choice": "litera",
+          "displayName": "Bootswatch Litera",
+          "description": "Bootswatch Litera"
+        },
+        {
+          "choice": "lumen",
+          "displayName": "Bootswatch Lumen",
+          "description": "Bootswatch Lumen"
+        },
+        {
+          "choice": "lux",
+          "displayName": "Bootswatch Lux",
+          "description": "Bootswatch Lux"
+        },
+        {
+          "choice": "materia",
+          "displayName": "Bootswatch Materia",
+          "description": "Bootswatch Materia"
+        },
+        {
+          "choice": "minty",
+          "displayName": "Bootswatch Minty",
+          "description": "Bootswatch Minty"
+        },
+        {
+          "choice": "pulse",
+          "displayName": "Bootswatch Pulse",
+          "description": "Bootswatch Pulse"
+        },
+        {
+          "choice": "sandstone",
+          "displayName": "Bootswatch Sandstone",
+          "description": "Bootswatch Sandstone"
+        },
+        {
+          "choice": "simplex",
+          "displayName": "Bootswatch Simplex",
+          "description": "Bootswatch Simplex"
+        },
+        {
+          "choice": "slate",
+          "displayName": "Bootswatch Slate",
+          "description": "Bootswatch Slate"
+        },
+        {
+          "choice": "spacelab",
+          "displayName": "Bootswatch Spacelab",
+          "description": "Bootswatch Spacelab"
+        },
+        {
+          "choice": "superhero",
+          "displayName": "Bootswatch Superhero",
+          "description": "Bootswatch Superhero"
+        },
+        {
+          "choice": "united",
+          "displayName": "Bootswatch United",
+          "description": "Bootswatch United"
+        },
+        {
+          "choice": "yeti",
+          "displayName": "Bootswatch Yeti",
+          "description": "Bootswatch Yeti"
+        }
+      ],
+      "replaces": "__BOOTSWATCH_THEME__"
     },
     "FontAwesomeVersion": {
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "6.7.2",
       "displayName": "Font Awesome version",
-      "description": "The Font Awesome Free version.",
-      "replaces": "__FONTAWESOME_VERSION__",
+      "description": "Font Awesome Free version restored by LibMan, or none.",
       "choices": [
         {
           "choice": "7.3.1",
           "displayName": "Font Awesome 7.3.1",
-          "description": "Font Awesome Free 7.3.1"
+          "description": "Font Awesome 7.3.1"
+        },
+        {
+          "choice": "7.0.1",
+          "displayName": "Font Awesome 7.0.1",
+          "description": "Font Awesome 7.0.1"
         },
         {
           "choice": "6.7.2",
           "displayName": "Font Awesome 6.7.2",
-          "description": "Font Awesome Free 6.7.2"
+          "description": "Font Awesome 6.7.2"
+        },
+        {
+          "choice": "6.6.0",
+          "displayName": "Font Awesome 6.6.0",
+          "description": "Font Awesome 6.6.0"
+        },
+        {
+          "choice": "6.5.2",
+          "displayName": "Font Awesome 6.5.2",
+          "description": "Font Awesome 6.5.2"
+        },
+        {
+          "choice": "6.4.2",
+          "displayName": "Font Awesome 6.4.2",
+          "description": "Font Awesome 6.4.2"
         },
         {
           "choice": "5.15.4",
           "displayName": "Font Awesome 5.15.4",
-          "description": "Font Awesome Free 5.15.4"
+          "description": "Font Awesome 5.15.4"
+        },
+        {
+          "choice": "none",
+          "displayName": "None",
+          "description": "None"
         }
-      ]
+      ],
+      "replaces": "__FONTAWESOME_VERSION__"
+    },
+    "IncludeJQueryValidation": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Add jQuery Validation (jquery-validation + jquery-validation-unobtrusive)",
+      "description": "Client-side validation for the forms, driven by the model's data annotations."
+    },
+    "IncludeDataTables": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Add DataTables (datatables.net 2.3.8)",
+      "description": "Sorting, paging and searching for tables marked with the js-datatable class."
+    },
+    "IncludeSelect2": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Add Select2 (select2 4.1.0)",
+      "description": "Searchable drop-downs for selects marked with the js-select2 class."
+    },
+    "IncludeToastr": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Add Toastr notifications (toastr 2.1.4)",
+      "description": "Shows TempData messages as toast notifications."
+    },
+    "IncludeSweetAlert": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Add SweetAlert2 dialogs (sweetalert2 11.26.25)",
+      "description": "Nicer confirm dialogs, for example before deleting a customer."
+    },
+    "IncludeChartJs": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Add Chart.js (chart.js 4.5.1)",
+      "description": "Charts on the Internal dashboard."
     },
     "HostIdentifier": {
       "type": "bind",
@@ -483,6 +943,46 @@
       "type": "computed",
       "datatype": "bool",
       "value": "(Framework == \"net11.0\")"
+    },
+    "UseTests": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeTests && IncludeServices)"
+    },
+    "UseWindowsAuth": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeInternal && InternalAuthentication == \"Windows\")"
+    },
+    "UseEntraId": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeInternal && InternalAuthentication == \"EntraId\")"
+    },
+    "UseInternalAuth": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeInternal && InternalAuthentication != \"None\")"
+    },
+    "UseBootswatch": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(BootstrapTheme != \"default\")"
+    },
+    "UseFontAwesome": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(FontAwesomeVersion != \"none\")"
+    },
+    "UseSwagger": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeSwagger)"
+    },
+    "UseApiKey": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeApiKey)"
     },
     "EfCoreVersion": {
       "type": "generated",
@@ -566,6 +1066,10 @@
         "datatype": "string",
         "cases": [
           {
+            "condition": "(SqlServerVersion == \"SqlServer2014\")",
+            "value": "120"
+          },
+          {
             "condition": "(SqlServerVersion == \"SqlServer2016\")",
             "value": "130"
           },
@@ -584,6 +1088,113 @@
           {
             "condition": "(true)",
             "value": "160"
+          }
+        ]
+      }
+    },
+    "SerilogVersion": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__SERILOG_VERSION__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(Framework == \"net8.0\")",
+            "value": "8.0.3"
+          },
+          {
+            "condition": "(Framework == \"net9.0\")",
+            "value": "9.0.0"
+          },
+          {
+            "condition": "(true)",
+            "value": "10.0.0"
+          }
+        ]
+      }
+    },
+    "ResilienceVersion": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__RESILIENCE_VERSION__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(Framework == \"net8.0\")",
+            "value": "8.10.0"
+          },
+          {
+            "condition": "(Framework == \"net9.0\")",
+            "value": "9.10.0"
+          },
+          {
+            "condition": "(true)",
+            "value": "10.11.0"
+          }
+        ]
+      }
+    },
+    "ApiKeyValue": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "__API_KEY__",
+      "parameters": {
+        "defaultFormat": "N"
+      }
+    },
+    "EntraTenantValue": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "EntraTenantId",
+        "defaultValue": "",
+        "fallbackVariableName": "DefaultEntraTenant"
+      }
+    },
+    "DefaultEntraTenant": {
+      "type": "generated",
+      "generator": "constant",
+      "parameters": {
+        "value": "00000000-0000-0000-0000-000000000000"
+      }
+    },
+    "EntraClientValue": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "EntraClientId",
+        "defaultValue": "",
+        "fallbackVariableName": "DefaultEntraTenant"
+      }
+    },
+    "EntraTenantEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__ENTRA_TENANT_ID__",
+      "parameters": {
+        "source": "EntraTenantValue",
+        "steps": [
+          {
+            "regex": "[\"\\\\]",
+            "replacement": ""
+          }
+        ]
+      }
+    },
+    "EntraClientEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__ENTRA_CLIENT_ID__",
+      "parameters": {
+        "source": "EntraClientValue",
+        "steps": [
+          {
+            "regex": "[\"\\\\]",
+            "replacement": ""
           }
         ]
       }
@@ -894,6 +1505,10 @@
     {
       "condition": "(UseSqlRepository)",
       "path": "src/TemplateApp.SqlRepository/TemplateApp.SqlRepository.csproj"
+    },
+    {
+      "condition": "(UseTests)",
+      "path": "tests/TemplateApp.Tests/TemplateApp.Tests.csproj"
     }
   ],
   "postActions": [

@@ -80,10 +80,82 @@
     "skipRestore": {
       "longName": "no-restore",
       "shortName": ""
+    },
+    "IncludeTests": {
+      "longName": "tests",
+      "shortName": ""
+    },
+    "SeedSampleData": {
+      "longName": "seed-data",
+      "shortName": ""
+    },
+    "IncludeSwagger": {
+      "longName": "swagger",
+      "shortName": ""
+    },
+    "IncludeApiKey": {
+      "longName": "api-key",
+      "shortName": ""
+    },
+    "IncludeHealthChecks": {
+      "longName": "health-checks",
+      "shortName": ""
+    },
+    "IncludeSerilog": {
+      "longName": "serilog",
+      "shortName": ""
+    },
+    "IncludeResilience": {
+      "longName": "resilience",
+      "shortName": ""
+    },
+    "InternalAuthentication": {
+      "longName": "internal-auth",
+      "shortName": ""
+    },
+    "EntraTenantId": {
+      "longName": "entra-tenant-id",
+      "shortName": ""
+    },
+    "EntraClientId": {
+      "longName": "entra-client-id",
+      "shortName": ""
+    },
+    "JQueryUITheme": {
+      "longName": "jquery-ui-theme",
+      "shortName": ""
+    },
+    "BootstrapTheme": {
+      "longName": "bootstrap-theme",
+      "shortName": ""
+    },
+    "IncludeJQueryValidation": {
+      "longName": "jquery-validation",
+      "shortName": ""
+    },
+    "IncludeDataTables": {
+      "longName": "datatables",
+      "shortName": ""
+    },
+    "IncludeSelect2": {
+      "longName": "select2",
+      "shortName": ""
+    },
+    "IncludeToastr": {
+      "longName": "toastr",
+      "shortName": ""
+    },
+    "IncludeSweetAlert": {
+      "longName": "sweetalert",
+      "shortName": ""
+    },
+    "IncludeChartJs": {
+      "longName": "chartjs",
+      "shortName": ""
     }
   },
   "usageExamples": [
-    "--database SqlServer --sql-version SqlServer2022",
-    "--external false --database PostgreSQL --postgres-version 17 --bootstrap 5.3.8 --jquery 3.7.1"
+    "--database SqlServer --sql-version SqlServer2022 --bootstrap-theme flatly --jquery-ui-theme redmond",
+    "--external false --internal-auth Windows --serilog --api-key --chartjs --sweetalert"
   ]
 }

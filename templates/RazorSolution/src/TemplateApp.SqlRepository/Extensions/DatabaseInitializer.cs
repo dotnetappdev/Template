@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+#if (SeedSampleData)
 using TemplateApp.SqlRepository.Entities;
+#endif
 
 namespace TemplateApp.SqlRepository.Extensions;
 
@@ -9,7 +11,7 @@ public static class DatabaseInitializer
 {
     /// <summary>
     /// Development helper: creates the database (or applies migrations once you have added some)
-    /// and seeds sample data. Called from Program.cs only in the Development environment.
+    /// and (optionally) seeds sample data. Called from Program.cs only in the Development environment.
     /// </summary>
     public static async Task InitialiseDatabaseAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
     {
@@ -31,7 +33,9 @@ public static class DatabaseInitializer
                 await context.Database.EnsureCreatedAsync(cancellationToken);
             }
 
+#if (SeedSampleData)
             await SeedAsync(context, cancellationToken);
+#endif
         }
         catch (Exception ex)
         {
@@ -40,6 +44,7 @@ public static class DatabaseInitializer
         }
     }
 
+#if (SeedSampleData)
     private static async Task SeedAsync(ApplicationDbContext context, CancellationToken cancellationToken)
     {
         if (await context.Customers.AnyAsync(cancellationToken))
@@ -55,4 +60,5 @@ public static class DatabaseInitializer
 
         await context.SaveChangesAsync(cancellationToken);
     }
+#endif
 }

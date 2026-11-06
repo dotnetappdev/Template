@@ -1,10 +1,22 @@
 <Project>
   <!--
     LibMan (Microsoft.Web.LibraryManager.Build) restores libman.json before each build of the Razor Pages sites.
-    When several sites restore a library version that is not in the LibMan cache yet, parallel builds can collide
-    on the same cache file ("The process cannot access the file ..."). This override of the package's
-    LibraryManagerRestore target retries the restore, so the first build of a new solution does not fail.
+    When both sites restore a library version that is not in the LibMan cache yet, a parallel build can make them
+    collide on the same cache file ("The process cannot access the file ..."). This override of the package's
+    LibraryManagerRestore target retries up to three times, after a short random delay, so the first build
+    of a new solution does not fail.
   -->
+  <UsingTask TaskName="LibManRetryDelay" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Attempt ParameterType="System.Int32" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        System.Threading.Thread.Sleep(new System.Random().Next(400, 1500) * Attempt);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
   <Target Name="LibraryManagerRestore"
           Condition="'$(LibraryRestore)' != 'False' And '$(BuildingForLiveUnitTesting)' != 'true' And Exists('$(MSBuildProjectDirectory)/libman.json') And '$(_LibraryTaskAssembly)' != ''">
 
@@ -13,14 +25,37 @@
       <Output TaskParameter="FilesWritten" ItemName="_FilesWritten" />
     </Microsoft.Web.LibraryManager.Build.RestoreTask>
     <PropertyGroup>
-      <_LibManRestoreSucceeded>$(MSBuildLastTaskResult)</_LibManRestoreSucceeded>
+      <_LibManOk>$(MSBuildLastTaskResult)</_LibManOk>
     </PropertyGroup>
 
-    <Message Importance="high" Text="LibMan restore of $(MSBuildProjectName) collided with another build; retrying."
-             Condition="'$(_LibManRestoreSucceeded)' != 'true'" />
+    <!-- Retry 1 -->
+    <Message Importance="high" Text="LibMan restore of $(MSBuildProjectName) collided with another build; retrying." Condition="'$(_LibManOk)' != 'true'" />
+    <LibManRetryDelay Attempt="1" Condition="'$(_LibManOk)' != 'true'" />
+    <Microsoft.Web.LibraryManager.Build.RestoreTask FileName="libman.json" ProjectDirectory="$(MSBuildProjectDirectory)"
+                                                    ProviderAssemblies="$(LibraryProviderAssemblies)" ContinueOnError="WarnAndContinue"
+                                                    Condition="'$(_LibManOk)' != 'true'">
+      <Output TaskParameter="FilesWritten" ItemName="_FilesWritten" />
+    </Microsoft.Web.LibraryManager.Build.RestoreTask>
+    <PropertyGroup Condition="'$(_LibManOk)' != 'true'">
+      <_LibManOk>$(MSBuildLastTaskResult)</_LibManOk>
+    </PropertyGroup>
+
+    <!-- Retry 2 -->
+    <LibManRetryDelay Attempt="2" Condition="'$(_LibManOk)' != 'true'" />
+    <Microsoft.Web.LibraryManager.Build.RestoreTask FileName="libman.json" ProjectDirectory="$(MSBuildProjectDirectory)"
+                                                    ProviderAssemblies="$(LibraryProviderAssemblies)" ContinueOnError="WarnAndContinue"
+                                                    Condition="'$(_LibManOk)' != 'true'">
+      <Output TaskParameter="FilesWritten" ItemName="_FilesWritten" />
+    </Microsoft.Web.LibraryManager.Build.RestoreTask>
+    <PropertyGroup Condition="'$(_LibManOk)' != 'true'">
+      <_LibManOk>$(MSBuildLastTaskResult)</_LibManOk>
+    </PropertyGroup>
+
+    <!-- Last attempt: errors are real errors. -->
+    <LibManRetryDelay Attempt="3" Condition="'$(_LibManOk)' != 'true'" />
     <Microsoft.Web.LibraryManager.Build.RestoreTask FileName="libman.json" ProjectDirectory="$(MSBuildProjectDirectory)"
                                                     ProviderAssemblies="$(LibraryProviderAssemblies)"
-                                                    Condition="'$(_LibManRestoreSucceeded)' != 'true'">
+                                                    Condition="'$(_LibManOk)' != 'true'">
       <Output TaskParameter="FilesWritten" ItemName="_FilesWritten" />
     </Microsoft.Web.LibraryManager.Build.RestoreTask>
 

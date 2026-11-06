@@ -35,10 +35,12 @@
     </header>
 
     <main role="main" class="container flex-grow-1 pb-4">
+@*#if (!IncludeToastr)*@
         @if (TempData["Message"] is string message)
         {
             <div class="alert alert-success" role="alert"><i class="fas fa-check-circle me-2 mr-2"></i>@message</div>
         }
+@*#endif*@
         @RenderBody()
     </main>
 
@@ -51,6 +53,12 @@
 
     <partial name="_Scripts" />
     <script src="~/js/site.js" asp-append-version="true"></script>
+@*#if (IncludeToastr)*@
+    @if (TempData["Message"] is string message)
+    {
+        <script>toastr.success(@Json.Serialize(message));</script>
+    }
+@*#endif*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

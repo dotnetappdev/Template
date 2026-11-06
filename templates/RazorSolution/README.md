@@ -136,23 +136,88 @@ In Visual Studio's Package Manager Console, choose **TemplateApp.SqlRepository**
 <!--#if (HasSite) -->
 ## Front end (LibMan)
 
-Both sites use:
+Both sites use these libraries, chosen when the solution was created:
 
-* jQuery **__JQUERY_VERSION__**
-* jQuery UI **__JQUERYUI_VERSION__** (base theme)
-* Bootstrap **__BOOTSTRAP_VERSION__**
-* Font Awesome Free **__FONTAWESOME_VERSION__**
-* jQuery Validation + jQuery Validation Unobtrusive (forms)
+| Library | Version | Used for |
+| --- | --- | --- |
+| jQuery | __JQUERY_VERSION__ | everything below |
+| jQuery UI | __JQUERYUI_VERSION__, theme **__JQUERYUI_THEME__** (cdnjs) | date picker (`.js-datepicker`), dialogs (`.js-open-dialog`), autocomplete |
+<!--#if (UseBootswatch) -->
+| Bootstrap + Bootswatch | __BOOTSTRAP_VERSION__, theme **__BOOTSWATCH_THEME__** | layout and components |
+<!--#else -->
+| Bootstrap | __BOOTSTRAP_VERSION__ | layout and components |
+<!--#endif -->
+<!--#if (UseFontAwesome) -->
+| Font Awesome Free | __FONTAWESOME_VERSION__ | icons (`<i class="fas fa-...">`) |
+<!--#endif -->
+<!--#if (IncludeJQueryValidation) -->
+| jQuery Validation + Unobtrusive | 1.22.1 / 4.0.0 | client-side form validation (`_ValidationScriptsPartial`) |
+<!--#endif -->
+<!--#if (IncludeDataTables) -->
+| DataTables | 2.3.8 | sorting, paging and search for `<table class="js-datatable">` |
+<!--#endif -->
+<!--#if (IncludeSelect2) -->
+| Select2 | 4.1.0 | searchable drop-downs for `<select class="js-select2">` |
+<!--#endif -->
+<!--#if (IncludeToastr) -->
+| Toastr | 2.1.4 | `TempData["Message"]` is shown as a toast (see `_Layout.cshtml`) |
+<!--#endif -->
+<!--#if (IncludeSweetAlert) -->
+| SweetAlert2 | 11.26.25 | confirm dialogs for `<form class="js-confirm" data-confirm="...">` |
+<!--#endif -->
+<!--#if (IncludeChartJs) -->
+| Chart.js | 4.5.1 | charts (sample on the Internal dashboard) |
+<!--#endif -->
 
 They are listed in each site's `libman.json` and restored into `wwwroot/lib`:
 
 * **On build:** the `Microsoft.Web.LibraryManager.Build` package restores them, so a fresh clone builds with no extra steps. `wwwroot/lib` is git-ignored.
-* **In Visual Studio:** saving `libman.json` restores straight away. Right-click `libman.json` → **Restore Client-Side Libraries**, or right-click the project → **Add → Client-Side Library…** to add a new one.
-* **From the command line:** `dotnet tool install -g Microsoft.Web.LibraryManager.Cli`, then `libman restore` or `libman install bootstrap@5.3.8 --provider jsdelivr --destination wwwroot/lib/bootstrap`.
+* **In Visual Studio:** saving `libman.json` restores straight away. Right-click `libman.json` → **Restore Client-Side Libraries**, or right-click the project → **Add → Client-Side Library…** to add one.
+* **From the command line:** `dotnet tool install -g Microsoft.Web.LibraryManager.Cli`, then `libman restore`.
 
-To upgrade a library, change the `@version` in `libman.json` in **both** sites and build.
+To upgrade a library, change its `@version` in `libman.json` in **both** sites and build.
 
-The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.cshtml` and `_ValidationScriptsPartial.cshtml`. Site-wide scripts are in `wwwroot/js/site.js`: the jQuery UI date picker (`.js-datepicker`), dialogs (`.js-open-dialog`) and autocomplete.
+* To change the **jQuery UI theme**, replace `__JQUERYUI_THEME__` in `libman.json` and `Pages/Shared/_Styles.cshtml` with any [ThemeRoller](https://jqueryui.com/themeroller/) gallery theme (`smoothness`, `redmond`, `flick`, ...).
+* To change the **Bootstrap theme**, use a [Bootswatch](https://bootswatch.com/) theme: add `bootswatch@<bootstrap version>` with `dist/<theme>/bootstrap.min.css` to `libman.json`, and point `_Styles.cshtml` at it.
 
-`Directory.Build.targets` retries the LibMan restore once. This is in case two sites restore a new library version at the same moment during a parallel build.
+The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.cshtml` and `_ValidationScriptsPartial.cshtml`. The site-wide wiring for the plugins is in `wwwroot/js/site.js`.
+
+`Directory.Build.targets` retries the LibMan restore up to three times. This is in case both sites download a new library version at the same moment during a parallel build.
+<!--#endif -->
+<!--#if (UseInternalAuth || UseApiKey || IncludeHealthChecks || IncludeSerilog || IncludeResilience) -->
+
+## Security and operations
+
+<!--#if (UseWindowsAuth) -->
+* **Internal site, Windows authentication:** `AddNegotiate()` plus a fallback policy, so every page needs a signed-in Windows user. On IIS, enable Windows Authentication for the site. On Kestrel (Windows), it works as is. On Linux, Kerberos needs a keytab.
+<!--#endif -->
+<!--#if (UseEntraId) -->
+* **Internal site, Microsoft Entra ID:** `AddMicrosoftIdentityWebApp(...)` plus a fallback policy, so every page needs a signed-in user. Set `AzureAd:TenantId` and `AzureAd:ClientId` in `appsettings.json`, and register `https://localhost:__HTTPS_PORT_INTERNAL__/signin-oidc` as a redirect URI on the app registration.
+<!--#endif -->
+<!--#if (UseApiKey) -->
+* **API key:** the API rejects `/api/*` requests (except `/api/status`) that don't carry `X-Api-Key: <Security:ApiKey>`. The sites send `Api:ApiKey` through `ApiClients/ApiKeyHandler.cs`. A random key was generated for this solution. Move it to user-secrets or Key Vault for real environments (`dotnet user-secrets set "Security:ApiKey" "<key>" --project src/TemplateApp.API`).
+<!--#endif -->
+<!--#if (IncludeHealthChecks) -->
+<!--#if (UseSqlRepository) -->
+* **Health checks:** every project maps `/health`. The API's check includes the database (`AddDbContextCheck<ApplicationDbContext>`).
+<!--#else -->
+* **Health checks:** every project maps `/health`.
+<!--#endif -->
+<!--#endif -->
+<!--#if (IncludeSerilog) -->
+* **Serilog:** logging is configured in the `Serilog` section of each `appsettings.json`. It writes to the console and to rolling files in `logs/`, and logs each request with `UseSerilogRequestLogging()`.
+<!--#endif -->
+<!--#if (IncludeResilience) -->
+* **Resilience:** the sites' API clients use `AddStandardResilienceHandler()`, which adds retries with back-off, timeouts and a circuit breaker.
+<!--#endif -->
+<!--#endif -->
+<!--#if (UseTests) -->
+
+## Tests
+
+`tests/TemplateApp.Tests` uses xUnit and NSubstitute. Because the services depend on repository *interfaces*, they are tested with fakes and no database:
+
+```
+dotnet test
+```
 <!--#endif -->

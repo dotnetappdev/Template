@@ -20,10 +20,10 @@
     {
       "id": "IncludeInternal",
       "name": {
-        "text": "Create ProjectName.Internal"
+        "text": "Create ProjectName.Internal (Razor Pages staff site)"
       },
       "description": {
-        "text": "Internal (staff / back-office) Razor Pages site. It talks only to ProjectName.API."
+        "text": "Adds the Internal (staff / back-office) Razor Pages site. It calls ProjectName.API over HTTP and has no database access."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -31,10 +31,10 @@
     {
       "id": "IncludeExternal",
       "name": {
-        "text": "Create ProjectName.External"
+        "text": "Create ProjectName.External (Razor Pages public site)"
       },
       "description": {
-        "text": "External (public / customer facing) Razor Pages site. It talks only to ProjectName.API."
+        "text": "Adds the External (public / customer facing) Razor Pages site. It calls ProjectName.API over HTTP and has no database access."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -42,10 +42,10 @@
     {
       "id": "IncludeApi",
       "name": {
-        "text": "Create ProjectName.API"
+        "text": "Create ProjectName.API (ASP.NET Core Web API)"
       },
       "description": {
-        "text": "Web API with controllers and Swagger. Always created when Internal or External is selected, because the sites only talk to the API."
+        "text": "Adds the ASP.NET Core Web API project (controllers + Swagger). The Internal and External sites only talk to this API, so it is always created when either site is selected."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -53,10 +53,10 @@
     {
       "id": "IncludeServices",
       "name": {
-        "text": "Create ProjectName.Services"
+        "text": "Create ProjectName.Services (business layer)"
       },
       "description": {
-        "text": "Business services used by the API (interfaces + implementations). Also adds ProjectName.SqlRepository."
+        "text": "Adds the business services layer used by the API (service interfaces + implementations). Also adds ProjectName.SqlRepository."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -64,10 +64,21 @@
     {
       "id": "IncludeSqlRepository",
       "name": {
-        "text": "Create ProjectName.SqlRepository"
+        "text": "Create ProjectName.SqlRepository (EF Core + repository pattern)"
       },
       "description": {
-        "text": "EF Core data project used by the API: ApplicationDbContext, entities and the repositories (IRepository<T>)."
+        "text": "Adds the EF Core data project used by the API: ApplicationDbContext, entities, IRepository<T> and the repositories."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeTests",
+      "name": {
+        "text": "Create ProjectName.Tests (xUnit + NSubstitute)"
+      },
+      "description": {
+        "text": "Adds an xUnit test project with NSubstitute mocks for ProjectName.Services (needs Services)."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -78,7 +89,7 @@
         "text": "Database"
       },
       "description": {
-        "text": "The database provider used by EF Core."
+        "text": "The EF Core database provider used by ProjectName.SqlRepository."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -89,7 +100,7 @@
         "text": "SQL Server version"
       },
       "description": {
-        "text": "The SQL Server version EF Core targets (compatibility level). Used only when the database is SQL Server."
+        "text": "The SQL Server version to target. EF Core uses its compatibility level to decide which SQL it generates. Used only when the database is SQL Server."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -100,7 +111,7 @@
         "text": "PostgreSQL version"
       },
       "description": {
-        "text": "The PostgreSQL version EF Core targets. Used only when the database is PostgreSQL."
+        "text": "The PostgreSQL server version to target. Used only when the database is PostgreSQL."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -111,7 +122,7 @@
         "text": "Database authentication"
       },
       "description": {
-        "text": "Windows/Integrated (Entra ID on Azure SQL) or a SQL login."
+        "text": "How the connection string signs in. PostgreSQL always uses a user name and password."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -122,7 +133,7 @@
         "text": "Database server"
       },
       "description": {
-        "text": "Leave blank for (localdb)\\MSSQLLocalDB, your-server.database.windows.net or localhost."
+        "text": "Server/host for the connection string. Leave blank for the default: (localdb)\\MSSQLLocalDB, your-server.database.windows.net or localhost."
       },
       "isVisible": true
     },
@@ -132,7 +143,7 @@
         "text": "Database name"
       },
       "description": {
-        "text": "Leave blank to use the project name."
+        "text": "Database name. Leave blank to use the project name."
       },
       "isVisible": true
     },
@@ -142,7 +153,7 @@
         "text": "Database user"
       },
       "description": {
-        "text": "For a SQL login or PostgreSQL. Leave blank for sa / postgres."
+        "text": "User name for a SQL login or PostgreSQL. Leave blank for sa / postgres."
       },
       "isVisible": true
     },
@@ -152,19 +163,116 @@
         "text": "Database password"
       },
       "description": {
-        "text": "Development only. Move real secrets to user-secrets or Key Vault."
+        "text": "Password for a SQL login or PostgreSQL (development only; use user-secrets or Key Vault for real secrets)."
       },
       "isVisible": true
     },
     {
       "id": "ConnectionString",
       "name": {
-        "text": "Connection string (optional)"
+        "text": "Connection string (optional - overrides the fields above)"
       },
       "description": {
-        "text": "A full connection string. If you enter one, the database server, name, user and password fields are ignored."
+        "text": "A full connection string. If you enter one, the server, database, user and password fields are ignored."
       },
       "isVisible": true
+    },
+    {
+      "id": "SeedSampleData",
+      "name": {
+        "text": "Seed sample data (customers)"
+      },
+      "description": {
+        "text": "Seeds a few sample customers when the API starts in Development."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeSwagger",
+      "name": {
+        "text": "Add Swagger UI to the API (Swashbuckle.AspNetCore)"
+      },
+      "description": {
+        "text": "Adds Swagger / OpenAPI documentation at /swagger in Development."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeApiKey",
+      "name": {
+        "text": "Secure the API with an API key (X-Api-Key)"
+      },
+      "description": {
+        "text": "The API requires an X-Api-Key header; Internal and External send it automatically (key generated per solution)."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeHealthChecks",
+      "name": {
+        "text": "Add health check endpoints /health (Microsoft.Extensions.Diagnostics.HealthChecks)"
+      },
+      "description": {
+        "text": "Adds /health to every project; the API also checks the database (HealthChecks.EntityFrameworkCore)."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeSerilog",
+      "name": {
+        "text": "Add Serilog logging (Serilog.AspNetCore)"
+      },
+      "description": {
+        "text": "Structured logging to the console and rolling files, configured in appsettings.json."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "InternalAuthentication",
+      "name": {
+        "text": "Internal site authentication"
+      },
+      "description": {
+        "text": "How staff sign in to ProjectName.Internal."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "EntraTenantId",
+      "name": {
+        "text": "Entra ID tenant ID (optional)"
+      },
+      "description": {
+        "text": "Directory (tenant) ID for Microsoft Entra ID sign-in. Can be set later in appsettings.json."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "EntraClientId",
+      "name": {
+        "text": "Entra ID client ID (optional)"
+      },
+      "description": {
+        "text": "Application (client) ID of the app registration for the Internal site. Can be set later in appsettings.json."
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeResilience",
+      "name": {
+        "text": "Add retries / circuit breaker to API clients (Microsoft.Extensions.Http.Resilience)"
+      },
+      "description": {
+        "text": "Adds the standard resilience handler (Polly) to the sites' typed HttpClients."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
     },
     {
       "id": "JQueryVersion",
@@ -172,7 +280,7 @@
         "text": "jQuery version"
       },
       "description": {
-        "text": "jQuery version for the Razor Pages sites."
+        "text": "jQuery version restored by LibMan (jsDelivr)."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -183,7 +291,18 @@
         "text": "jQuery UI version"
       },
       "description": {
-        "text": "jQuery UI version (base theme)."
+        "text": "jQuery UI version restored by LibMan (cdnjs, includes all themes)."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "JQueryUITheme",
+      "name": {
+        "text": "jQuery UI theme"
+      },
+      "description": {
+        "text": "jQuery UI ThemeRoller theme used by the date picker, dialog, autocomplete, etc."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -194,7 +313,18 @@
         "text": "Bootstrap version"
       },
       "description": {
-        "text": "Bootstrap version. The layout markup adapts to Bootstrap 4 or 5."
+        "text": "Bootstrap version restored by LibMan. The markup adapts to Bootstrap 4 or 5."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "BootstrapTheme",
+      "name": {
+        "text": "Bootstrap theme"
+      },
+      "description": {
+        "text": "Plain Bootstrap or a free Bootswatch theme (bootswatch, same version as Bootstrap)."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -205,7 +335,73 @@
         "text": "Font Awesome version"
       },
       "description": {
-        "text": "Font Awesome Free version."
+        "text": "Font Awesome Free version restored by LibMan, or none."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeJQueryValidation",
+      "name": {
+        "text": "Add jQuery Validation (jquery-validation + jquery-validation-unobtrusive)"
+      },
+      "description": {
+        "text": "Client-side validation for the forms, driven by the model's data annotations."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeDataTables",
+      "name": {
+        "text": "Add DataTables (datatables.net 2.3.8)"
+      },
+      "description": {
+        "text": "Sorting, paging and searching for tables marked with the js-datatable class."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeSelect2",
+      "name": {
+        "text": "Add Select2 (select2 4.1.0)"
+      },
+      "description": {
+        "text": "Searchable drop-downs for selects marked with the js-select2 class."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeToastr",
+      "name": {
+        "text": "Add Toastr notifications (toastr 2.1.4)"
+      },
+      "description": {
+        "text": "Shows TempData messages as toast notifications."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeSweetAlert",
+      "name": {
+        "text": "Add SweetAlert2 dialogs (sweetalert2 11.26.25)"
+      },
+      "description": {
+        "text": "Nicer confirm dialogs, for example before deleting a customer."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeChartJs",
+      "name": {
+        "text": "Add Chart.js (chart.js 4.5.1)"
+      },
+      "description": {
+        "text": "Charts on the Internal dashboard."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"

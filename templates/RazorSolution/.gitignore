@@ -15,3 +15,6 @@ publish/
 *.db
 *.db-shm
 *.db-wal
+
+## Serilog file logs
+logs/

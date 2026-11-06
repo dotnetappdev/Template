@@ -16,6 +16,32 @@
         <partial name="_ApiStatus" model="Model.ApiStatus" />
     </div>
 }
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-layer-group me-2 mr-2"></i>Front-end stack (LibMan)</div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between"><span>jQuery</span><span class="badge bg-secondary badge-secondary">__JQUERY_VERSION__</span></li>
+        <li class="list-group-item d-flex justify-content-between"><span>jQuery UI <small class="text-muted">(__JQUERYUI_THEME__ theme)</small></span><span class="badge bg-secondary badge-secondary">__JQUERYUI_VERSION__</span></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Bootstrap <small class="text-muted">(__BOOTSWATCH_THEME__)</small></span><span class="badge bg-secondary badge-secondary">__BOOTSTRAP_VERSION__</span></li>
+@*#if (UseFontAwesome)*@
+        <li class="list-group-item d-flex justify-content-between"><span>Font Awesome Free</span><span class="badge bg-secondary badge-secondary">__FONTAWESOME_VERSION__</span></li>
+@*#endif*@
+@*#if (IncludeDataTables)*@
+        <li class="list-group-item d-flex justify-content-between"><span>DataTables</span><span class="badge bg-secondary badge-secondary">2.3.8</span></li>
+@*#endif*@
+@*#if (IncludeSelect2)*@
+        <li class="list-group-item d-flex justify-content-between"><span>Select2</span><span class="badge bg-secondary badge-secondary">4.1.0</span></li>
+@*#endif*@
+@*#if (IncludeToastr)*@
+        <li class="list-group-item d-flex justify-content-between"><span>Toastr</span><span class="badge bg-secondary badge-secondary">2.1.4</span></li>
+@*#endif*@
+@*#if (IncludeSweetAlert)*@
+        <li class="list-group-item d-flex justify-content-between"><span>SweetAlert2</span><span class="badge bg-secondary badge-secondary">11.26.25</span></li>
+@*#endif*@
+@*#if (IncludeChartJs)*@
+        <li class="list-group-item d-flex justify-content-between"><span>Chart.js</span><span class="badge bg-secondary badge-secondary">4.5.1</span></li>
+@*#endif*@
+    </ul>
+</div>
 
 <div class="row">
     <div class="col-md-4 mb-3">

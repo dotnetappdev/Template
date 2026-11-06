@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TemplateApp.External.ApiClients;
 using TemplateApp.External.ApiClients.Models;
 
@@ -16,6 +17,9 @@ public class ContactModel : PageModel
 
     [BindProperty]
     public ContactRequestModel Input { get; set; } = new();
+
+    public IEnumerable<SelectListItem> Topics { get; } =
+        new[] { "General enquiry", "Sales", "Support", "Billing", "Feedback" }.Select(t => new SelectListItem(t, t));
 
     public void OnGet()
     {

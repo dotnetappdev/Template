@@ -9,6 +9,11 @@ public class ApiOptions
 
     /// <summary>The API's base address, for example https://localhost:7001/.</summary>
     public string BaseUrl { get; set; } = string.Empty;
+#if (UseApiKey)
+
+    /// <summary>Sent in the X-Api-Key header. Must match Security:ApiKey in the API. Keep it in user-secrets / Key Vault outside Development.</summary>
+    public string ApiKey { get; set; } = string.Empty;
+#endif
 
     public int TimeoutSeconds { get; set; } = 30;
 }

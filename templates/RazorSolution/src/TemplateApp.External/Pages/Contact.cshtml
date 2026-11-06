@@ -21,6 +21,12 @@
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="mb-3 form-group">
+                <label asp-for="Input.Topic" class="form-label"></label>
+                <select asp-for="Input.Topic" asp-items="Model.Topics" class="form-select custom-select js-select2">
+                    <option value="">Choose a topic…</option>
+                </select>
+            </div>
+            <div class="mb-3 form-group">
                 <label asp-for="Input.PreferredDate" class="form-label"></label>
                 <input asp-for="Input.PreferredDate" type="text" class="form-control js-datepicker" autocomplete="off" />
                 <span asp-validation-for="Input.PreferredDate" class="text-danger"></span>

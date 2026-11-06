@@ -28,13 +28,14 @@ else if (Model.Customers.Count == 0)
 else
 {
     <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
+        <table class="table table-striped table-hover align-middle js-datatable">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Company</th>
                     <th>Status</th>
+                    <th class="text-end text-right" data-orderable="false"></th>
                 </tr>
             </thead>
             <tbody>
@@ -53,6 +54,12 @@ else
                             {
                                 <span class="badge bg-secondary badge-secondary">Inactive</span>
                             }
+                        </td>
+                        <td class="text-end text-right">
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@customer.Id" class="d-inline js-confirm"
+                                  data-confirm="Delete @customer.FullName?">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i><span class="visually-hidden sr-only">Delete</span></button>
+                            </form>
                         </td>
                     </tr>
                 }

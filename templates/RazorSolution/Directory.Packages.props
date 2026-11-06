@@ -20,16 +20,46 @@
 <!--#elseif (UseSqlite) -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="__EFCORE_VERSION__" />
 <!--#endif -->
+<!--#if (IncludeHealthChecks) -->
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="__EFCORE_VERSION__" />
 <!--#endif -->
-<!--#if (UseApi) -->
+<!--#endif -->
+<!--#if (UseApi && UseSwagger) -->
 
-    <!-- API -->
+    <!-- API documentation -->
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="__SWASHBUCKLE_VERSION__" />
+<!--#endif -->
+<!--#if (IncludeSerilog) -->
+
+    <!-- Logging -->
+    <PackageVersion Include="Serilog.AspNetCore" Version="__SERILOG_VERSION__" />
+<!--#endif -->
+<!--#if (UseWindowsAuth) -->
+
+    <!-- Internal site: Windows authentication -->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="__EFCORE_VERSION__" />
+<!--#endif -->
+<!--#if (UseEntraId) -->
+
+    <!-- Internal site: Microsoft Entra ID sign-in -->
+    <PackageVersion Include="Microsoft.Identity.Web" Version="3.16.0" />
 <!--#endif -->
 <!--#if (HasSite) -->
 
-    <!-- Restores each site's libman.json (jQuery, jQuery UI, Bootstrap, Font Awesome) on build -->
+    <!-- Sites: LibMan restore on build -->
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
+<!--#if (IncludeResilience) -->
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="__RESILIENCE_VERSION__" />
+<!--#endif -->
+<!--#endif -->
+<!--#if (UseTests) -->
+
+    <!-- Tests -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
 <!--#endif -->
   </ItemGroup>
 </Project>

@@ -1,4 +1,24 @@
 @* jQuery __JQUERY_VERSION__, jQuery UI __JQUERYUI_VERSION__ and Bootstrap __BOOTSTRAP_VERSION__ (bundle includes Popper), restored by LibMan. *@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/jquery-ui/dist/jquery-ui.min.js"></script>
+<script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@*#if (IncludeDataTables)*@
+<script src="~/lib/datatables/js/dataTables.min.js"></script>
+@*#if (Bootstrap4)*@
+<script src="~/lib/datatables-bootstrap/js/dataTables.bootstrap4.min.js"></script>
+@*#else*@
+<script src="~/lib/datatables-bootstrap/js/dataTables.bootstrap5.min.js"></script>
+@*#endif*@
+@*#endif*@
+@*#if (IncludeSelect2)*@
+<script src="~/lib/select2/dist/js/select2.min.js"></script>
+@*#endif*@
+@*#if (IncludeToastr)*@
+<script src="~/lib/toastr/build/toastr.min.js"></script>
+@*#endif*@
+@*#if (IncludeSweetAlert)*@
+<script src="~/lib/sweetalert2/dist/sweetalert2.all.min.js"></script>
+@*#endif*@
+@*#if (IncludeChartJs)*@
+<script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
+@*#endif*@

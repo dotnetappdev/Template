@@ -31,16 +31,24 @@
                         <li class="nav-item"><a class="nav-link" asp-page="/Privacy"><i class="fas fa-lock me-1 mr-1"></i>Privacy</a></li>
                     </ul>
                     <span class="navbar-text small">Internal staff / back-office site</span>
+@*#if (UseInternalAuth)*@
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <span class="navbar-text small ms-3 ml-3"><i class="fas fa-user me-1 mr-1"></i>@User.Identity.Name</span>
+                    }
+@*#endif*@
                 </div>
             </div>
         </nav>
     </header>
 
     <main role="main" class="container flex-grow-1 pb-4">
+@*#if (!IncludeToastr)*@
         @if (TempData["Message"] is string message)
         {
             <div class="alert alert-success" role="alert"><i class="fas fa-check-circle me-2 mr-2"></i>@message</div>
         }
+@*#endif*@
         @RenderBody()
     </main>
 
@@ -53,6 +61,12 @@
 
     <partial name="_Scripts" />
     <script src="~/js/site.js" asp-append-version="true"></script>
+@*#if (IncludeToastr)*@
+    @if (TempData["Message"] is string message)
+    {
+        <script>toastr.success(@Json.Serialize(message));</script>
+    }
+@*#endif*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

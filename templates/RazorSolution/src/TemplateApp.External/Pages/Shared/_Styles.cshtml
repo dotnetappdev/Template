@@ -1,4 +1,29 @@
-@* Bootstrap __BOOTSTRAP_VERSION__, jQuery UI __JQUERYUI_VERSION__ and Font Awesome __FONTAWESOME_VERSION__, restored by LibMan (libman.json) into wwwroot/lib. *@
+@* Client libraries restored by LibMan (libman.json) into wwwroot/lib. *@
+@*#if (UseBootswatch)*@
+@* Bootstrap __BOOTSTRAP_VERSION__ with the Bootswatch "__BOOTSWATCH_THEME__" theme. *@
+<link rel="stylesheet" href="~/lib/bootswatch/dist/__BOOTSWATCH_THEME__/bootstrap.min.css" />
+@*#else*@
+@* Bootstrap __BOOTSTRAP_VERSION__. *@
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-<link rel="stylesheet" href="~/lib/jquery-ui/dist/themes/base/jquery-ui.min.css" />
+@*#endif*@
+@* jQuery UI __JQUERYUI_VERSION__, "__JQUERYUI_THEME__" theme. *@
+<link rel="stylesheet" href="~/lib/jquery-ui/themes/__JQUERYUI_THEME__/jquery-ui.min.css" />
+@*#if (UseFontAwesome)*@
 <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+@*#endif*@
+@*#if (IncludeDataTables)*@
+@*#if (Bootstrap4)*@
+<link rel="stylesheet" href="~/lib/datatables-bootstrap/css/dataTables.bootstrap4.min.css" />
+@*#else*@
+<link rel="stylesheet" href="~/lib/datatables-bootstrap/css/dataTables.bootstrap5.min.css" />
+@*#endif*@
+@*#endif*@
+@*#if (IncludeSelect2)*@
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
+@*#if (!Bootstrap4)*@
+<link rel="stylesheet" href="~/lib/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css" />
+@*#endif*@
+@*#endif*@
+@*#if (IncludeToastr)*@
+<link rel="stylesheet" href="~/lib/toastr/build/toastr.min.css" />
+@*#endif*@

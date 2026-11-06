@@ -5,10 +5,20 @@
     <RootNamespace>TemplateApp.API</RootNamespace>
     <UserSecretsId>7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E04</UserSecretsId>
   </PropertyGroup>
+<!--#if (UseSwagger || IncludeSerilog || (IncludeHealthChecks && UseSqlRepository)) -->
 
   <ItemGroup>
+<!--#if (UseSwagger) -->
     <PackageReference Include="Swashbuckle.AspNetCore" />
+<!--#endif -->
+<!--#if (IncludeSerilog) -->
+    <PackageReference Include="Serilog.AspNetCore" />
+<!--#endif -->
+<!--#if (IncludeHealthChecks && UseSqlRepository) -->
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+<!--#endif -->
   </ItemGroup>
+<!--#endif -->
 <!--#if (UseSqlRepository) -->
 
   <ItemGroup>

@@ -14,6 +14,9 @@ public static class ApiClientServiceCollectionExtensions
             .Bind(configuration.GetSection(ApiOptions.SectionName))
             .Validate(o => Uri.TryCreate(o.BaseUrl, UriKind.Absolute, out _), "Api:BaseUrl must be an absolute URL.")
             .ValidateOnStart();
+#if (UseApiKey)
+        services.AddTransient<ApiKeyHandler>();
+#endif
 
         services.AddApiClient<IStatusApiClient, StatusApiClient>();
 #if (UseSqlRepository)
@@ -27,12 +30,24 @@ public static class ApiClientServiceCollectionExtensions
         where TClient : class
         where TImplementation : class, TClient
     {
-        return services.AddHttpClient<TClient, TImplementation>((provider, client) =>
+        var builder = services.AddHttpClient<TClient, TImplementation>((provider, client) =>
         {
             var options = provider.GetRequiredService<IOptions<ApiOptions>>().Value;
             client.BaseAddress = new Uri(options.BaseUrl.TrimEnd('/') + "/");
             client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
+#if (UseApiKey)
+
+        // Sends the X-Api-Key header the API expects.
+        builder.AddHttpMessageHandler<ApiKeyHandler>();
+#endif
+#if (IncludeResilience)
+
+        // Retries, timeouts and a circuit breaker (Microsoft.Extensions.Http.Resilience / Polly).
+        builder.AddStandardResilienceHandler();
+#endif
+
+        return builder;
     }
 }

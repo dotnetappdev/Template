@@ -36,4 +36,59 @@ $(function () {
             }
         });
     });
+//#if (IncludeDataTables)
+
+    // DataTables: sorting, paging and searching for <table class="js-datatable">.
+    $('table.js-datatable').each(function () {
+        new DataTable(this, { pageLength: 25 });
+    });
+//#endif
+//#if (IncludeSelect2)
+
+    // Select2: searchable drop-downs for <select class="js-select2">.
+    $('select.js-select2').each(function () {
+        var $select = $(this);
+        $select.select2({
+//#if (!Bootstrap4)
+            theme: 'bootstrap-5',
+//#endif
+            width: '100%',
+            placeholder: $select.find('option[value=""]').text() || 'Select…',
+            allowClear: true
+        });
+    });
+//#endif
+//#if (IncludeToastr)
+
+    // Toastr notifications (TempData["Message"] is shown with toastr.success in _Layout).
+    toastr.options = { positionClass: 'toast-top-right', timeOut: 4000, progressBar: true };
+//#endif
+
+    // Confirm before submitting <form class="js-confirm" data-confirm="Are you sure?">.
+    $(document).on('submit', 'form.js-confirm', function (e) {
+        var form = this;
+        if (form.dataset.confirmed) {
+            return;
+        }
+        e.preventDefault();
+//#if (IncludeSweetAlert)
+        Swal.fire({
+            title: form.dataset.confirm || 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            confirmButtonColor: '#dc3545'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                form.dataset.confirmed = 'true';
+                form.submit();
+            }
+        });
+//#else
+        if (window.confirm(form.dataset.confirm || 'Are you sure?')) {
+            form.dataset.confirmed = 'true';
+            form.submit();
+        }
+//#endif
+    });
 });

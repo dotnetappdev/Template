@@ -5,7 +5,11 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+//#if (UseSwagger)
       "launchUrl": "swagger",
+//#else
+      "launchUrl": "api/status",
+//#endif
       "applicationUrl": "http://localhost:__HTTP_PORT_API__",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -15,7 +19,11 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+//#if (UseSwagger)
       "launchUrl": "swagger",
+//#else
+      "launchUrl": "api/status",
+//#endif
       "applicationUrl": "https://localhost:__HTTPS_PORT_API__;http://localhost:__HTTP_PORT_API__",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

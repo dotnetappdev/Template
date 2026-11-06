@@ -36,6 +36,13 @@ public class IndexModel : PageModel
         }
     }
 
+    public async Task<IActionResult> OnPostDeleteAsync(int id, CancellationToken cancellationToken)
+    {
+        var result = await _customers.DeleteAsync(id, cancellationToken);
+        TempData["Message"] = result.Succeeded ? "The customer was deleted." : result.Error;
+        return RedirectToPage();
+    }
+
     /// <summary>
     /// JSON for the jQuery UI autocomplete: GET /Customers?handler=Autocomplete&amp;term=...
     /// </summary>

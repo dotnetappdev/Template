@@ -36,6 +36,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateApp.SqlRepository", "src\TemplateApp.SqlRepository\TemplateApp.SqlRepository.csproj", "{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F65}"
 EndProject
 #endif
+#if (UseTests)
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateApp.Tests", "tests\TemplateApp.Tests\TemplateApp.Tests.csproj", "{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68}"
+EndProject
+#endif
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +78,12 @@ Global
 		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F65}.Release|Any CPU.Build.0 = Release|Any CPU
 #endif
+#if (UseTests)
+		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68}.Release|Any CPU.Build.0 = Release|Any CPU
+#endif
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +103,9 @@ Global
 #endif
 #if (UseSqlRepository)
 		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F65} = {3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F66}
+#endif
+#if (UseTests)
+		{3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F68} = {3F1C2A10-5B6D-4E8F-9A01-1B2C3D4E5F69}
 #endif
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

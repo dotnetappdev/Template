@@ -8,34 +8,26 @@
       "files": [ "dist/jquery.min.js", "dist/jquery.min.map" ]
     },
     {
-      "library": "jquery-ui@__JQUERYUI_VERSION__",
+      "provider": "cdnjs",
+      "library": "jqueryui@__JQUERYUI_VERSION__",
       "destination": "wwwroot/lib/jquery-ui/",
-      "files": [
-        "dist/jquery-ui.min.js",
-        "dist/themes/base/jquery-ui.min.css",
-        "dist/themes/base/images/ui-icons_444444_256x240.png",
-        "dist/themes/base/images/ui-icons_555555_256x240.png",
-        "dist/themes/base/images/ui-icons_777620_256x240.png",
-        "dist/themes/base/images/ui-icons_777777_256x240.png",
-        "dist/themes/base/images/ui-icons_cc0000_256x240.png",
-        "dist/themes/base/images/ui-icons_ffffff_256x240.png"
-      ]
+      "files": [ "jquery-ui.min.js", "themes/__JQUERYUI_THEME__/jquery-ui.min.css", "themes/__JQUERYUI_THEME__/images/*" ]
     },
+//#if (UseBootswatch)
     {
-      "library": "bootstrap@__BOOTSTRAP_VERSION__",
-      "destination": "wwwroot/lib/bootstrap/",
-      "files": [ "dist/css/bootstrap.min.css", "dist/css/bootstrap.min.css.map", "dist/js/bootstrap.bundle.min.js", "dist/js/bootstrap.bundle.min.js.map" ]
+      "library": "bootswatch@__BOOTSTRAP_VERSION__",
+      "destination": "wwwroot/lib/bootswatch/",
+      "files": [ "dist/__BOOTSWATCH_THEME__/bootstrap.min.css" ]
     },
+//#endif
+//#if (UseFontAwesome)
     {
       "library": "@fortawesome/fontawesome-free@__FONTAWESOME_VERSION__",
       "destination": "wwwroot/lib/fontawesome/",
-      "files": [
-        "css/all.min.css",
-        "webfonts/fa-brands-400.woff2",
-        "webfonts/fa-regular-400.woff2",
-        "webfonts/fa-solid-900.woff2"
-      ]
+      "files": [ "css/all.min.css", "webfonts/fa-brands-400.woff2", "webfonts/fa-regular-400.woff2", "webfonts/fa-solid-900.woff2" ]
     },
+//#endif
+//#if (IncludeJQueryValidation)
     {
       "library": "jquery-validation@1.22.1",
       "destination": "wwwroot/lib/jquery-validation/",
@@ -45,6 +37,67 @@
       "library": "jquery-validation-unobtrusive@4.0.0",
       "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
       "files": [ "dist/jquery.validate.unobtrusive.min.js" ]
+    },
+//#endif
+//#if (IncludeDataTables)
+    {
+      "library": "datatables.net@2.3.8",
+      "destination": "wwwroot/lib/datatables/",
+      "files": [ "js/dataTables.min.js" ]
+    },
+//#if (Bootstrap4)
+    {
+      "library": "datatables.net-bs4@2.3.8",
+      "destination": "wwwroot/lib/datatables-bootstrap/",
+      "files": [ "js/dataTables.bootstrap4.min.js", "css/dataTables.bootstrap4.min.css" ]
+    },
+//#else
+    {
+      "library": "datatables.net-bs5@2.3.8",
+      "destination": "wwwroot/lib/datatables-bootstrap/",
+      "files": [ "js/dataTables.bootstrap5.min.js", "css/dataTables.bootstrap5.min.css" ]
+    },
+//#endif
+//#endif
+//#if (IncludeSelect2)
+    {
+      "library": "select2@4.1.0",
+      "destination": "wwwroot/lib/select2/",
+      "files": [ "dist/js/select2.min.js", "dist/css/select2.min.css" ]
+    },
+//#if (!Bootstrap4)
+    {
+      "library": "select2-bootstrap-5-theme@1.3.0",
+      "destination": "wwwroot/lib/select2-bootstrap-5-theme/",
+      "files": [ "dist/select2-bootstrap-5-theme.min.css" ]
+    },
+//#endif
+//#endif
+//#if (IncludeToastr)
+    {
+      "library": "toastr@2.1.4",
+      "destination": "wwwroot/lib/toastr/",
+      "files": [ "build/toastr.min.js", "build/toastr.min.css" ]
+    },
+//#endif
+//#if (IncludeSweetAlert)
+    {
+      "library": "sweetalert2@11.26.25",
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [ "dist/sweetalert2.all.min.js" ]
+    },
+//#endif
+//#if (IncludeChartJs)
+    {
+      "library": "chart.js@4.5.1",
+      "destination": "wwwroot/lib/chart.js/",
+      "files": [ "dist/chart.umd.min.js" ]
+    },
+//#endif
+    {
+      "library": "bootstrap@__BOOTSTRAP_VERSION__",
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [ "dist/css/bootstrap.min.css", "dist/css/bootstrap.min.css.map", "dist/js/bootstrap.bundle.min.js", "dist/js/bootstrap.bundle.min.js.map" ]
     }
   ]
 }

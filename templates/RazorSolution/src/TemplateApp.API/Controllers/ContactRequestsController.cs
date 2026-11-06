@@ -24,7 +24,7 @@ public class ContactRequestsController : ControllerBase
     public IActionResult Post(ContactRequest request)
     {
         // TODO: store it, email it or put it on a queue.
-        _logger.LogInformation("Contact request from {Name} <{Email}>", request.Name, request.Email);
+        _logger.LogInformation("Contact request from {Name} <{Email}> about {Topic}", request.Name, request.Email, request.Topic ?? "General");
 
         return Accepted();
     }

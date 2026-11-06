@@ -11,6 +11,9 @@ public class ContactRequestModel
     [Required, EmailAddress, StringLength(256)]
     public string Email { get; set; } = string.Empty;
 
+    [StringLength(50)]
+    public string? Topic { get; set; }
+
     [Display(Name = "Preferred date")]
     [StringLength(20)]
     public string? PreferredDate { get; set; }
