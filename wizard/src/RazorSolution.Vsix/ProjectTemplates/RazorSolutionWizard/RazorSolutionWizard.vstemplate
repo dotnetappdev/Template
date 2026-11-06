@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  New Project entry for the multi-step wizard. The wizard (RazorSolution.Wizard.TemplateWizard) shows its own
+  Back / Next window, creates the solution with "dotnet new razorsln", and opens it. The placeholder project
+  below is never created: the wizard cancels Visual Studio's own generation.
+-->
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Razor Pages Solution (Wizard)</Name>
+    <Description>Step-by-step wizard with Test connection: two independent Razor Pages sites (Internal, External) that only talk to an API, with Services and an EF Core SqlRepository. You pick the .NET version, database and version, authentication, and the jQuery, jQuery UI, Bootstrap and Font Awesome versions (LibMan).</Description>
+    <ProjectType>CSharp</ProjectType>
+    <LanguageTag>csharp</LanguageTag>
+    <PlatformTag>windows</PlatformTag>
+    <PlatformTag>linux</PlatformTag>
+    <PlatformTag>macos</PlatformTag>
+    <PlatformTag>cloud</PlatformTag>
+    <ProjectTypeTag>web</ProjectTypeTag>
+    <ProjectTypeTag>service</ProjectTypeTag>
+    <SortOrder>1000</SortOrder>
+    <DefaultName>MyCompany.Portal</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <CreateNewFolder>true</CreateNewFolder>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <CreateInPlace>true</CreateInPlace>
+    <Icon>icon.png</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="Placeholder.csproj" ReplaceParameters="false" />
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>RazorSolution.Wizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ff3e39930a0a647b</Assembly>
+    <FullClassName>RazorSolution.Wizard.TemplateWizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>

@@ -22,18 +22,19 @@ Every client library is installed with **LibMan**.
 ## Contents
 
 1. [The New Project wizard](#the-new-project-wizard)
-2. [What you get](#what-you-get)
-3. [Prerequisites](#prerequisites)
-4. [Install the template](#install-the-template)
-5. [Create a solution in Visual Studio](#create-a-solution-in-visual-studio)
-6. [Create a solution from the command line](#create-a-solution-from-the-command-line)
-7. [All options](#all-options)
-8. [Run the generated solution](#run-the-generated-solution)
-9. [Client-side libraries (LibMan)](#client-side-libraries-libman)
-10. [Database and EF Core](#database-and-ef-core)
-11. [Update or uninstall the template](#update-or-uninstall-the-template)
-12. [Troubleshooting](#troubleshooting)
-13. [Working on the template](#working-on-the-template)
+2. [Multi-step wizard with Test connection (Visual Studio extension)](#multi-step-wizard-with-test-connection-visual-studio-extension)
+3. [What you get](#what-you-get)
+4. [Prerequisites](#prerequisites)
+5. [Install the template](#install-the-template)
+6. [Create a solution in Visual Studio](#create-a-solution-in-visual-studio)
+7. [Create a solution from the command line](#create-a-solution-from-the-command-line)
+8. [All options](#all-options)
+9. [Run the generated solution](#run-the-generated-solution)
+10. [Client-side libraries (LibMan)](#client-side-libraries-libman)
+11. [Database and EF Core](#database-and-ef-core)
+12. [Update or uninstall the template](#update-or-uninstall-the-template)
+13. [Troubleshooting](#troubleshooting)
+14. [Working on the template](#working-on-the-template)
 
 ---
 
@@ -61,6 +62,56 @@ After you name the solution, Visual Studio shows **Additional information**: one
 </details>
 
 Visual Studio remembers your choices (checkboxes and versions) for the next solution you create from the template. It does not remember connection details or Entra IDs.
+
+---
+
+## Multi-step wizard with Test connection (Visual Studio extension)
+
+Visual Studio always shows a `dotnet new` template's options on **one** *Additional information* page, and that page can't have buttons. For a real step-by-step wizard with **Back / Next** and a **Test connection** button, install the **Razor Pages Solution Wizard** extension (`wizard/`). It adds a second New Project entry, **Razor Pages Solution (Wizard)**:
+
+1. **Projects:** .NET version, and which of Internal / External / API / Services / SqlRepository / Tests to create.
+2. **Database:** provider, version, authentication, server, name, user and password (masked), or a full connection string. It shows the exact connection string the API will get, and has a **Test connection** button. Fields you don't need are hidden: there's no user or password for Windows auth, and no server for SQLite.
+3. **API & security:** Swagger, API key, health checks, Serilog, Internal-site sign-in (Windows / Entra ID plus IDs), and resilience.
+4. **Front end:** jQuery, jQuery UI and theme, Bootstrap and Bootswatch theme, Font Awesome, and the plugins.
+5. **Summary:** your choices plus the equivalent `dotnet new razorsln …` command (with **Copy command**). **Create** generates the solution and opens it.
+
+Steps that don't apply are skipped. For example, there's no Database step when you don't create a data layer.
+
+| 1. Projects | 2. Database: Test connection succeeded (PostgreSQL) |
+| --- | --- |
+| ![Projects](docs/images/wizard-step-1-projects.png) | ![Database PostgreSQL](docs/images/wizard-step-2-database-postgres.png) |
+| **2. Database: Test connection failed (SQL Server)** | **3. API & security** |
+| ![Database SQL Server](docs/images/wizard-step-2-database-sqlserver.png) | ![API and security](docs/images/wizard-step-3-api-security.png) |
+| **4. Front end** | **5. Summary** |
+| ![Front end](docs/images/wizard-step-4-front-end.png) | ![Summary](docs/images/wizard-step-5-summary.png) |
+
+<sub>Previews rendered by [`docs/tools/render-wizard-steps.js`](docs/tools/render-wizard-steps.js) from the same `WizardSteps.json` and template metadata the WPF wizard uses. The Test connection messages are real output from the connection tester (a PostgreSQL 16 server, and an unreachable SQL Server). These are not captures of the WPF window.</sub>
+
+### How Test connection works
+
+- **The connection string tested is the one that gets generated.** The wizard builds it with the same rules the template uses for `ProjectName.API/appsettings.json`. A unit test runs the real `dotnet new` for 7 configurations and checks that they match.
+- **No database drivers inside Visual Studio.** The test runs out of process: `dotnet RazorSolution.ConnectionTester.dll --provider SqlServer|PostgreSQL|Sqlite` (shipped in the extension), with the connection string passed on stdin so the password never appears in a process list. It uses `Microsoft.Data.SqlClient` and `Npgsql`, with your timeout.
+- **A missing database still counts as success.** If the server and login work but the database doesn't exist yet, the result is "Connected … the API creates it on first run".
+- **Readable failure messages.** Failures are translated: server not found or not reachable, login failed, timeout, invalid connection string. The raw driver message is shown underneath.
+- **SQLite** checks that the database file's folder is writable.
+
+### Install the extension
+
+1. Get the `.vsix`, either from the **vsix** artifact of the GitHub Actions run, or by building `wizard/RazorSolution.Wizard.sln` in Visual Studio 2022+ (workload *Visual Studio extension development*), which produces `wizard/src/RazorSolution.Vsix/bin/<Configuration>/RazorSolution.Vsix.vsix`.
+2. Close Visual Studio and double-click the `.vsix`. Supported targets are Visual Studio 2022 and 2026, on x64 and Arm64.
+3. **File → New → Project** → **Razor Pages Solution (Wizard)**, enter the name and location, then **Next** to open the wizard.
+
+The extension contains the template package. If `dotnet new razorsln` isn't installed yet, the wizard installs it the first time you click **Create**. The single-page template (**Razor Pages Solution**) is still available too.
+
+| Project | Purpose |
+| --- | --- |
+| `wizard/src/RazorSolution.Wizard.Core` | netstandard2.0: reads `template.json` / `ide.host.json` / `dotnetcli.host.json` (embedded at build) and `WizardSteps.json`. It handles step and field visibility, connection strings, the `dotnet new` command line, and running the tester and generator. |
+| `wizard/src/RazorSolution.Wizard` | .NET Framework 4.8: the WPF wizard window (built in code, no XAML) and the `IWizard` that New Project calls. |
+| `wizard/src/RazorSolution.ConnectionTester` | .NET 8 console app used by **Test connection**. |
+| `wizard/src/RazorSolution.Vsix` | The VSIX: the New Project entry (`.vstemplate`), the wizard assemblies, the tester and the template `.nupkg`. |
+| `wizard/tests/RazorSolution.Wizard.Tests` | xUnit tests: metadata, visibility rules, command line and quoting, connection strings against real `dotnet new` output, and the tester process. Set `WIZARD_TEST_POSTGRES` to also test against a live PostgreSQL. |
+
+Because the wizard reads the template's own metadata, a new option or version added to `template.json` / `ide.host.json` appears in the wizard automatically. To show it on a specific page, add its id to `WizardSteps.json` (a test fails if any visible option is missing from the wizard).
 
 ---
 
@@ -384,8 +435,9 @@ Restart Visual Studio afterwards.
 | `…/.template.config/dotnetcli.host.json` | CLI switch names. |
 | `DotNetAppDev.RazorSolution.Templates.csproj` | Packs `templates/**` into the NuGet template package. |
 | `tests/test-template.sh` | Creates and builds 12 combinations (every framework, database and auth mode, Bootstrap 4/5, themes, all plugins on and off, API key, Serilog, …) and runs the generated unit tests. |
-| `docs/tools/render-wizard-preview.js` | Regenerates the wizard images in `docs/images` from `template.json` / `ide.host.json`. |
-| `.github/workflows/template-tests.yml` | CI: runs the test script and uploads the `.nupkg`. |
+| `docs/tools/render-wizard-preview.js`, `render-wizard-steps.js` | Regenerate the wizard images in `docs/images` from `template.json` / `ide.host.json` / `WizardSteps.json`. |
+| `wizard/` | The multi-step Visual Studio wizard extension (see above). |
+| `.github/workflows/template-tests.yml` | CI: runs the template matrix, builds and tests the wizard (with a PostgreSQL service), and builds the `.vsix` on Windows. |
 
 To add a version to a picker, add a `choices` entry in `template.json`: for example `BootstrapVersion` (a matching Bootswatch version must exist), `JQueryVersion` or `FontAwesomeVersion`. For a new .NET release, add a `Framework` choice and cases to the `EfCoreVersion`, `NpgsqlVersion`, `SwashbuckleVersion`, `SerilogVersion` and `ResilienceVersion` switches. Then run:
 

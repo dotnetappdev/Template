@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  VSIX container (build it in Visual Studio 2022+ on Windows with the "Visual Studio extension development" workload).
+  It packages:
+    ProjectTemplates\RazorSolutionWizard.zip   New Project entry whose WizardExtension is RazorSolution.Wizard.TemplateWizard
+    RazorSolution.Wizard(.Core).dll            the multi-step WPF wizard and its UI-independent logic
+    Tools\ConnectionTester\*                   out-of-process "Test connection" helper (dotnet publish, net8.0)
+    Templates\*.nupkg                          the dotnet new template, installed on first use if missing
+-->
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{6E1C5B7A-2D4F-4E8B-9C3A-71D2F0A9B4E5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RazorSolution.Vsix</RootNamespace>
+    <AssemblyName>RazorSolution.Vsix</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+    <RepoRoot>$(MSBuildProjectDirectory)\..\..\..\</RepoRoot>
+    <GeneratedVsixContent>$(MSBuildProjectDirectory)\obj\vsixcontent\</GeneratedVsixContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="icon.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="ProjectTemplates\RazorSolutionWizard\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.14.2142">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RazorSolution.Wizard\RazorSolution.Wizard.csproj">
+      <Name>RazorSolution.Wizard</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup;BuiltProjectOutputGroupDependencies;GetCopyToOutputDirectoryItems;SatelliteDllsProjectOutputGroup</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != '' And Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
+
+  <!-- Build the extra VSIX content: template zip, connection tester and template package. -->
+  <Target Name="BuildWizardContent" BeforeTargets="GetVsixSourceItems;CreateVsixContainer">
+    <RemoveDir Directories="$(GeneratedVsixContent)" />
+    <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\ProjectTemplates\RazorSolutionWizard"
+                  DestinationFile="$(GeneratedVsixContent)ProjectTemplates\RazorSolutionWizard.zip" Overwrite="true" />
+    <Exec Command="dotnet publish &quot;$(RepoRoot)wizard\src\RazorSolution.ConnectionTester\RazorSolution.ConnectionTester.csproj&quot; -c Release -o &quot;$(GeneratedVsixContent)Tools\ConnectionTester&quot; --nologo" />
+    <Exec Command="dotnet pack &quot;$(RepoRoot)DotNetAppDev.RazorSolution.Templates.csproj&quot; -c Release -o &quot;$(GeneratedVsixContent)pack&quot; --nologo" />
+    <ItemGroup>
+      <_TemplatePackage Include="$(GeneratedVsixContent)pack\*.nupkg" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_TemplatePackage)" DestinationFiles="$(GeneratedVsixContent)Templates\DotNetAppDev.RazorSolution.Templates.nupkg" />
+    <ItemGroup>
+      <VSIXSourceItem Include="$(GeneratedVsixContent)ProjectTemplates\RazorSolutionWizard.zip">
+        <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      </VSIXSourceItem>
+      <VSIXSourceItem Include="$(GeneratedVsixContent)Templates\DotNetAppDev.RazorSolution.Templates.nupkg">
+        <VSIXSubPath>Templates</VSIXSubPath>
+      </VSIXSourceItem>
+      <_TesterFiles Include="$(GeneratedVsixContent)Tools\ConnectionTester\**\*" Exclude="$(GeneratedVsixContent)Tools\ConnectionTester\**\*.pdb" />
+      <VSIXSourceItem Include="@(_TesterFiles)">
+        <VSIXSubPath>Tools\ConnectionTester\%(RecursiveDir)</VSIXSubPath>
+      </VSIXSourceItem>
+    </ItemGroup>
+  </Target>
+</Project>

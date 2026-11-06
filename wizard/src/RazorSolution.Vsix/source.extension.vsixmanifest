@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="DotNetAppDev.RazorSolution.Wizard.4b8f2c61-9d3e-4a57-b0c4-2f6e8a1d7c90" Version="1.0.0" Language="en-US" Publisher="dotnetappdev" />
+    <DisplayName>Razor Pages Solution Wizard</DisplayName>
+    <Description xml:space="preserve">Adds "Razor Pages Solution (Wizard)" to File > New > Project: a step-by-step wizard (Back / Next) with a Test connection button. It creates two independent Razor Pages sites that only talk to an API, plus Services, an EF Core SqlRepository and tests, with your choice of .NET, database and version, authentication, and jQuery / jQuery UI / Bootstrap / Font Awesome versions via LibMan.</Description>
+    <MoreInfo>https://github.com/dotnetappdev/Template</MoreInfo>
+    <Icon>icon.png</Icon>
+    <PreviewImage>icon.png</PreviewImage>
+    <Tags>razor pages; asp.net core; template; wizard; libman; entity framework; repository pattern</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,19.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,19.0)">
+      <ProductArchitecture>arm64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.8,)" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="File" Path="ProjectTemplates" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="RazorSolution.Wizard" Path="|RazorSolution.Wizard|" AssemblyName="|RazorSolution.Wizard;AssemblyName|" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="RazorSolution.Wizard.Core.dll" AssemblyName="RazorSolution.Wizard.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ff3e39930a0a647b" />
+  </Assets>
+</PackageManifest>

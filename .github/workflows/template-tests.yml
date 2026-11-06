@@ -25,3 +25,45 @@ jobs:
         with:
           name: template-package
           path: artifacts/*.nupkg
+
+  wizard:
+    # The multi-step Visual Studio wizard: Core logic, WPF wizard (compiled against .NET Framework
+    # reference assemblies) and the out-of-process connection tester. The VSIX itself needs Windows.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: Dev_pass1
+        ports: [ "5432:5432" ]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Build the WPF wizard (net48)
+        run: dotnet build wizard/src/RazorSolution.Wizard/RazorSolution.Wizard.csproj
+      - name: Wizard tests (incl. Test connection against PostgreSQL)
+        env:
+          WIZARD_TEST_POSTGRES: Host=localhost;Database=postgres;Username=postgres;Password=Dev_pass1
+        run: dotnet test wizard/tests/RazorSolution.Wizard.Tests/RazorSolution.Wizard.Tests.csproj
+
+  vsix:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - uses: microsoft/setup-msbuild@v2
+      - name: Build the VSIX
+        run: |
+          msbuild wizard/RazorSolution.Wizard.sln /restore /p:Configuration=Release /v:m
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: wizard/src/RazorSolution.Vsix/bin/Release/*.vsix

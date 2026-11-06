@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    UI-independent wizard logic: template metadata, step rules, connection strings,
+    the dotnet new command line, and the out-of-process connection test / solution generator.
+    netstandard2.0 so the Visual Studio wizard (.NET Framework) and the unit tests (.NET 8) share it.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\RazorSolution.Wizard.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Visual Studio ships Newtonsoft.Json and redirects it to 13.0.0.0, so it is safe to use in-process. -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="WizardSteps.json" LogicalName="WizardSteps.json" />
+    <!-- The template's own metadata: one source of truth for labels, choices, defaults and CLI names. -->
+    <EmbeddedResource Include="..\..\..\templates\RazorSolution\.template.config\template.json" LogicalName="template.json" />
+    <EmbeddedResource Include="..\..\..\templates\RazorSolution\.template.config\ide.host.json" LogicalName="ide.host.json" />
+    <EmbeddedResource Include="..\..\..\templates\RazorSolution\.template.config\dotnetcli.host.json" LogicalName="dotnetcli.host.json" />
+  </ItemGroup>
+
+</Project>

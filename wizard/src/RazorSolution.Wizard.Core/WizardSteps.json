@@ -1,0 +1,54 @@
+{
+  "$comment": "Pages of the Visual Studio wizard. Fields are template.json symbol ids; labels, choices and defaults come from the template. 'when' = any of the listed condition sets must match (all keys in a set must match one of the values).",
+  "steps": [
+    {
+      "id": "projects",
+      "title": "Projects",
+      "subtitle": "Pick the .NET version and the projects to create. The sites only talk to the API, so the API is created whenever a site is selected.",
+      "fields": [ "Framework", "IncludeInternal", "IncludeExternal", "IncludeApi", "IncludeServices", "IncludeSqlRepository", "IncludeTests" ]
+    },
+    {
+      "id": "database",
+      "title": "Database",
+      "subtitle": "Choose the database the API uses and test the connection before you create the solution.",
+      "when": [ { "IncludeSqlRepository": [ "true" ] }, { "IncludeServices": [ "true" ] } ],
+      "fields": [ "DatabaseProvider", "SqlServerVersion", "PostgresVersion", "DbAuthentication", "DbServer", "DbName", "DbUser", "DbPassword", "ConnectionString", "SeedSampleData" ],
+      "testConnection": true
+    },
+    {
+      "id": "api",
+      "title": "API & security",
+      "subtitle": "Options for ProjectName.API and how staff sign in to the Internal site.",
+      "fields": [ "IncludeSwagger", "IncludeApiKey", "IncludeHealthChecks", "IncludeSerilog", "InternalAuthentication", "EntraTenantId", "EntraClientId", "IncludeResilience" ]
+    },
+    {
+      "id": "frontend",
+      "title": "Front end",
+      "subtitle": "Client-side libraries for the Internal and External sites. LibMan restores them into wwwroot/lib on build.",
+      "when": [ { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ],
+      "fields": [ "JQueryVersion", "JQueryUIVersion", "JQueryUITheme", "BootstrapVersion", "BootstrapTheme", "FontAwesomeVersion", "IncludeJQueryValidation", "IncludeDataTables", "IncludeSelect2", "IncludeToastr", "IncludeSweetAlert", "IncludeChartJs" ]
+    },
+    {
+      "id": "summary",
+      "title": "Summary",
+      "subtitle": "Check your choices. Create runs the dotnet new command below and opens the solution.",
+      "fields": []
+    }
+  ],
+  "fieldRules": {
+    "IncludeTests": [ { "IncludeServices": [ "true" ] } ],
+    "SqlServerVersion": [ { "DatabaseProvider": [ "SqlServer" ] } ],
+    "PostgresVersion": [ { "DatabaseProvider": [ "PostgreSQL" ] } ],
+    "DbAuthentication": [ { "DatabaseProvider": [ "SqlServer" ] } ],
+    "DbServer": [ { "DatabaseProvider": [ "SqlServer", "PostgreSQL" ] } ],
+    "DbUser": [ { "DatabaseProvider": [ "PostgreSQL" ] }, { "DatabaseProvider": [ "SqlServer" ], "DbAuthentication": [ "SqlLogin" ] } ],
+    "DbPassword": [ { "DatabaseProvider": [ "PostgreSQL" ] }, { "DatabaseProvider": [ "SqlServer" ], "DbAuthentication": [ "SqlLogin" ] } ],
+    "IncludeSwagger": [ { "IncludeApi": [ "true" ] }, { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ],
+    "IncludeApiKey": [ { "IncludeApi": [ "true" ] }, { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ],
+    "InternalAuthentication": [ { "IncludeInternal": [ "true" ] } ],
+    "EntraTenantId": [ { "IncludeInternal": [ "true" ], "InternalAuthentication": [ "EntraId" ] } ],
+    "EntraClientId": [ { "IncludeInternal": [ "true" ], "InternalAuthentication": [ "EntraId" ] } ],
+    "IncludeResilience": [ { "IncludeInternal": [ "true" ] }, { "IncludeExternal": [ "true" ] } ]
+  },
+  "passwordFields": [ "DbPassword" ]
+}

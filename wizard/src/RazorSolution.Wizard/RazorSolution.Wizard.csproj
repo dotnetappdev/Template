@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The Visual Studio side of the wizard: a multi-step WPF window (Back / Next / Create, Test connection)
+    and the IWizard that New Project calls. .NET Framework 4.8 because it runs inside Visual Studio.
+    The UI is built in code (no XAML) so it also compiles on Linux/macOS CI against the reference assemblies.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\RazorSolution.Wizard.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <!-- Provided by Visual Studio at run time: compile against them, don't ship them. -->
+    <PackageReference Include="Microsoft.VisualStudio.TemplateWizardInterface" Version="17.10.40170" ExcludeAssets="runtime" />
+    <PackageReference Include="EnvDTE" Version="17.14.40260" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" ExcludeAssets="runtime" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RazorSolution.Wizard.Core\RazorSolution.Wizard.Core.csproj" />
+  </ItemGroup>
+
+</Project>
