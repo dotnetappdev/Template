@@ -9,7 +9,7 @@
     "LibMan"
   ],
   "name": "Razor Pages Solution (Internal, External, API, Services, SqlRepository)",
-  "description": "Two independent Razor Pages sites (Internal and External, no Areas) that only talk to ProjectName.API, on top of a Services layer and an EF Core SqlRepository (repository pattern). Pick the .NET version (LTS/STS), SQL Server / PostgreSQL / SQLite and version, connection string, authentication, and jQuery, jQuery UI (+theme), Bootstrap (+Bootswatch theme), Font Awesome, DataTables, Select2, Toastr, SweetAlert2 and Chart.js via LibMan.",
+  "description": "Two independent Razor Pages sites (Internal and External, no Areas) that only talk to ProjectName.API, on top of a Services layer and an EF Core SqlRepository (repository pattern). Pick the .NET version (LTS/STS), SQL Server / PostgreSQL / SQLite and version, connection string, authentication, and jQuery, jQuery UI (+theme), Bootstrap (+Bootswatch theme), Font Awesome Free, DataTables, Select2, Toastr, SweetAlert2 and Chart.js via LibMan, and Sentry / Raygun / Application Insights error monitoring.",
   "identity": "DotNetAppDev.RazorSolution.CSharp",
   "groupIdentity": "DotNetAppDev.RazorSolution",
   "shortName": "razorsln",
@@ -401,6 +401,42 @@
       "defaultValue": "false",
       "displayName": "Add Serilog logging (Serilog.AspNetCore)",
       "description": "Structured logging to the console and rolling files, configured in appsettings.json."
+    },
+    "ErrorMonitoring": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "None",
+      "displayName": "Error monitoring",
+      "description": "Send unhandled exceptions (API and sites, plus browser JavaScript errors for Sentry and Raygun) to an error-monitoring service.",
+      "choices": [
+        {
+          "choice": "None",
+          "displayName": "None",
+          "description": "Errors are only logged"
+        },
+        {
+          "choice": "Sentry",
+          "displayName": "Sentry (sentry.io)",
+          "description": "Sentry.AspNetCore + Sentry browser SDK"
+        },
+        {
+          "choice": "Raygun",
+          "displayName": "Raygun (raygun.com)",
+          "description": "Mindscape.Raygun4Net.AspNetCore + raygun4js"
+        },
+        {
+          "choice": "ApplicationInsights",
+          "displayName": "Azure Application Insights",
+          "description": "Microsoft.ApplicationInsights.AspNetCore"
+        }
+      ]
+    },
+    "ErrorMonitoringKey": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "displayName": "Error monitoring key (optional)",
+      "description": "Sentry DSN, Raygun API key or Application Insights connection string. Leave blank to set it later in appsettings.json or user-secrets."
     },
     "IncludeResilience": {
       "type": "parameter",
@@ -806,48 +842,48 @@
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "6.7.2",
-      "displayName": "Font Awesome version",
-      "description": "Font Awesome Free version restored by LibMan, or none.",
+      "displayName": "Font Awesome Free version",
+      "description": "Font Awesome Free (the free @fortawesome/fontawesome-free package, restored by LibMan). Pro is never used.",
       "choices": [
         {
           "choice": "7.3.1",
-          "displayName": "Font Awesome 7.3.1",
-          "description": "Font Awesome 7.3.1"
+          "displayName": "Font Awesome Free 7.3.1",
+          "description": "Font Awesome Free 7.3.1"
         },
         {
           "choice": "7.0.1",
-          "displayName": "Font Awesome 7.0.1",
-          "description": "Font Awesome 7.0.1"
+          "displayName": "Font Awesome Free 7.0.1",
+          "description": "Font Awesome Free 7.0.1"
         },
         {
           "choice": "6.7.2",
-          "displayName": "Font Awesome 6.7.2",
-          "description": "Font Awesome 6.7.2"
+          "displayName": "Font Awesome Free 6.7.2",
+          "description": "Font Awesome Free 6.7.2"
         },
         {
           "choice": "6.6.0",
-          "displayName": "Font Awesome 6.6.0",
-          "description": "Font Awesome 6.6.0"
+          "displayName": "Font Awesome Free 6.6.0",
+          "description": "Font Awesome Free 6.6.0"
         },
         {
           "choice": "6.5.2",
-          "displayName": "Font Awesome 6.5.2",
-          "description": "Font Awesome 6.5.2"
+          "displayName": "Font Awesome Free 6.5.2",
+          "description": "Font Awesome Free 6.5.2"
         },
         {
           "choice": "6.4.2",
-          "displayName": "Font Awesome 6.4.2",
-          "description": "Font Awesome 6.4.2"
+          "displayName": "Font Awesome Free 6.4.2",
+          "description": "Font Awesome Free 6.4.2"
         },
         {
           "choice": "5.15.4",
-          "displayName": "Font Awesome 5.15.4",
-          "description": "Font Awesome 5.15.4"
+          "displayName": "Font Awesome Free 5.15.4",
+          "description": "Font Awesome Free 5.15.4"
         },
         {
           "choice": "none",
-          "displayName": "None",
-          "description": "None"
+          "displayName": "None (no icons)",
+          "description": "None (no icons)"
         }
       ],
       "replaces": "__FONTAWESOME_VERSION__"
@@ -943,6 +979,26 @@
       "type": "computed",
       "datatype": "bool",
       "value": "(Framework == \"net11.0\")"
+    },
+    "UseSentry": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(ErrorMonitoring == \"Sentry\")"
+    },
+    "UseRaygun": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(ErrorMonitoring == \"Raygun\")"
+    },
+    "UseAppInsights": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(ErrorMonitoring == \"ApplicationInsights\")"
+    },
+    "UseErrorMonitoring": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(ErrorMonitoring != \"None\")"
     },
     "UseTests": {
       "type": "computed",
@@ -1360,6 +1416,24 @@
       "replaces": "__CUSTOM_CONNECTION_STRING__",
       "parameters": {
         "source": "ConnectionString",
+        "steps": [
+          {
+            "regex": "\\\\",
+            "replacement": "\\\\"
+          },
+          {
+            "regex": "\"",
+            "replacement": "\\\""
+          }
+        ]
+      }
+    },
+    "ErrorMonitoringKeyEscaped": {
+      "type": "generated",
+      "generator": "regex",
+      "replaces": "__ERROR_MONITORING_KEY__",
+      "parameters": {
+        "source": "ErrorMonitoringKey",
         "steps": [
           {
             "regex": "\\\\",

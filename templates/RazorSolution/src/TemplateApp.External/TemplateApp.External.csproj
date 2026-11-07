@@ -19,6 +19,13 @@
 <!--#if (IncludeSerilog) -->
     <PackageReference Include="Serilog.AspNetCore" />
 <!--#endif -->
+<!--#if (UseSentry) -->
+    <PackageReference Include="Sentry.AspNetCore" />
+<!--#elseif (UseRaygun) -->
+    <PackageReference Include="Mindscape.Raygun4Net.AspNetCore" />
+<!--#elseif (UseAppInsights) -->
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+<!--#endif -->
   </ItemGroup>
 
 </Project>

@@ -152,10 +152,19 @@
     "IncludeChartJs": {
       "longName": "chartjs",
       "shortName": ""
+    },
+    "ErrorMonitoring": {
+      "longName": "error-monitoring",
+      "shortName": ""
+    },
+    "ErrorMonitoringKey": {
+      "longName": "error-monitoring-key",
+      "shortName": ""
     }
   },
   "usageExamples": [
     "--database SqlServer --sql-version SqlServer2022 --bootstrap-theme flatly --jquery-ui-theme redmond",
-    "--external false --internal-auth Windows --serilog --api-key --chartjs --sweetalert"
+    "--external false --internal-auth Windows --serilog --api-key --chartjs --sweetalert",
+    "--error-monitoring Sentry --error-monitoring-key https://<key>@o0.ingest.sentry.io/0"
   ]
 }

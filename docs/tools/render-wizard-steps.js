@@ -209,7 +209,7 @@ function page({ step, v, name, dir, test }) {
     ['wizard-step-1-projects.png', { step: 'projects', v: defaults({}) }],
     ['wizard-step-2-database-postgres.png', { step: 'database', v: defaults({ DatabaseProvider: 'PostgreSQL', DbPassword: 'Dev_pass1' }), test: pg }],
     ['wizard-step-2-database-sqlserver.png', { step: 'database', v: defaults({ DbAuthentication: 'SqlLogin', DbServer: 'sql01', DbUser: 'portal_app', DbPassword: 'secret' }), test: sql }],
-    ['wizard-step-3-api-security.png', { step: 'api', v: defaults({ InternalAuthentication: 'EntraId', IncludeApiKey: 'true', IncludeSerilog: 'true' }) }],
+    ['wizard-step-3-api-security.png', { step: 'api', v: defaults({ InternalAuthentication: 'Windows', IncludeApiKey: 'true', IncludeSerilog: 'true', ErrorMonitoring: 'Sentry', ErrorMonitoringKey: 'https://4f2a9c…@o123456.ingest.sentry.io/789' }) }],
     ['wizard-step-4-front-end.png', { step: 'frontend', v: defaults({ BootstrapTheme: 'flatly', JQueryUITheme: 'redmond', IncludeSweetAlert: 'true', IncludeChartJs: 'true' }) }],
     ['wizard-step-5-summary.png', { step: 'summary', v: defaults({ DatabaseProvider: 'PostgreSQL', DbPassword: 'Dev_pass1', BootstrapTheme: 'flatly', JQueryUITheme: 'redmond', IncludeSweetAlert: 'true', IncludeChartJs: 'true', InternalAuthentication: 'Windows', IncludeApiKey: 'true' }) }],
   ];

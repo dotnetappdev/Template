@@ -148,7 +148,7 @@ Both sites use these libraries, chosen when the solution was created:
 | Bootstrap | __BOOTSTRAP_VERSION__ | layout and components |
 <!--#endif -->
 <!--#if (UseFontAwesome) -->
-| Font Awesome Free | __FONTAWESOME_VERSION__ | icons (`<i class="fas fa-...">`) |
+| Font Awesome **Free** | __FONTAWESOME_VERSION__ | icons (`<i class="fas fa-...">`); the free `@fortawesome/fontawesome-free` package, no Pro licence needed |
 <!--#endif -->
 <!--#if (IncludeJQueryValidation) -->
 | jQuery Validation + Unobtrusive | 1.22.1 / 4.0.0 | client-side form validation (`_ValidationScriptsPartial`) |
@@ -184,7 +184,7 @@ The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.csht
 
 `Directory.Build.targets` retries the LibMan restore up to three times. This is in case both sites download a new library version at the same moment during a parallel build.
 <!--#endif -->
-<!--#if (UseInternalAuth || UseApiKey || IncludeHealthChecks || IncludeSerilog || IncludeResilience) -->
+<!--#if (UseInternalAuth || UseApiKey || IncludeHealthChecks || IncludeSerilog || IncludeResilience || UseErrorMonitoring) -->
 
 ## Security and operations
 
@@ -206,6 +206,19 @@ The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.csht
 <!--#endif -->
 <!--#if (IncludeSerilog) -->
 * **Serilog:** logging is configured in the `Serilog` section of each `appsettings.json`. It writes to the console and to rolling files in `logs/`, and logs each request with `UseSerilogRequestLogging()`.
+<!--#endif -->
+<!--#if (UseSentry) -->
+* **Error monitoring, Sentry:**
+  * **Server side:** the API and both sites call `builder.WebHost.UseSentry()`. They send unhandled exceptions, and anything logged at Error or above, to sentry.io.
+  * **Browser side:** each site's `Pages/Shared/_Scripts.cshtml` loads the Sentry browser SDK (restored by LibMan from browser.sentry-cdn.com), which reports JavaScript errors.
+  * **Settings:** the `Sentry` section of each `appsettings.json`: `Dsn`, `TracesSampleRate`, `MinimumEventLevel`. An empty `Dsn` turns Sentry off. You can give each project its own Sentry project and DSN.
+<!--#elseif (UseRaygun) -->
+* **Error monitoring, Raygun:**
+  * **Server side:** the API and both sites use `AddRaygun(...)` / `UseRaygun()` (Mindscape.Raygun4Net.AspNetCore) and send unhandled exceptions to raygun.com.
+  * **Browser side:** each site's `Pages/Shared/_Scripts.cshtml` starts raygun4js, which reports JavaScript errors.
+  * **Settings:** `RaygunSettings:ApiKey` in each `appsettings.json`. Raygun stays off until an `ApiKey` is set.
+<!--#elseif (UseAppInsights) -->
+* **Error monitoring, Azure Application Insights:** the API and both sites call `AddApplicationInsightsTelemetry()`. This sends exceptions, requests, dependencies (including the sites' calls to the API) and logs to Azure Monitor. Set `ApplicationInsights:ConnectionString` in `appsettings.json`, or the `APPLICATIONINSIGHTS_CONNECTION_STRING` environment variable (as App Service does). Telemetry stays off until a connection string is set.
 <!--#endif -->
 <!--#if (IncludeResilience) -->
 * **Resilience:** the sites' API clients use `AddStandardResilienceHandler()`, which adds retries with back-off, timeouts and a circuit breaker.

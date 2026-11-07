@@ -284,6 +284,41 @@ window.WIZARD_DATA = {
    "choices": [],
    "cli": "--serilog"
   },
+  "ErrorMonitoring": {
+   "id": "ErrorMonitoring",
+   "kind": "choice",
+   "label": "Error monitoring",
+   "description": "Send unhandled exceptions (API and sites, plus browser JavaScript errors for Sentry and Raygun) to an error-monitoring service.",
+   "default": "None",
+   "choices": [
+    {
+     "value": "None",
+     "display": "None"
+    },
+    {
+     "value": "Sentry",
+     "display": "Sentry (sentry.io)"
+    },
+    {
+     "value": "Raygun",
+     "display": "Raygun (raygun.com)"
+    },
+    {
+     "value": "ApplicationInsights",
+     "display": "Azure Application Insights"
+    }
+   ],
+   "cli": "--error-monitoring"
+  },
+  "ErrorMonitoringKey": {
+   "id": "ErrorMonitoringKey",
+   "kind": "text",
+   "label": "Error monitoring key (Sentry DSN / Raygun API key / App Insights connection string)",
+   "description": "Sentry DSN, Raygun API key or Application Insights connection string. Leave blank to set it later in appsettings.json or user-secrets.",
+   "default": "",
+   "choices": [],
+   "cli": "--error-monitoring-key"
+  },
   "IncludeResilience": {
    "id": "IncludeResilience",
    "kind": "bool",
@@ -630,41 +665,41 @@ window.WIZARD_DATA = {
   "FontAwesomeVersion": {
    "id": "FontAwesomeVersion",
    "kind": "choice",
-   "label": "Font Awesome version",
-   "description": "Font Awesome Free version restored by LibMan, or none.",
+   "label": "Font Awesome Free version",
+   "description": "Font Awesome Free only (free icons package, no Pro).",
    "default": "6.7.2",
    "choices": [
     {
      "value": "7.3.1",
-     "display": "Font Awesome 7.3.1"
+     "display": "Font Awesome Free 7.3.1"
     },
     {
      "value": "7.0.1",
-     "display": "Font Awesome 7.0.1"
+     "display": "Font Awesome Free 7.0.1"
     },
     {
      "value": "6.7.2",
-     "display": "Font Awesome 6.7.2"
+     "display": "Font Awesome Free 6.7.2"
     },
     {
      "value": "6.6.0",
-     "display": "Font Awesome 6.6.0"
+     "display": "Font Awesome Free 6.6.0"
     },
     {
      "value": "6.5.2",
-     "display": "Font Awesome 6.5.2"
+     "display": "Font Awesome Free 6.5.2"
     },
     {
      "value": "6.4.2",
-     "display": "Font Awesome 6.4.2"
+     "display": "Font Awesome Free 6.4.2"
     },
     {
      "value": "5.15.4",
-     "display": "Font Awesome 5.15.4"
+     "display": "Font Awesome Free 5.15.4"
     },
     {
      "value": "none",
-     "display": "None"
+     "display": "None (no icons)"
     }
    ],
    "cli": "--fontawesome"
@@ -778,6 +813,8 @@ window.WIZARD_DATA = {
     "IncludeApiKey",
     "IncludeHealthChecks",
     "IncludeSerilog",
+    "ErrorMonitoring",
+    "ErrorMonitoringKey",
     "InternalAuthentication",
     "EntraTenantId",
     "EntraClientId",
@@ -961,6 +998,15 @@ window.WIZARD_DATA = {
      "true"
     ]
    }
+  ],
+  "ErrorMonitoringKey": [
+   {
+    "ErrorMonitoring": [
+     "Sentry",
+     "Raygun",
+     "ApplicationInsights"
+    ]
+   }
   ]
  },
  "passwordFields": [
@@ -980,7 +1026,8 @@ window.WIZARD_DATA = {
    "JQueryUITheme": "swatch",
    "BootstrapVersion": "compact",
    "BootstrapTheme": "swatch",
-   "FontAwesomeVersion": "compact"
+   "FontAwesomeVersion": "compact",
+   "ErrorMonitoring": "large"
   },
   "choices": {
    "Framework": {
@@ -1147,13 +1194,30 @@ window.WIZARD_DATA = {
    },
    "FontAwesomeVersion": {
     "7.3.1": {
-     "badge": "Latest"
+     "badge": "Latest",
+     "note": "Free"
     },
     "5.15.4": {
-     "badge": "v5"
+     "badge": "v5",
+     "note": "Free"
     },
     "none": {
      "badge": "No icons"
+    },
+    "7.0.1": {
+     "note": "Free"
+    },
+    "6.7.2": {
+     "note": "Free"
+    },
+    "6.6.0": {
+     "note": "Free"
+    },
+    "6.5.2": {
+     "note": "Free"
+    },
+    "6.4.2": {
+     "note": "Free"
     }
    },
    "JQueryUITheme": {
@@ -1466,6 +1530,40 @@ window.WIZARD_DATA = {
       "#fff",
       "#6c757d"
      ]
+    }
+   },
+   "ErrorMonitoring": {
+    "None": {
+     "note": "Exceptions are only written to the logs",
+     "icon": {
+      "fa": "fa-solid fa-ban",
+      "glyph": "E711",
+      "color": "#6B7280"
+     }
+    },
+    "Sentry": {
+     "note": "sentry.io · server + browser errors, performance traces",
+     "icon": {
+      "fa": "fa-solid fa-bug",
+      "glyph": "EBE8",
+      "color": "#362D59"
+     }
+    },
+    "Raygun": {
+     "note": "raygun.com · crash reporting for server + browser",
+     "icon": {
+      "fa": "fa-solid fa-bolt",
+      "glyph": "E945",
+      "color": "#1D7FC4"
+     }
+    },
+    "ApplicationInsights": {
+     "note": "Azure Monitor · exceptions, requests, dependencies",
+     "icon": {
+      "fa": "fa-solid fa-chart-line",
+      "glyph": "E9D2",
+      "color": "#0078D4"
+     }
     }
    }
   },

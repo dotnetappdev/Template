@@ -87,6 +87,19 @@
       "files": [ "dist/sweetalert2.all.min.js" ]
     },
 //#endif
+//#if (UseSentry)
+    {
+      "provider": "filesystem",
+      "library": "https://browser.sentry-cdn.com/11.8.0/bundle.min.js",
+      "destination": "wwwroot/lib/sentry/"
+    },
+//#elseif (UseRaygun)
+    {
+      "library": "raygun4js@3.1.4",
+      "destination": "wwwroot/lib/raygun4js/",
+      "files": [ "dist/raygun.min.js" ]
+    },
+//#endif
 //#if (IncludeChartJs)
     {
       "library": "chart.js@4.5.1",

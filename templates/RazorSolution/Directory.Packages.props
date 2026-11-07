@@ -34,6 +34,19 @@
     <!-- Logging -->
     <PackageVersion Include="Serilog.AspNetCore" Version="__SERILOG_VERSION__" />
 <!--#endif -->
+<!--#if (UseSentry) -->
+
+    <!-- Error monitoring: Sentry (sentry.io) -->
+    <PackageVersion Include="Sentry.AspNetCore" Version="6.12.1" />
+<!--#elseif (UseRaygun) -->
+
+    <!-- Error monitoring: Raygun (raygun.com) -->
+    <PackageVersion Include="Mindscape.Raygun4Net.AspNetCore" Version="11.2.7" />
+<!--#elseif (UseAppInsights) -->
+
+    <!-- Error monitoring: Azure Application Insights -->
+    <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="3.2.0" />
+<!--#endif -->
 <!--#if (UseWindowsAuth) -->
 
     <!-- Internal site: Windows authentication -->

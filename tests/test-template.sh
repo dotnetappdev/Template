@@ -37,6 +37,10 @@ run_case Net9Postgres -f net9.0 --database PostgreSQL --postgres-version 16 --jq
 run_case Net10Sqlite -f net10.0 --database Sqlite --bootstrap 5.1.3 --fontawesome 6.4.2 --api-key --serilog --select2
 run_case Net11Azure -f net11.0 --database SqlServer --sql-version AzureSql --db-auth SqlLogin \
   --db-server my-srv.database.windows.net --db-user app --db-password 'P@ss"w\rd' --serilog --internal-auth Windows
+run_case Sentry --error-monitoring Sentry --error-monitoring-key 'https://abc123@o0.ingest.sentry.io/0' --serilog
+run_case Raygun10 -f net10.0 --error-monitoring Raygun --error-monitoring-key 'rg_key_123' --internal-auth Windows
+run_case AppInsights11 -f net11.0 --error-monitoring ApplicationInsights \
+  --error-monitoring-key 'InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://x.in.applicationinsights.azure.com/'
 run_case InternalOnlyNoData --external false --services false --sql-repository false
 run_case ExternalOnly --internal false --jquery-ui 1.13.3 --jquery-ui-theme smoothness
 run_case ApiOnly --internal false --external false --api-key

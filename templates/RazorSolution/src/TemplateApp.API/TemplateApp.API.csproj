@@ -5,7 +5,7 @@
     <RootNamespace>TemplateApp.API</RootNamespace>
     <UserSecretsId>7A0D5E21-0C3B-4F55-8D2E-6B1F9C4A2E04</UserSecretsId>
   </PropertyGroup>
-<!--#if (UseSwagger || IncludeSerilog || (IncludeHealthChecks && UseSqlRepository)) -->
+<!--#if (UseSwagger || IncludeSerilog || UseErrorMonitoring || (IncludeHealthChecks && UseSqlRepository)) -->
 
   <ItemGroup>
 <!--#if (UseSwagger) -->
@@ -13,6 +13,13 @@
 <!--#endif -->
 <!--#if (IncludeSerilog) -->
     <PackageReference Include="Serilog.AspNetCore" />
+<!--#endif -->
+<!--#if (UseSentry) -->
+    <PackageReference Include="Sentry.AspNetCore" />
+<!--#elseif (UseRaygun) -->
+    <PackageReference Include="Mindscape.Raygun4Net.AspNetCore" />
+<!--#elseif (UseAppInsights) -->
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
 <!--#endif -->
 <!--#if (IncludeHealthChecks && UseSqlRepository) -->
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />

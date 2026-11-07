@@ -48,10 +48,19 @@ public class IndexModel : PageModel
     /// </summary>
     public async Task<JsonResult> OnGetAutocompleteAsync(string? term, CancellationToken cancellationToken)
     {
-        var matches = await _customers.SearchAsync(term, cancellationToken);
+        try
+        {
+            var matches = await _customers.SearchAsync(term, cancellationToken);
 
-        return new JsonResult(matches
-            .Take(10)
-            .Select(c => new { label = $"{c.FullName} ({c.Email})", value = c.FullName }));
+            return new JsonResult(matches
+                .Take(10)
+                .Select(c => new { label = $"{c.FullName} ({c.Email})", value = c.FullName }));
+        }
+        catch (HttpRequestException ex)
+        {
+            // No suggestions when the API is down; the error is logged (and sent to error monitoring, if configured).
+            _logger.LogError(ex, "Customer autocomplete could not reach the API.");
+            return new JsonResult(Array.Empty<object>());
+        }
     }
 }

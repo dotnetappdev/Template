@@ -1,6 +1,9 @@
 #if (IncludeSerilog)
 using Serilog;
 #endif
+#if (UseRaygun)
+using Mindscape.Raygun4Net.AspNetCore;
+#endif
 #if (UseApiKey)
 using TemplateApp.API.Security;
 #endif
@@ -19,6 +22,28 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSerilog((services, logger) => logger
     .ReadFrom.Configuration(builder.Configuration)
     .ReadFrom.Services(services));
+#endif
+
+#if (UseSentry)
+
+// Sentry (sentry.io): unhandled exceptions and logged errors. Settings: "Sentry" section (Dsn). An empty Dsn turns it off.
+builder.WebHost.UseSentry();
+#elseif (UseRaygun)
+
+// Raygun (raygun.com): unhandled exceptions. Settings: "RaygunSettings" section (ApiKey). Off until an ApiKey is set.
+var raygunEnabled = !string.IsNullOrWhiteSpace(builder.Configuration["RaygunSettings:ApiKey"]);
+if (raygunEnabled)
+{
+    builder.Services.AddRaygun(builder.Configuration);
+}
+#elseif (UseAppInsights)
+
+// Azure Application Insights: exceptions, requests and dependencies. Settings: "ApplicationInsights" section
+// (ConnectionString) or the APPLICATIONINSIGHTS_CONNECTION_STRING variable. Off until a connection string is set.
+if (!string.IsNullOrWhiteSpace(builder.Configuration["ApplicationInsights:ConnectionString"] ?? builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
 #endif
 
 builder.Services.AddControllers();
@@ -65,6 +90,14 @@ else
     app.UseExceptionHandler();
     app.UseHsts();
 }
+#if (UseRaygun)
+
+if (raygunEnabled)
+{
+    // After the exception handlers, so Raygun sees exceptions before they are turned into responses.
+    app.UseRaygun();
+}
+#endif
 #if (IncludeSerilog)
 
 app.UseSerilogRequestLogging();

@@ -8,7 +8,8 @@ Like the [Shiny .NET templates](https://github.com/shinyorg/templates), all the 
 - which projects to create
 - the database, its version and the connection string
 - authentication
-- the jQuery, jQuery UI (and theme), Bootstrap (and Bootswatch theme) and Font Awesome versions
+- the jQuery, jQuery UI (and theme), Bootstrap (and Bootswatch theme) and Font Awesome Free versions
+- error monitoring with Sentry, Raygun or Azure Application Insights
 - optional extras: DataTables, Select2, Toastr, SweetAlert2, Chart.js, Serilog, health checks, an API key, resilience and unit tests
 
 Every client library is installed with **LibMan**.
@@ -32,10 +33,11 @@ Every client library is installed with **LibMan**.
 9. [All options](#all-options)
 10. [Run the generated solution](#run-the-generated-solution)
 11. [Client-side libraries (LibMan)](#client-side-libraries-libman)
-12. [Database and EF Core](#database-and-ef-core)
-13. [Update or uninstall the template](#update-or-uninstall-the-template)
-14. [Troubleshooting](#troubleshooting)
-15. [Working on the template](#working-on-the-template)
+12. [Error monitoring (Sentry, Raygun, Application Insights)](#error-monitoring-sentry-raygun-application-insights)
+13. [Database and EF Core](#database-and-ef-core)
+14. [Update or uninstall the template](#update-or-uninstall-the-template)
+15. [Troubleshooting](#troubleshooting)
+16. [Working on the template](#working-on-the-template)
 
 ---
 
@@ -52,8 +54,10 @@ After you name the solution, Visual Studio shows **Additional information**: one
 | ![jQuery](docs/images/wizard-jquery-picker.png) | ![jQuery UI](docs/images/wizard-jquery-ui-picker.png) |
 | **jQuery UI theme: all 25 ThemeRoller themes** | **Bootstrap** |
 | ![jQuery UI theme](docs/images/wizard-jquery-ui-theme-picker.png) | ![Bootstrap](docs/images/wizard-bootstrap-picker.png) |
-| **Bootstrap theme: Bootswatch** | **Font Awesome** |
-| ![Bootstrap theme](docs/images/wizard-bootstrap-theme-picker.png) | ![Font Awesome](docs/images/wizard-fontawesome-picker.png) |
+| **Bootstrap theme: Bootswatch** | **Font Awesome Free** |
+| ![Bootstrap theme](docs/images/wizard-bootstrap-theme-picker.png) | ![Font Awesome Free](docs/images/wizard-fontawesome-picker.png) |
+| **Error monitoring** | |
+| ![Error monitoring](docs/images/wizard-error-monitoring-picker.png) | |
 
 <details>
 <summary>Light theme</summary>
@@ -81,8 +85,8 @@ The steps:
 
 1. **Projects:** .NET version, and which of Internal / External / API / Services / SqlRepository / Tests to create.
 2. **Database:** provider, version, authentication, server, name, user and password (masked), or a full connection string. It shows the exact connection string the API will get, and has a **Test connection** button. Fields you don't need are hidden: there's no user or password for Windows auth, and no server for SQLite.
-3. **API & security:** Swagger, API key, health checks, Serilog, Internal-site sign-in (Windows / Entra ID plus IDs), and resilience.
-4. **Front end:** jQuery, jQuery UI and theme, Bootstrap and Bootswatch theme, Font Awesome, and the plugins.
+3. **API & security:** Swagger, API key, health checks, Serilog, **error monitoring** (Sentry / Raygun / Application Insights, plus the DSN or key), Internal-site sign-in (Windows / Entra ID plus IDs), and resilience.
+4. **Front end:** jQuery, jQuery UI and theme, Bootstrap and Bootswatch theme, Font Awesome Free, and the plugins.
 5. **Summary:** your choices plus the equivalent `dotnet new razorsln …` command (with **Copy command**). **Create** generates the solution and opens it.
 
 Steps that don't apply are skipped. For example, there's no Database step when you don't create a data layer.
@@ -155,7 +159,7 @@ Its options come from `configurator/wizard-data.js`, which `node configurator/bu
 
 ```mermaid
 flowchart LR
-    subgraph FE["Front end: independent sites (LibMan: jQuery, jQuery UI, Bootstrap, Font Awesome, ...)"]
+    subgraph FE["Front end: independent sites (LibMan: jQuery, jQuery UI, Bootstrap, Font Awesome Free, ...)"]
         I["ProjectName.Internal<br/>Razor Pages (staff)<br/>Windows / Entra ID sign-in"]
         E["ProjectName.External<br/>Razor Pages (public)"]
     end
@@ -171,7 +175,7 @@ flowchart LR
 | --- | --- |
 | **ProjectName.Internal** | Staff site with a dashboard (API status, front-end stack, optional Chart.js chart). The Customers page has DataTables, jQuery UI autocomplete, and delete with a SweetAlert2 confirmation. The Create form uses jQuery Validation. Optional Windows or Entra ID sign-in. Calls the API only. |
 | **ProjectName.External** | Public site: home page, and a contact form with a jQuery UI date picker and a Select2 topic picker that posts to the API. Calls the API only. |
-| **ProjectName.API** | Controllers (`api/customers`, `api/contact-requests`, `api/status`), Swagger UI, problem details, `/health` with a database check, and an optional `X-Api-Key` check. The **only** project that touches the data layer. |
+| **ProjectName.API** | Controllers (`api/customers`, `api/contact-requests`, `api/status`), Swagger UI, problem details, `/health` with a database check, an optional `X-Api-Key` check, and optional Sentry / Raygun / Application Insights error monitoring. The **only** project that touches the data layer. |
 | **ProjectName.Services** | Business logic behind interfaces (`ICustomerService` → `CustomerService`) and DTOs. |
 | **ProjectName.SqlRepository** | EF Core: `ApplicationDbContext`, entities, `IEntityTypeConfiguration<T>`, generic `IRepository<T>` / `Repository<T>`, `ICustomerRepository` / `CustomerRepository`, a design-time factory for migrations, and an optional seeder. |
 | **ProjectName.Tests** | xUnit + NSubstitute tests for the services. The repositories are faked through their interfaces, so no database is needed. |
@@ -267,7 +271,7 @@ dotnet new list razorsln
    - **Database**: pick the provider, then the SQL Server or PostgreSQL version and the authentication type. Leave server, name, user and password blank for local defaults, or paste a full connection string. Untick **Seed sample data** if you don't want the demo customers.
    - **API**: Swagger, API key, health checks and Serilog.
    - **Internal site authentication**: None, Windows (Negotiate) or Microsoft Entra ID. The tenant and client IDs are optional and can be set later.
-   - **Front end**: jQuery, jQuery UI and its theme, Bootstrap and its Bootswatch theme, Font Awesome, and the plugin checkboxes.
+   - **Front end**: jQuery, jQuery UI and its theme, Bootstrap and its Bootswatch theme, Font Awesome Free, and the plugin checkboxes.
 5. Click **Create**, then [set the startup projects](#run-the-generated-solution).
 
 ---
@@ -278,7 +282,7 @@ dotnet new list razorsln
 dotnet new razorsln -n MyCompany.Portal
 ```
 
-That uses every default: .NET 8; Internal, External, API, Services, SqlRepository and Tests; SQL Server 2022 on LocalDB with Windows authentication; jQuery 3.7.1, jQuery UI 1.14.2 (base), Bootstrap 5.3.8, Font Awesome 6.7.2, jQuery Validation, DataTables and Toastr; Swagger, health checks and resilience.
+That uses every default: .NET 8; Internal, External, API, Services, SqlRepository and Tests; SQL Server 2022 on LocalDB with Windows authentication; jQuery 3.7.1, jQuery UI 1.14.2 (base), Bootstrap 5.3.8, Font Awesome Free 6.7.2, jQuery Validation, DataTables and Toastr; Swagger, health checks and resilience.
 
 ```bash
 # Staff-only portal on .NET 10 with Windows sign-in, Serilog and an API key
@@ -293,6 +297,14 @@ dotnet new razorsln -n MyCompany.Portal --database PostgreSQL --postgres-version
 dotnet new razorsln -n MyCompany.Portal --sql-version SqlServer2019 --db-auth SqlLogin \
     --db-server "SQL01\APPS" --db-name Portal --db-user portal_app --db-password "S3cret!" \
     --internal-auth EntraId --entra-tenant-id <tenant-guid> --entra-client-id <client-guid>
+
+# Sentry for the API, both sites and browser JavaScript errors
+dotnet new razorsln -n MyCompany.Portal --error-monitoring Sentry \
+    --error-monitoring-key "https://<key>@o123456.ingest.sentry.io/<project>"
+
+# Raygun, or Azure Application Insights
+dotnet new razorsln -n MyCompany.Portal --error-monitoring Raygun --error-monitoring-key "<raygun api key>"
+dotnet new razorsln -n MyCompany.Portal --error-monitoring ApplicationInsights
 
 # Older front-end stack
 dotnet new razorsln -n MyCompany.Legacy --bootstrap 4.6.2 --jquery 3.5.1 --jquery-ui 1.12.1 --fontawesome 5.15.4
@@ -350,6 +362,8 @@ dotnet new razorsln -n MyCompany.Portal --dry-run
 | API key (`X-Api-Key`) | `--api-key` | (none; generated key) | false |
 | Health checks (`/health`) | `--health-checks` | Microsoft.Extensions.Diagnostics.HealthChecks(.EntityFrameworkCore) | **true** |
 | Serilog | `--serilog` | Serilog.AspNetCore | false |
+| Error monitoring | `--error-monitoring` | `None`, `Sentry` (Sentry.AspNetCore + Sentry browser SDK), `Raygun` (Mindscape.Raygun4Net.AspNetCore + raygun4js), `ApplicationInsights` (Microsoft.ApplicationInsights.AspNetCore) | **None** |
+| Error monitoring key | `--error-monitoring-key` | Sentry DSN / Raygun API key / Application Insights connection string | blank (set later) |
 | Internal site authentication | `--internal-auth` | `None`, `Windows` (Microsoft.AspNetCore.Authentication.Negotiate), `EntraId` (Microsoft.Identity.Web) | **None** |
 | Entra ID tenant / client ID | `--entra-tenant-id`, `--entra-client-id` | | blank (placeholder GUIDs) |
 | Resilience for API clients | `--resilience` | Microsoft.Extensions.Http.Resilience | **true** |
@@ -363,7 +377,7 @@ dotnet new razorsln -n MyCompany.Portal --dry-run
 | jQuery UI theme | `--jquery-ui-theme` | **`base`**, `black-tie`, `blitzer`, `cupertino`, `dark-hive`, `dot-luv`, `eggplant`, `excite-bike`, `flick`, `hot-sneaks`, `humanity`, `le-frog`, `mint-choc`, `overcast`, `pepper-grinder`, `redmond`, `smoothness`, `south-street`, `start`, `sunny`, `swanky-purse`, `trontastic`, `ui-darkness`, `ui-lightness`, `vader` |
 | Bootstrap | `--bootstrap` | **`5.3.8`**, `5.3.7`, `5.3.3`, `5.2.3`, `5.1.3`, `4.6.2` (the markup adapts to v4) |
 | Bootstrap theme | `--bootstrap-theme` | **`default`**, or Bootswatch `cerulean`, `cosmo`, `darkly`, `flatly`, `journal`, `litera`, `lumen`, `lux`, `materia`, `minty`, `pulse`, `sandstone`, `simplex`, `slate`, `spacelab`, `superhero`, `united`, `yeti` |
-| Font Awesome | `--fontawesome` | `7.3.1`, `7.0.1`, **`6.7.2`**, `6.6.0`, `6.5.2`, `6.4.2`, `5.15.4`, `none` |
+| Font Awesome **Free** | `--fontawesome` | `7.3.1`, `7.0.1`, **`6.7.2`**, `6.6.0`, `6.5.2`, `6.4.2`, `5.15.4`, `none`. Always the free `@fortawesome/fontawesome-free` package; Pro is never offered |
 | jQuery Validation | `--jquery-validation` | **true** |
 | DataTables 2.3.8 | `--datatables` | **true** |
 | Select2 4.1.0 | `--select2` | false |
@@ -412,6 +426,25 @@ Each site has its own `libman.json`. Packages come from **jsDelivr** (npm), and 
 - **CLI:** `dotnet tool install -g Microsoft.Web.LibraryManager.Cli`, then `libman restore`.
 
 To upgrade a library, change the `@version` in both sites' `libman.json`. `Directory.Build.targets` retries a restore that collides with the other site's restore during a parallel build.
+
+---
+
+## Error monitoring (Sentry, Raygun, Application Insights)
+
+Pick one service in the wizard, or use `--error-monitoring`. The API, the Internal site and the External site are all wired up, and each one can report to its own project.
+
+| Service | What is captured | Where the key goes | When it's off |
+| --- | --- | --- | --- |
+| **Sentry** (sentry.io) | Unhandled exceptions, `ILogger` errors, sampled performance traces (`TracesSampleRate`), and browser JavaScript errors (the Sentry browser SDK, restored by LibMan) | `Sentry:Dsn` in each `appsettings.json` | Empty `Dsn` |
+| **Raygun** (raygun.com) | Unhandled exceptions (Raygun4Net middleware) and browser JavaScript errors (raygun4js) | `RaygunSettings:ApiKey` | Empty `ApiKey` |
+| **Azure Application Insights** | Exceptions, requests, dependencies (including the sites' calls to the API) and logs | `ApplicationInsights:ConnectionString`, or the `APPLICATIONINSIGHTS_CONNECTION_STRING` variable | No connection string |
+
+Keep real keys out of source control, for example with `dotnet user-secrets set "Sentry:Dsn" "<dsn>" --project src/MyCompany.Portal.API`.
+
+This was tested against a local stand-in for each service:
+- **Sentry:** received the API's logged errors from the .NET SDK, and a page's JavaScript error from the browser SDK.
+- **Raygun:** received an unhandled exception from the Internal site.
+- **Application Insights:** the solution starts and runs with a connection string set.
 
 ---
 

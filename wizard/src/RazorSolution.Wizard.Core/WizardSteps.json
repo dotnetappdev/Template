@@ -54,6 +54,8 @@
         "IncludeApiKey",
         "IncludeHealthChecks",
         "IncludeSerilog",
+        "ErrorMonitoring",
+        "ErrorMonitoringKey",
         "InternalAuthentication",
         "EntraTenantId",
         "EntraClientId",
@@ -237,6 +239,15 @@
           "true"
         ]
       }
+    ],
+    "ErrorMonitoringKey": [
+      {
+        "ErrorMonitoring": [
+          "Sentry",
+          "Raygun",
+          "ApplicationInsights"
+        ]
+      }
     ]
   },
   "passwordFields": [
@@ -256,7 +267,8 @@
       "JQueryUITheme": "swatch",
       "BootstrapVersion": "compact",
       "BootstrapTheme": "swatch",
-      "FontAwesomeVersion": "compact"
+      "FontAwesomeVersion": "compact",
+      "ErrorMonitoring": "large"
     },
     "choices": {
       "Framework": {
@@ -423,13 +435,30 @@
       },
       "FontAwesomeVersion": {
         "7.3.1": {
-          "badge": "Latest"
+          "badge": "Latest",
+          "note": "Free"
         },
         "5.15.4": {
-          "badge": "v5"
+          "badge": "v5",
+          "note": "Free"
         },
         "none": {
           "badge": "No icons"
+        },
+        "7.0.1": {
+          "note": "Free"
+        },
+        "6.7.2": {
+          "note": "Free"
+        },
+        "6.6.0": {
+          "note": "Free"
+        },
+        "6.5.2": {
+          "note": "Free"
+        },
+        "6.4.2": {
+          "note": "Free"
         }
       },
       "JQueryUITheme": {
@@ -742,6 +771,40 @@
             "#fff",
             "#6c757d"
           ]
+        }
+      },
+      "ErrorMonitoring": {
+        "None": {
+          "note": "Exceptions are only written to the logs",
+          "icon": {
+            "fa": "fa-solid fa-ban",
+            "glyph": "E711",
+            "color": "#6B7280"
+          }
+        },
+        "Sentry": {
+          "note": "sentry.io · server + browser errors, performance traces",
+          "icon": {
+            "fa": "fa-solid fa-bug",
+            "glyph": "EBE8",
+            "color": "#362D59"
+          }
+        },
+        "Raygun": {
+          "note": "raygun.com · crash reporting for server + browser",
+          "icon": {
+            "fa": "fa-solid fa-bolt",
+            "glyph": "E945",
+            "color": "#1D7FC4"
+          }
+        },
+        "ApplicationInsights": {
+          "note": "Azure Monitor · exceptions, requests, dependencies",
+          "icon": {
+            "fa": "fa-solid fa-chart-line",
+            "glyph": "E9D2",
+            "color": "#0078D4"
+          }
         }
       }
     },

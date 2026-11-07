@@ -233,6 +233,27 @@
       "persistenceScope": "templateGroup"
     },
     {
+      "id": "ErrorMonitoring",
+      "name": {
+        "text": "Error monitoring"
+      },
+      "description": {
+        "text": "Send unhandled exceptions (API and sites, plus browser JavaScript errors for Sentry and Raygun) to an error-monitoring service."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "ErrorMonitoringKey",
+      "name": {
+        "text": "Error monitoring key (Sentry DSN / Raygun API key / App Insights connection string)"
+      },
+      "description": {
+        "text": "Sentry DSN, Raygun API key or Application Insights connection string. Leave blank to set it later in appsettings.json or user-secrets."
+      },
+      "isVisible": true
+    },
+    {
       "id": "InternalAuthentication",
       "name": {
         "text": "Internal site authentication"
@@ -332,10 +353,10 @@
     {
       "id": "FontAwesomeVersion",
       "name": {
-        "text": "Font Awesome version"
+        "text": "Font Awesome Free version"
       },
       "description": {
-        "text": "Font Awesome Free version restored by LibMan, or none."
+        "text": "Font Awesome Free only (free icons package, no Pro)."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"

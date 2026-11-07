@@ -1,3 +1,22 @@
+@*#if (UseSentry || UseRaygun)*@
+@inject IConfiguration Configuration
+@inject IWebHostEnvironment Environment
+@*#endif*@
+@*#if (UseSentry)*@
+@* Sentry browser SDK 11.8.0: reports JavaScript errors to the same Sentry project (Sentry:Dsn). *@
+@if (!string.IsNullOrWhiteSpace(Configuration["Sentry:Dsn"]))
+{
+    <script src="~/lib/sentry/bundle.min.js"></script>
+    <script>Sentry.init({ dsn: @Json.Serialize(Configuration["Sentry:Dsn"]), environment: @Json.Serialize(Environment.EnvironmentName) });</script>
+}
+@*#elseif (UseRaygun)*@
+@* raygun4js 3.1.4: reports JavaScript errors to the same Raygun application (RaygunSettings:ApiKey). *@
+@if (!string.IsNullOrWhiteSpace(Configuration["RaygunSettings:ApiKey"]))
+{
+    <script src="~/lib/raygun4js/dist/raygun.min.js"></script>
+    <script>Raygun.init(@Json.Serialize(Configuration["RaygunSettings:ApiKey"])).attach().setVersion('1.0.0');</script>
+}
+@*#endif*@
 @* jQuery __JQUERY_VERSION__, jQuery UI __JQUERYUI_VERSION__ and Bootstrap __BOOTSTRAP_VERSION__ (bundle includes Popper), restored by LibMan. *@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
