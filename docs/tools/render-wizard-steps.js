@@ -118,7 +118,7 @@ function fieldsHtml(s, v) {
   return html;
 }
 
-function page({ step, v, name, dir, test }) {
+function page({ step, v, name, dir, test, theme }) {
   const steps = wiz.steps.filter(s => matches(s.when, v));
   const idx = steps.findIndex(s => s.id === step);
   const s = steps[idx];
@@ -152,7 +152,7 @@ function page({ step, v, name, dir, test }) {
   }
   const nav = steps.map((x, i) => `<div class="st ${i === idx ? 'cur' : ''}">${i + 1}.&nbsp; ${esc(x.title)}</div>`).join('');
   const last = idx === steps.length - 1;
-  return `<!doctype html><html><head><meta charset="utf-8"><script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script><style>
+  return `<!doctype html><html class="${theme || 'light'}"><head><meta charset="utf-8"><script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script><style>
     * { box-sizing:border-box } body { margin:0; font:12px "Segoe UI", system-ui, sans-serif; color:#1b1b1b; background:#fff }
     .win { width:1060px; border:1px solid #c8c8c8; box-shadow:0 8px 24px rgba(0,0,0,.18); margin:12px; background:#fff }
     .tb { height:32px; display:flex; align-items:center; padding:0 12px; border-bottom:1px solid #e3e3e3; font-size:12px }
@@ -193,7 +193,23 @@ function page({ step, v, name, dir, test }) {
     .foot .note { margin-right:auto; color:#888; font-size:11px; font-style:italic }
     .sum { display:grid; grid-template-columns:130px 1fr; margin-bottom:6px; max-width:660px; white-space:pre-line } .sum span:first-child { color:#616161; font-weight:600 }
     .cmd { font-family:Consolas, "DejaVu Sans Mono", monospace; font-size:11px; border:1px solid #a8a8a8; padding:6px; max-width:660px; word-break:break-all }
-  </style></head><body><div class="win">
+  
+    /* Visual Studio dark theme */
+    html.dark body { background:#1f1f1f; color:#e8e8e8 }
+    html.dark .win { background:#252526; border-color:#3f3f46; box-shadow:0 8px 24px rgba(0,0,0,.6) }
+    html.dark .tb { border-color:#3f3f46; color:#e8e8e8 } html.dark .tb .x { color:#bbb }
+    html.dark .side { background:#2d2d30; border-color:#3f3f46 } html.dark .side .sub { color:#a8a8a8 }
+    html.dark .st.cur { background:#3e3653; border-left-color:#b392f0; color:#d9c6ff }
+    html.dark .subt, html.dark .help, html.dark .t span, html.dark .car, html.dark .mono, html.dark .foot .note { color:#a8a8a8 }
+    html.dark .i { border-color:#b392f0; color:#b392f0 }
+    html.dark .dd, html.dark .txt, html.dark .cmd { background:#333337; border-color:#555; color:#eee }
+    html.dark .tile { background:#2b2b2b; border-color:#3f3f46 } html.dark .tile.on { background:#352b45; border-color:#b392f0 }
+    html.dark .tick { background:#b392f0; color:#1f1f1f } html.dark .badge { background:#3e3653; color:#d9c6ff }
+    html.dark .tc { background:#2d2d30; border-color:#3f3f46 } html.dark .foot { border-color:#3f3f46 }
+    html.dark .btn { background:#3c3c3c; border-color:#555; color:#eee } html.dark .btn.pri { background:#7b4fc9; border-color:#7b4fc9; color:#fff }
+    html.dark .sum span:first-child { color:#a8a8a8 } html.dark .res.ok { color:#6ccb5f } html.dark .res.bad { color:#ff8a7a }
+    html.dark .sw { border-color:#555 }
+</style></head><body><div class="win">
     <div class="tb">Razor Pages Solution – ${esc(name)}<span class="x">✕</span></div>
     <div class="main"><div class="side"><h4>Razor Pages Solution</h4><div class="sub">${esc(name)}</div>${nav}</div>
       <div class="content"><h2>${esc(s.title)}</h2><div class="subt">${esc(s.subtitle)}</div>${body}</div></div>
@@ -215,8 +231,9 @@ function page({ step, v, name, dir, test }) {
   ];
   const browser = await chromium.launch();
   const pgPage = await browser.newPage({ viewport: { width: 1090, height: 760 }, deviceScaleFactor: 2 });
-  for (const [file, opts] of shots) {
-    await pgPage.setContent(page({ name, dir, ...opts }));
+  for (const [baseFile, opts] of shots) for (const theme of ['light', 'dark']) {
+    const file = theme === 'dark' ? baseFile.replace('.png', '-dark.png') : baseFile;
+    await pgPage.setContent(page({ name, dir, theme, ...opts }));
     await pgPage.waitForTimeout(400); // Font Awesome SVG icons
     const box = await pgPage.locator('.win').boundingBox();
     await pgPage.screenshot({ path: path.join(outDir, file), fullPage: true, clip: { x: 0, y: 0, width: box.width + 24, height: box.y + box.height + 12 } });

@@ -180,6 +180,10 @@
     "IdentitySignIn": {
       "longName": "identity-sign-in",
       "shortName": ""
+    },
+    "IncludeColorModes": {
+      "longName": "dark-mode",
+      "shortName": ""
     }
   },
   "usageExamples": [

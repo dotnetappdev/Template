@@ -184,6 +184,10 @@ To upgrade a library, change its `@version` in `libman.json` in **both** sites a
 * To change the **jQuery UI theme**, replace `__JQUERYUI_THEME__` in `libman.json` and `Pages/Shared/_Styles.cshtml` with any [ThemeRoller](https://jqueryui.com/themeroller/) gallery theme (`smoothness`, `redmond`, `flick`, ...).
 * To change the **Bootstrap theme**, use a [Bootswatch](https://bootswatch.com/) theme: add `bootswatch@<bootstrap version>` with `dist/<theme>/bootstrap.min.css` to `libman.json`, and point `_Styles.cshtml` at it.
 
+<!--#if (UseColorModes) -->
+* **Light / dark mode:** both sites use Bootstrap 5.3 colour modes. A script in `_Layout.cshtml` sets `data-bs-theme` before the page paints (from the device setting, or the user's choice in `localStorage`), and the ◐ button in the navbar cycles automatic → light → dark (`wwwroot/js/site.js`). Plugin styles that don't support dark mode are adjusted in `wwwroot/css/color-modes.css`.
+
+<!--#endif -->
 The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.cshtml` and `_ValidationScriptsPartial.cshtml`. The site-wide wiring for the plugins is in `wwwroot/js/site.js`.
 
 `Directory.Build.targets` retries the LibMan restore up to three times. This is in case both sites download a new library version at the same moment during a parallel build.

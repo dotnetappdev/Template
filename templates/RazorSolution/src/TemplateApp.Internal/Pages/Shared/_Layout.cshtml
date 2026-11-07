@@ -4,8 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TemplateApp Internal</title>
+@*#if (UseColorModes)*@
+    <script>
+        // Light / dark / automatic colour mode (Bootstrap 5.3 data-bs-theme), applied before the page paints.
+        (function () {
+            var theme = 'auto';
+            try { theme = localStorage.getItem('theme') || 'auto'; } catch (e) { }
+            var dark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+        })();
+    </script>
+@*#endif*@
     <partial name="_Styles" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+@*#if (UseColorModes)*@
+    <link rel="stylesheet" href="~/css/color-modes.css" asp-append-version="true" />
+@*#endif*@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -37,6 +51,11 @@
                         <li class="nav-item"><a class="nav-link" asp-page="/Privacy"><i class="fas fa-lock me-1 mr-1"></i>Privacy</a></li>
                     </ul>
                     <span class="navbar-text small">Internal staff / back-office site</span>
+@*#if (UseColorModes)*@
+                    <button type="button" class="btn btn-link nav-link px-2 ms-2 js-theme-toggle" aria-label="Colour mode: automatic" title="Colour mode: automatic">
+                        <i class="fas fa-adjust"></i>
+                    </button>
+@*#endif*@
 @*#if (UseWindowsAuth || UseEntraId)*@
                     @if (User.Identity?.IsAuthenticated == true)
                     {

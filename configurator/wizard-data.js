@@ -36,7 +36,7 @@ window.WIZARD_DATA = {
    "id": "IncludeApi",
    "kind": "bool",
    "label": "Create ProjectName.API (ASP.NET Core Web API)",
-   "description": "Adds the ASP.NET Core Web API project (controllers + Swagger). The Internal and External sites only talk to this API, so it is always created when either site is selected.",
+   "description": "Adds the ASP.NET Core Web API project (controllers + OpenAPI docs: Swagger UI or Scalar). The Internal and External sites only talk to this API, so it is always created when either site is selected.",
    "default": "true",
    "choices": [],
    "cli": "--api"
@@ -784,6 +784,15 @@ window.WIZARD_DATA = {
    ],
    "cli": "--fontawesome"
   },
+  "IncludeColorModes": {
+   "id": "IncludeColorModes",
+   "kind": "bool",
+   "label": "Light / dark mode toggle (Bootstrap 5.3 colour modes)",
+   "description": "A navbar button switches the sites between light, dark and automatic (follows the device). Needs Bootstrap 5.3.",
+   "default": "true",
+   "choices": [],
+   "cli": "--dark-mode"
+  },
   "IncludeJQueryValidation": {
    "id": "IncludeJQueryValidation",
    "kind": "bool",
@@ -945,6 +954,7 @@ window.WIZARD_DATA = {
     "BootstrapVersion",
     "BootstrapTheme",
     "FontAwesomeVersion",
+    "IncludeColorModes",
     "IncludeJQueryValidation",
     "IncludeDataTables",
     "IncludeSelect2",
@@ -1183,6 +1193,15 @@ window.WIZARD_DATA = {
     ],
     "ExternalAuthentication": [
      "Identity"
+    ]
+   }
+  ],
+  "IncludeColorModes": [
+   {
+    "BootstrapVersion": [
+     "5.3.8",
+     "5.3.7",
+     "5.3.3"
     ]
    }
   ]
@@ -1918,6 +1937,11 @@ window.WIZARD_DATA = {
     "fa": "fa-solid fa-users-gear",
     "glyph": "E716",
     "color": "#B7791F"
+   },
+   "IncludeColorModes": {
+    "fa": "fa-solid fa-circle-half-stroke",
+    "glyph": "E793",
+    "color": "#1F2937"
    }
   },
   "shortLabels": {
@@ -1940,7 +1964,8 @@ window.WIZARD_DATA = {
    "IncludeChartJs": "Chart.js",
    "IdentityTwoFactor": "Two-factor (2FA)",
    "IdentityPasskeys": "Passkeys",
-   "IdentityAdminUi": "User admin UI"
+   "IdentityAdminUi": "User admin UI",
+   "IncludeColorModes": "Light / dark mode"
   },
   "groups": {
    "projects": [
@@ -1981,6 +2006,12 @@ window.WIZARD_DATA = {
     ]
    ],
    "frontend": [
+    [
+     "Look and feel",
+     [
+      "IncludeColorModes"
+     ]
+    ],
     [
      "Plugins",
      [

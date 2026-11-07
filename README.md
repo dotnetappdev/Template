@@ -11,14 +11,15 @@ Like the [Shiny .NET templates](https://github.com/shinyorg/templates), all the 
 - the jQuery, jQuery UI (and theme), Bootstrap (and Bootswatch theme) and Font Awesome Free versions
 - error monitoring with Sentry, Raygun or Azure Application Insights
 - sign-in with ASP.NET Core Identity (two-factor, passkeys, user admin UI), separate per site or single sign-on
+- a light / dark mode toggle in both sites (Bootstrap 5.3 colour modes)
 - API documentation with Swagger UI or Scalar
 - optional extras: DataTables, Select2, Toastr, SweetAlert2, Chart.js, Serilog, health checks, an API key, resilience and unit tests
 
 Every client library is installed with **LibMan**.
 
-<p align="center"><img src="docs/images/wizard-additional-information-dark.png" alt="Additional information page" width="620" /></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-additional-information-dark.png"><img src="docs/images/wizard-additional-information.png" alt="Additional information page" width="620"></picture></p>
 
-<sub>Preview of Visual Studio's *Additional information* page for this template. It is rendered from the template's `ide.host.json` / `template.json` by [`docs/tools/render-wizard-preview.js`](docs/tools/render-wizard-preview.js), so it shows the same options, order, labels and defaults. It is not a Visual Studio capture.</sub>
+<sub>Preview of Visual Studio's *Additional information* page for this template. It is rendered from the template's `ide.host.json` / `template.json` by [`docs/tools/render-wizard-preview.js`](docs/tools/render-wizard-preview.js), so it shows the same options, order, labels and defaults. It is not a Visual Studio capture. All screenshots in this README follow your GitHub theme: switch GitHub between light and dark to see the other version.</sub>
 
 ---
 
@@ -50,24 +51,17 @@ After you name the solution, Visual Studio shows **Additional information**: one
 
 | .NET version: LTS and STS | Database provider |
 | --- | --- |
-| ![Framework](docs/images/wizard-framework-picker.png) | ![Database](docs/images/wizard-database-picker.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-framework-picker-dark.png"><img src="docs/images/wizard-framework-picker.png" alt="Framework"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-database-picker-dark.png"><img src="docs/images/wizard-database-picker.png" alt="Database"></picture> |
 | **SQL Server version: sets EF Core's compatibility level** | **Internal site sign-in** |
-| ![SQL Server version](docs/images/wizard-sql-version-picker.png) | ![Authentication](docs/images/wizard-internal-auth-picker.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-sql-version-picker-dark.png"><img src="docs/images/wizard-sql-version-picker.png" alt="SQL Server version"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-internal-auth-picker-dark.png"><img src="docs/images/wizard-internal-auth-picker.png" alt="Authentication"></picture> |
 | **jQuery** | **jQuery UI** |
-| ![jQuery](docs/images/wizard-jquery-picker.png) | ![jQuery UI](docs/images/wizard-jquery-ui-picker.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-jquery-picker-dark.png"><img src="docs/images/wizard-jquery-picker.png" alt="jQuery"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-jquery-ui-picker-dark.png"><img src="docs/images/wizard-jquery-ui-picker.png" alt="jQuery UI"></picture> |
 | **jQuery UI theme: all 25 ThemeRoller themes** | **Bootstrap** |
-| ![jQuery UI theme](docs/images/wizard-jquery-ui-theme-picker.png) | ![Bootstrap](docs/images/wizard-bootstrap-picker.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-jquery-ui-theme-picker-dark.png"><img src="docs/images/wizard-jquery-ui-theme-picker.png" alt="jQuery UI theme"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-bootstrap-picker-dark.png"><img src="docs/images/wizard-bootstrap-picker.png" alt="Bootstrap"></picture> |
 | **Bootstrap theme: Bootswatch** | **Font Awesome Free** |
-| ![Bootstrap theme](docs/images/wizard-bootstrap-theme-picker.png) | ![Font Awesome Free](docs/images/wizard-fontawesome-picker.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-bootstrap-theme-picker-dark.png"><img src="docs/images/wizard-bootstrap-theme-picker.png" alt="Bootstrap theme"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-fontawesome-picker-dark.png"><img src="docs/images/wizard-fontawesome-picker.png" alt="Font Awesome Free"></picture> |
 | **Error monitoring** | **External site sign-in** |
-| ![Error monitoring](docs/images/wizard-error-monitoring-picker.png) | ![External sign-in](docs/images/wizard-external-auth-picker.png) |
-
-<details>
-<summary>Light theme</summary>
-
-<img src="docs/images/wizard-additional-information.png" alt="Additional information page (light)" width="620" />
-
-</details>
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-error-monitoring-picker-dark.png"><img src="docs/images/wizard-error-monitoring-picker.png" alt="Error monitoring"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-external-auth-picker-dark.png"><img src="docs/images/wizard-external-auth-picker.png" alt="External sign-in"></picture> |
 
 Visual Studio remembers your choices (checkboxes and versions) for the next solution you create from the template. It does not remember connection details or Entra IDs.
 
@@ -96,11 +90,11 @@ Steps that don't apply are skipped. For example, there's no Database step when y
 
 | 1. Projects | 2. Database: Test connection succeeded (PostgreSQL) |
 | --- | --- |
-| ![Projects](docs/images/wizard-step-1-projects.png) | ![Database PostgreSQL](docs/images/wizard-step-2-database-postgres.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-1-projects-dark.png"><img src="docs/images/wizard-step-1-projects.png" alt="Projects"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-2-database-postgres-dark.png"><img src="docs/images/wizard-step-2-database-postgres.png" alt="Database PostgreSQL"></picture> |
 | **2. Database: Test connection failed (SQL Server)** | **3. API & security** |
-| ![Database SQL Server](docs/images/wizard-step-2-database-sqlserver.png) | ![API and security](docs/images/wizard-step-3-api-security.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-2-database-sqlserver-dark.png"><img src="docs/images/wizard-step-2-database-sqlserver.png" alt="Database SQL Server"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-3-api-security-dark.png"><img src="docs/images/wizard-step-3-api-security.png" alt="API and security"></picture> |
 | **4. Front end** | **5. Summary** |
-| ![Front end](docs/images/wizard-step-4-front-end.png) | ![Summary](docs/images/wizard-step-5-summary.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-4-front-end-dark.png"><img src="docs/images/wizard-step-4-front-end.png" alt="Front end"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-5-summary-dark.png"><img src="docs/images/wizard-step-5-summary.png" alt="Summary"></picture> |
 
 <sub>Previews rendered by [`docs/tools/render-wizard-steps.js`](docs/tools/render-wizard-steps.js) from the same `WizardSteps.json` and template metadata the WPF wizard uses (`wizard/src/RazorSolution.Wizard/Tiles.cs` draws the tiles). The previews use Font Awesome icons; the WPF wizard uses the matching Segoe Fluent / MDL2 icons. The Test connection messages are real output from the connection tester (a PostgreSQL 16 server, and an unreachable SQL Server). These are not captures of the WPF window.</sub>
 
@@ -143,11 +137,11 @@ The browser can't open database connections. Instead, the Database step gives yo
 
 | Projects | Database |
 | --- | --- |
-| ![Configurator projects](docs/images/configurator-1-projects.png) | ![Configurator database](docs/images/configurator-2-database.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/configurator-1-projects-dark.png"><img src="docs/images/configurator-1-projects.png" alt="Configurator projects"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/configurator-2-database-dark.png"><img src="docs/images/configurator-2-database.png" alt="Configurator database"></picture> |
 | **API & security** | **Front end** |
-| ![Configurator API and security](docs/images/configurator-3-api-security.png) | ![Configurator front end](docs/images/configurator-4-front-end.png) |
-| **Summary** | **Phone, dark theme** |
-| ![Configurator summary](docs/images/configurator-5-summary.png) | <img src="docs/images/configurator-phone-dark.png" alt="Configurator on a phone, dark theme" width="300" /> |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/configurator-3-api-security-dark.png"><img src="docs/images/configurator-3-api-security.png" alt="Configurator API and security"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/configurator-4-front-end-dark.png"><img src="docs/images/configurator-4-front-end.png" alt="Configurator front end"></picture> |
+| **Summary** | **Phone** |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/configurator-5-summary-dark.png"><img src="docs/images/configurator-5-summary.png" alt="Configurator summary"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/configurator-phone-dark.png"><img src="docs/images/configurator-phone.png" alt="Configurator on a phone" width="300"></picture> |
 
 You can run it three ways:
 - **Locally:** open `configurator/index.html` in a browser. No server is needed.
@@ -193,17 +187,19 @@ Also in every solution:
 
 The screenshots below use the Flatly Bootswatch theme, the Redmond jQuery UI theme, and DataTables, SweetAlert2, Toastr, Select2 and Chart.js.
 
+With the light / dark toggle (on by default with Bootstrap 5.3) the sites follow the device's colour scheme until the user picks light or dark with the ◐ button in the navbar. The choice is kept in `localStorage`, and a small `wwwroot/css/color-modes.css` makes Select2, SweetAlert2 and Bootswatch's primary colour readable in dark mode. The dark screenshots show that mode; Swagger UI has no dark theme, so it has only a light screenshot.
+
 | Internal – dashboard | Internal – customers with DataTables |
 | --- | --- |
-| ![Internal dashboard](docs/images/site-internal-dashboard.png) | ![Customers](docs/images/site-internal-customers-datatables.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-internal-dashboard-dark.png"><img src="docs/images/site-internal-dashboard.png" alt="Internal dashboard"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-internal-customers-datatables-dark.png"><img src="docs/images/site-internal-customers-datatables.png" alt="Customers"></picture> |
 | **SweetAlert2 confirm → API `DELETE`** | **Toastr notification** |
-| ![SweetAlert2](docs/images/site-internal-delete-sweetalert.png) | ![Toastr](docs/images/site-internal-toastr.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-internal-delete-sweetalert-dark.png"><img src="docs/images/site-internal-delete-sweetalert.png" alt="SweetAlert2"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-internal-toastr-dark.png"><img src="docs/images/site-internal-toastr.png" alt="Toastr"></picture> |
 | **API validation (409 duplicate email) on the form** | **External – contact form with Select2** |
-| ![409](docs/images/site-internal-create-409.png) | ![Select2](docs/images/site-external-contact-select2.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-internal-create-409-dark.png"><img src="docs/images/site-internal-create-409.png" alt="409"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-external-contact-select2-dark.png"><img src="docs/images/site-external-contact-select2.png" alt="Select2"></picture> |
 | **External – home page, jQuery UI date picker (Redmond)** | **API – Swagger UI** |
-| ![External home](docs/images/site-external-home.png) | ![Swagger](docs/images/api-swagger.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/site-external-home-dark.png"><img src="docs/images/site-external-home.png" alt="External home"></picture> | <img src="docs/images/api-swagger.png" alt="Swagger"> |
 | **API – Scalar** | |
-| ![Scalar](docs/images/api-scalar.png) | |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/api-scalar-dark.png"><img src="docs/images/api-scalar.png" alt="Scalar"></picture> | |
 
 ---
 
@@ -238,7 +234,7 @@ dotnet pack DotNetAppDev.RazorSolution.Templates.csproj -c Release -o artifacts
 dotnet new install artifacts/DotNetAppDev.RazorSolution.Templates.1.0.0.nupkg
 ```
 
-![dotnet new install](docs/images/cli-install.png)
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/cli-install-dark.png"><img src="docs/images/cli-install.png" alt="dotnet new install"></picture>
 
 Each CI run also uploads the `.nupkg` as the **template-package** artifact.
 
@@ -329,12 +325,12 @@ dotnet new razorsln -n MyCompany.Api --internal false --external false
 dotnet new razorsln -n MyCompany.Portal --dry-run
 ```
 
-![dotnet new razorsln](docs/images/cli-create.png)
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/cli-create-dark.png"><img src="docs/images/cli-create.png" alt="dotnet new razorsln"></picture>
 
 <details>
 <summary><code>dotnet new razorsln --help</code></summary>
 
-![dotnet new razorsln --help](docs/images/cli-help.png)
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/cli-help-dark.png"><img src="docs/images/cli-help.png" alt="dotnet new razorsln --help"></picture>
 
 </details>
 
@@ -402,6 +398,7 @@ dotnet new razorsln -n MyCompany.Portal --dry-run
 | Toastr 2.1.4 | `--toastr` | **true** |
 | SweetAlert2 11.26.25 | `--sweetalert` | false |
 | Chart.js 4.5.1 | `--chartjs` | false |
+| Light / dark mode toggle | `--dark-mode` | **true**. Needs Bootstrap 5.3.x (ignored for older versions). Adds a navbar button that cycles automatic → light → dark, remembered per browser |
 
 Connection-string values are escaped for JSON and C#. The connection string goes only into **`ProjectName.API/appsettings.json`** (plus `DatabaseDefaults.cs`, which the EF tools use). The sites never have one.
 
@@ -478,13 +475,13 @@ sequenceDiagram
 
 | Sign in (password or passkey) | Two-factor code at sign-in |
 | --- | --- |
-| ![Sign in](docs/images/identity-login.png) | ![2FA code](docs/images/identity-login-2fa.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-login-dark.png"><img src="docs/images/identity-login.png" alt="Sign in"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-login-2fa-dark.png"><img src="docs/images/identity-login-2fa.png" alt="2FA code"></picture> |
 | **Two-factor setup (QR code)** | **Recovery codes** |
-| ![2FA setup](docs/images/identity-2fa-setup.png) | ![Recovery codes](docs/images/identity-2fa-recovery-codes.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-2fa-setup-dark.png"><img src="docs/images/identity-2fa-setup.png" alt="2FA setup"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-2fa-recovery-codes-dark.png"><img src="docs/images/identity-2fa-recovery-codes.png" alt="Recovery codes"></picture> |
 | **Passkeys** | **Admin – users** |
-| ![Passkeys](docs/images/identity-passkeys.png) | ![Users](docs/images/identity-admin-users.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-passkeys-dark.png"><img src="docs/images/identity-passkeys.png" alt="Passkeys"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-admin-users-dark.png"><img src="docs/images/identity-admin-users.png" alt="Users"></picture> |
 | **Admin – edit user (locked)** | **Customer on the Internal site** |
-| ![Edit user](docs/images/identity-admin-edit-user.png) | ![Access denied](docs/images/identity-internal-access-denied.png) |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-admin-edit-user-dark.png"><img src="docs/images/identity-admin-edit-user.png" alt="Edit user"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/identity-internal-access-denied-dark.png"><img src="docs/images/identity-internal-access-denied.png" alt="Access denied"></picture> |
 
 All of the above runs in a browser test against a generated .NET 10 solution:
 - **Password and two-factor:** password sign-in, turning on two-factor with real authenticator codes, a wrong code being rejected, and a recovery code.
@@ -572,8 +569,8 @@ Restart Visual Studio afterwards.
 | `…/.template.config/ide.host.json` | The Visual Studio wizard: which options appear, in which order, with which labels and tooltips. |
 | `…/.template.config/dotnetcli.host.json` | CLI switch names. |
 | `DotNetAppDev.RazorSolution.Templates.csproj` | Packs `templates/**` into the NuGet template package. |
-| `tests/test-template.sh` | Creates and builds 12 combinations (every framework, database and auth mode, Bootstrap 4/5, themes, all plugins on and off, API key, Serilog, …) and runs the generated unit tests. |
-| `docs/tools/render-wizard-preview.js`, `render-wizard-steps.js` | Regenerate the wizard images in `docs/images` from `template.json` / `ide.host.json` / `WizardSteps.json`. |
+| `tests/test-template.sh` | Creates and builds 19 combinations (every framework, database and auth mode, Bootstrap 4/5, themes, all plugins on and off, API key, Serilog, …) and runs the generated unit tests. |
+| `docs/tools/render-wizard-preview.js`, `render-wizard-steps.js` | Regenerate the wizard images in `docs/images` from `template.json` / `ide.host.json` / `WizardSteps.json`, in light (`X.png`) and dark (`X-dark.png`). |
 | `wizard/` | The multi-step Visual Studio wizard extension (see above). |
 | `configurator/` | The browser version of the wizard (`index.html`, generated `wizard-data.js`, `build-data.js`). |
 | `.github/workflows/template-tests.yml` | CI: runs the template matrix, builds and tests the wizard (with a PostgreSQL service), and builds the `.vsix` on Windows. |
@@ -583,4 +580,5 @@ To add a version to a picker, add a `choices` entry in `template.json`: for exam
 ```bash
 tests/test-template.sh
 node docs/tools/render-wizard-preview.js
+node docs/tools/render-wizard-steps.js
 ```

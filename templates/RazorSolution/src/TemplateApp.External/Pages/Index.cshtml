@@ -4,7 +4,11 @@
     ViewData["Title"] = "Home page";
 }
 
+@*#if (UseColorModes)*@
+<div class="p-4 p-md-5 mb-4 bg-body-tertiary rounded-3 border">
+@*#else*@
 <div class="p-4 p-md-5 mb-4 bg-light rounded-3 border">
+@*#endif*@
     <h1 class="display-5"><i class="fas fa-globe text-primary me-2 mr-2"></i>TemplateApp</h1>
     <p class="lead">External / public site: an ASP.NET Core Razor Pages site (no Areas) that gets all of its data from TemplateApp.API.</p>
     <a asp-page="/Contact" class="btn btn-primary btn-lg"><i class="fas fa-envelope me-2 mr-2"></i>Contact us</a>

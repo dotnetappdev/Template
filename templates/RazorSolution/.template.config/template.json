@@ -60,6 +60,13 @@
           ]
         },
         {
+          "condition": "(!UseColorModes)",
+          "exclude": [
+            "src/TemplateApp.Internal/wwwroot/css/color-modes.css",
+            "src/TemplateApp.External/wwwroot/css/color-modes.css"
+          ]
+        },
+        {
           "condition": "(!UseApi)",
           "exclude": [
             "src/TemplateApp.API/**"
@@ -216,7 +223,7 @@
       "datatype": "bool",
       "defaultValue": "true",
       "displayName": "Create ProjectName.API",
-      "description": "Adds the ASP.NET Core Web API project (controllers + Swagger). The Internal and External sites only talk to this API, so it is always created when either site is selected."
+      "description": "Adds the ASP.NET Core Web API project (controllers + OpenAPI docs: Swagger UI or Scalar). The Internal and External sites only talk to this API, so it is always created when either site is selected."
     },
     "IncludeInternal": {
       "type": "parameter",
@@ -1032,6 +1039,13 @@
       ],
       "replaces": "__FONTAWESOME_VERSION__"
     },
+    "IncludeColorModes": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Light / dark mode toggle (Bootstrap 5.3 colour modes)",
+      "description": "A navbar button switches the sites between light, dark and automatic (follows the device). Needs Bootstrap 5.3."
+    },
     "IncludeJQueryValidation": {
       "type": "parameter",
       "datatype": "bool",
@@ -1123,6 +1137,11 @@
       "type": "computed",
       "datatype": "bool",
       "value": "(BootstrapVersion == \"4.6.2\")"
+    },
+    "UseColorModes": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeColorModes && (BootstrapVersion == \"5.3.8\" || BootstrapVersion == \"5.3.7\" || BootstrapVersion == \"5.3.3\"))"
     },
     "IsPreviewFramework": {
       "type": "computed",

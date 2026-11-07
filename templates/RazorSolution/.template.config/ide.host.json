@@ -45,7 +45,7 @@
         "text": "Create ProjectName.API (ASP.NET Core Web API)"
       },
       "description": {
-        "text": "Adds the ASP.NET Core Web API project (controllers + Swagger). The Internal and External sites only talk to this API, so it is always created when either site is selected."
+        "text": "Adds the ASP.NET Core Web API project (controllers + OpenAPI docs: Swagger UI or Scalar). The Internal and External sites only talk to this API, so it is always created when either site is selected."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -412,6 +412,17 @@
       },
       "description": {
         "text": "Font Awesome Free only (free icons package, no Pro)."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IncludeColorModes",
+      "name": {
+        "text": "Light / dark mode toggle (Bootstrap 5.3 colour modes)"
+      },
+      "description": {
+        "text": "A navbar button switches the sites between light, dark and automatic (follows the device). Needs Bootstrap 5.3."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"

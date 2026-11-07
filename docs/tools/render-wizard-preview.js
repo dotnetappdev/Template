@@ -114,7 +114,8 @@ async function shot(pg, file, state, clipToOpen) {
     ['wizard-fontawesome-picker.png', 'FontAwesomeVersion'],
   ];
   for (const [file, open] of pickers) {
-    await shot(pg, file, { theme: 'dark', values, open }, true);
+    await shot(pg, file, { theme: 'light', values, open }, true);
+    await shot(pg, file.replace('.png', '-dark.png'), { theme: 'dark', values, open }, true);
   }
   await browser.close();
 })();

@@ -36,6 +36,28 @@ $(function () {
             }
         });
     });
+//#if (UseColorModes)
+
+    // Colour mode button: automatic (follows the device) -> light -> dark. Remembered in localStorage.
+    (function () {
+        var order = ['auto', 'light', 'dark'];
+        var names = { auto: 'automatic', light: 'light', dark: 'dark' };
+        var media = window.matchMedia('(prefers-color-scheme: dark)');
+        function stored() { try { return localStorage.getItem('theme') || 'auto'; } catch (e) { return 'auto'; } }
+        function apply(theme) {
+            var dark = theme === 'dark' || (theme === 'auto' && media.matches);
+            document.documentElement.setAttribute('data-bs-theme', dark ? 'dark' : 'light');
+            $('.js-theme-toggle').attr({ title: 'Colour mode: ' + names[theme], 'aria-label': 'Colour mode: ' + names[theme] });
+        }
+        $('.js-theme-toggle').on('click', function () {
+            var next = order[(order.indexOf(stored()) + 1) % order.length];
+            try { localStorage.setItem('theme', next); } catch (e) { }
+            apply(next);
+        });
+        media.addEventListener('change', function () { if (stored() === 'auto') { apply('auto'); } });
+        apply(stored());
+    })();
+//#endif
 //#if (IncludeDataTables)
 
     // DataTables: sorting, paging and searching for <table class="js-datatable">.

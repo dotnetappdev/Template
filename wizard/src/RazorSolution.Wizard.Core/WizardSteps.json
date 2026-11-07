@@ -106,6 +106,7 @@
         "BootstrapVersion",
         "BootstrapTheme",
         "FontAwesomeVersion",
+        "IncludeColorModes",
         "IncludeJQueryValidation",
         "IncludeDataTables",
         "IncludeSelect2",
@@ -344,6 +345,15 @@
         ],
         "ExternalAuthentication": [
           "Identity"
+        ]
+      }
+    ],
+    "IncludeColorModes": [
+      {
+        "BootstrapVersion": [
+          "5.3.8",
+          "5.3.7",
+          "5.3.3"
         ]
       }
     ]
@@ -1079,6 +1089,11 @@
         "fa": "fa-solid fa-users-gear",
         "glyph": "E716",
         "color": "#B7791F"
+      },
+      "IncludeColorModes": {
+        "fa": "fa-solid fa-circle-half-stroke",
+        "glyph": "E793",
+        "color": "#1F2937"
       }
     },
     "shortLabels": {
@@ -1101,7 +1116,8 @@
       "IncludeChartJs": "Chart.js",
       "IdentityTwoFactor": "Two-factor (2FA)",
       "IdentityPasskeys": "Passkeys",
-      "IdentityAdminUi": "User admin UI"
+      "IdentityAdminUi": "User admin UI",
+      "IncludeColorModes": "Light / dark mode"
     },
     "groups": {
       "projects": [
@@ -1142,6 +1158,12 @@
         ]
       ],
       "frontend": [
+        [
+          "Look and feel",
+          [
+            "IncludeColorModes"
+          ]
+        ],
         [
           "Plugins",
           [

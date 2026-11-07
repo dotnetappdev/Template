@@ -1,0 +1,46 @@
+/* Dark colour mode fixes (only applies while <html data-bs-theme="dark">).
+   Some Bootswatch themes use a dark primary colour, and a few plugins ship light-only CSS. */
+
+[data-bs-theme=dark] .text-primary {
+    color: var(--bs-primary-text-emphasis) !important;
+}
+
+[data-bs-theme=dark] .btn-outline-primary {
+    --bs-btn-color: var(--bs-primary-text-emphasis);
+    --bs-btn-border-color: var(--bs-primary-text-emphasis);
+}
+
+/* Select2 (select2-bootstrap-5-theme is light-only) */
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-selection,
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-dropdown,
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field {
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered,
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option {
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
+    background-color: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme=dark] .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--selected {
+    background-color: var(--bs-primary);
+    color: #fff;
+}
+
+/* SweetAlert2 popups */
+[data-bs-theme=dark] .swal2-popup {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+[data-bs-theme=dark] .swal2-title,
+[data-bs-theme=dark] .swal2-html-container {
+    color: var(--bs-body-color);
+}
