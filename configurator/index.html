@@ -81,7 +81,7 @@ main.canvas { display: flex; flex-direction: column; min-width: 0 }
 .ico { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; flex: none; font-size: 17px }
 .tile .t { display: grid; gap: 2px; min-width: 0; padding-right: 16px }
 .tile .t b { font-size: 14px; font-weight: 600 }
-.tile .t span { font-size: 12px; color: var(--muted) }
+.tile .t span { font-size: 12px; color: var(--muted); overflow-wrap: anywhere }
 .badge { display: inline-block; font: 500 11px var(--font-mono); padding: 1px 7px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; letter-spacing: .02em }
 .badge.rec { background: var(--ok); color: var(--surface); justify-self: start }
 .tiles.compact .tile { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 28px 10px 12px }
@@ -274,7 +274,9 @@ dl.sum dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
     $('#rail').innerHTML = `<div class="who"><b>${esc(D.templateName.split(' (')[0])}</b><span>${esc(name || '(no name)')}</span></div>` +
       steps.map((s, i) => `<button type="button" class="stepbtn ${i === stepIndex ? 'cur' : ''} ${i < stepIndex ? 'done' : ''}" data-step="${i}" ${i === stepIndex ? 'aria-current="step"' : ''}><span class="n">${i < stepIndex ? '✓' : i + 1}</span>${esc(s.title)}</button>`).join('');
 
-    let html = `<div><h2>${esc(step.title)}</h2><p class="sub">${esc(step.subtitle)}</p></div>`;
+    // The browser can't create the solution itself, so the summary explains the copy-and-run step instead.
+    const subtitle = step.id === 'summary' ? 'Check your choices, then copy the command and run it where you want the solution created.' : step.subtitle;
+    let html = `<div><h2>${esc(step.title)}</h2><p class="sub">${esc(subtitle)}</p></div>`;
     if (step.id === 'projects') {
       html += `<div class="row2"><div class="field"><label class="label" for="sol-name">Solution name</label><input id="sol-name" type="text" value="${esc(name)}" autocomplete="off" spellcheck="false"><div class="help">Projects are named ${esc(name || 'Name')}.Internal, ${esc(name || 'Name')}.API, …</div></div>
         <div class="field"><label class="label" for="sol-out">Folder <small>optional</small></label><input id="sol-out" type="text" value="${esc(outDir)}" placeholder="./${esc(name)}" autocomplete="off" spellcheck="false"><div class="help">Where to create the solution. Leave blank for a folder named after the solution.</div></div></div>`;

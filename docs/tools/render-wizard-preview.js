@@ -95,7 +95,7 @@ async function shot(pg, file, state, clipToOpen) {
 
 (async () => {
   const browser = await chromium.launch();
-  const pg = await browser.newPage({ viewport: { width: 1040, height: 900 } });
+  const pg = await browser.newPage({ viewport: { width: 1040, height: 900 }, deviceScaleFactor: 2 });
   const values = {};
   await shot(pg, 'wizard-additional-information-dark.png', { theme: 'dark', values });
   await shot(pg, 'wizard-additional-information.png', { theme: 'light', values });

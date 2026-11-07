@@ -171,7 +171,7 @@ function page({ step, v, name, dir, test }) {
     .tile.on { border-color:#5c2d91; background:#f4eefb }
     .tick { position:absolute; top:6px; right:6px; width:18px; height:18px; border-radius:50%; background:#5c2d91; color:#fff; font-size:11px; display:grid; place-items:center; font-weight:700 }
     .ico { width:38px; height:38px; border-radius:50%; display:grid; place-items:center; color:#fff; flex:none; font-size:16px; font-weight:600 }
-    .t { display:grid; gap:2px; padding-right:14px } .t b { font-size:13px } .t span { font-size:11px; color:#616161 } .t em { font-style:normal; font-size:10px; color:#107c10; font-weight:600 }
+    .t { display:grid; gap:2px; padding-right:14px; min-width:0 } .t span { overflow-wrap:anywhere } .t b { font-size:13px } .t span { font-size:11px; color:#616161 } .t em { font-style:normal; font-size:10px; color:#107c10; font-weight:600 }
     .badge { display:inline-block; font-size:10px; font-weight:600; padding:1px 6px; border-radius:8px; background:#efe8f7; color:#5c2d91; white-space:nowrap }
     .tiles.compact .tile { width:136px; min-height:52px; flex-direction:column; align-items:flex-start; gap:4px; padding:8px 26px 8px 10px }
     .tiles.compact .tile b { font-size:12px }
@@ -214,7 +214,7 @@ function page({ step, v, name, dir, test }) {
     ['wizard-step-5-summary.png', { step: 'summary', v: defaults({ DatabaseProvider: 'PostgreSQL', DbPassword: 'Dev_pass1', BootstrapTheme: 'flatly', JQueryUITheme: 'redmond', IncludeSweetAlert: 'true', IncludeChartJs: 'true', InternalAuthentication: 'Windows', IncludeApiKey: 'true' }) }],
   ];
   const browser = await chromium.launch();
-  const pgPage = await browser.newPage({ viewport: { width: 1090, height: 760 } });
+  const pgPage = await browser.newPage({ viewport: { width: 1090, height: 760 }, deviceScaleFactor: 2 });
   for (const [file, opts] of shots) {
     await pgPage.setContent(page({ name, dir, ...opts }));
     await pgPage.waitForTimeout(400); // Font Awesome SVG icons

@@ -137,8 +137,10 @@ The browser can't open database connections. Instead, the Database step gives yo
 | Projects | Database |
 | --- | --- |
 | ![Configurator projects](docs/images/configurator-1-projects.png) | ![Configurator database](docs/images/configurator-2-database.png) |
-| **Front end** | **Summary** |
-| ![Configurator front end](docs/images/configurator-4-front-end.png) | ![Configurator summary](docs/images/configurator-5-summary.png) |
+| **API & security** | **Front end** |
+| ![Configurator API and security](docs/images/configurator-3-api-security.png) | ![Configurator front end](docs/images/configurator-4-front-end.png) |
+| **Summary** | **Phone, dark theme** |
+| ![Configurator summary](docs/images/configurator-5-summary.png) | <img src="docs/images/configurator-phone-dark.png" alt="Configurator on a phone, dark theme" width="300" /> |
 
 You can run it three ways:
 - **Locally:** open `configurator/index.html` in a browser. No server is needed.

@@ -1097,7 +1097,7 @@ window.WIZARD_DATA = {
    },
    "InternalAuthentication": {
     "None": {
-     "note": "Anyone who can reach the site",
+     "note": "No sign-in; anyone who can reach the site",
      "icon": {
       "fa": "fa-solid fa-lock-open",
       "glyph": "E785",
@@ -1105,7 +1105,7 @@ window.WIZARD_DATA = {
      }
     },
     "Windows": {
-     "note": "Negotiate / Kerberos – domain accounts",
+     "note": "Staff sign in with their domain account (no passwords to store)",
      "icon": {
       "fa": "fa-brands fa-windows",
       "glyph": "E7EF",
@@ -1113,7 +1113,7 @@ window.WIZARD_DATA = {
      }
     },
     "EntraId": {
-     "note": "Microsoft Entra ID (Microsoft.Identity.Web)",
+     "note": "Staff sign in with their Microsoft 365 work account",
      "icon": {
       "fa": "fa-solid fa-id-badge",
       "glyph": "E8D7",
