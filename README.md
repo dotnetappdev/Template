@@ -13,7 +13,7 @@ Like the [Shiny .NET templates](https://github.com/shinyorg/templates), all the 
 - sign-in with ASP.NET Core Identity (two-factor, passkeys, user admin UI), separate per site or single sign-on
 - a light / dark mode toggle in both sites (Bootstrap 5.3 colour modes)
 - API documentation with Swagger UI or Scalar
-- optional extras: DataTables, Select2, Toastr, SweetAlert2, Chart.js, Serilog, health checks, an API key, resilience and unit tests
+- optional extras: DataTables, Select2, Toastr, SweetAlert2, Chart.js, Serilog, health checks, an API key and unit tests
 
 Every client library is installed with **LibMan**.
 
@@ -196,7 +196,7 @@ flowchart LR
 
 Also in every solution:
 
-- **Central Package Management.** Every NuGet version is set in `Directory.Packages.props`. EF Core, Npgsql, Serilog and resilience package versions match the framework you pick.
+- **Central Package Management.** Every NuGet version is set in `Directory.Packages.props`. EF Core, Npgsql and Serilog package versions match the framework you pick.
 - **Shared build settings** in `Directory.Build.props`.
 - **A README in the generated solution** that covers the options you picked: how to run it, add API clients and entities, use migrations and LibMan, and the security and operations features.
 
@@ -304,7 +304,7 @@ dotnet new list razorsln
 dotnet new razorsln -n MyCompany.Portal
 ```
 
-That uses every default: .NET 8; Internal, External, API, Services, SqlRepository and Tests; SQL Server 2022 on LocalDB with Windows authentication; jQuery 3.7.1, jQuery UI 1.14.2 (base), Bootstrap 5.3.8, Font Awesome Free 6.7.2, jQuery Validation, DataTables and Toastr; Swagger, health checks and resilience.
+That uses every default: .NET 8; Internal, External, API, Services, SqlRepository and Tests; SQL Server 2022 on LocalDB with Windows authentication; jQuery 3.7.1, jQuery UI 1.14.2 (base), Bootstrap 5.3.8, Font Awesome Free 6.7.2, jQuery Validation, DataTables and Toastr; Swagger and health checks.
 
 ```bash
 # Staff-only portal on .NET 10 with Windows sign-in, Serilog and an API key
@@ -397,7 +397,6 @@ dotnet new razorsln -n MyCompany.Portal --dry-run
 | Passkeys (Identity) | `--identity-passkeys` | WebAuthn passkeys; needs .NET 10 or later | **true** |
 | User admin UI (Identity) | `--identity-admin` | Internal site: users, roles, lock/unlock, reset 2FA, remove passkeys, delete | **true** |
 | Entra ID tenant / client ID | `--entra-tenant-id`, `--entra-client-id` | | blank (placeholder GUIDs) |
-| Resilience for API clients | `--resilience` | Microsoft.Extensions.Http.Resilience | **true** |
 
 ### Front end (LibMan)
 
@@ -592,7 +591,7 @@ Restart Visual Studio afterwards.
 | `configurator/` | The browser version of the wizard (`index.html`, generated `wizard-data.js`, `build-data.js`). |
 | `.github/workflows/template-tests.yml` | CI: runs the template matrix, builds and tests the wizard (with a PostgreSQL service), and builds the `.vsix` on Windows. |
 
-To add a version to a picker, add a `choices` entry in `template.json`: for example `BootstrapVersion` (a matching Bootswatch version must exist), `JQueryVersion` or `FontAwesomeVersion`. For a new .NET release, add a `Framework` choice and cases to the `EfCoreVersion`, `NpgsqlVersion`, `SwashbuckleVersion`, `SerilogVersion` and `ResilienceVersion` switches. Then run:
+To add a version to a picker, add a `choices` entry in `template.json`: for example `BootstrapVersion` (a matching Bootswatch version must exist), `JQueryVersion` or `FontAwesomeVersion`. For a new .NET release, add a `Framework` choice and cases to the `EfCoreVersion`, `NpgsqlVersion`, `SwashbuckleVersion` and `SerilogVersion` switches. Then run:
 
 ```bash
 tests/test-template.sh

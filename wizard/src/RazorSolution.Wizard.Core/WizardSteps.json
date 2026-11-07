@@ -79,8 +79,7 @@
         "IdentitySignIn",
         "IdentityTwoFactor",
         "IdentityPasskeys",
-        "IdentityAdminUi",
-        "IncludeResilience"
+        "IdentityAdminUi"
       ]
     },
     {
@@ -230,18 +229,6 @@
         ],
         "InternalAuthentication": [
           "EntraId"
-        ]
-      }
-    ],
-    "IncludeResilience": [
-      {
-        "IncludeInternal": [
-          "true"
-        ]
-      },
-      {
-        "IncludeExternal": [
-          "true"
         ]
       }
     ],
@@ -1040,11 +1027,6 @@
         "glyph": "E81C",
         "color": "#1F6FEB"
       },
-      "IncludeResilience": {
-        "fa": "fa-solid fa-rotate",
-        "glyph": "E72C",
-        "color": "#0E7490"
-      },
       "IncludeJQueryValidation": {
         "fa": "fa-solid fa-circle-check",
         "glyph": "E73E",
@@ -1107,7 +1089,6 @@
       "IncludeApiKey": "API key",
       "IncludeHealthChecks": "Health checks",
       "IncludeSerilog": "Serilog",
-      "IncludeResilience": "Resilience",
       "IncludeJQueryValidation": "jQuery Validation",
       "IncludeDataTables": "DataTables",
       "IncludeSelect2": "Select2",
@@ -1148,12 +1129,6 @@
             "IdentityTwoFactor",
             "IdentityPasskeys",
             "IdentityAdminUi"
-          ]
-        ],
-        [
-          "Sites",
-          [
-            "IncludeResilience"
           ]
         ]
       ],

@@ -101,10 +101,6 @@
       "longName": "serilog",
       "shortName": ""
     },
-    "IncludeResilience": {
-      "longName": "resilience",
-      "shortName": ""
-    },
     "InternalAuthentication": {
       "longName": "internal-auth",
       "shortName": ""

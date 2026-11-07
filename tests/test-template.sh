@@ -28,11 +28,11 @@ run_case() {
 }
 
 run_case Default
-run_case Everything --tests --serilog --api-key --health-checks --resilience --internal-auth Windows \
+run_case Everything --tests --serilog --api-key --health-checks --internal-auth Windows \
   --jquery-validation --datatables --select2 --toastr --sweetalert --chartjs --bootstrap-theme flatly --jquery-ui-theme redmond
 run_case EntraBs4 --dark-mode --internal-auth EntraId --entra-tenant-id 11111111-2222-3333-4444-555555555555 --bootstrap 4.6.2 \
   --bootstrap-theme darkly --select2 --datatables --jquery-ui 1.12.1 --jquery 3.5.1 --fontawesome 5.15.4
-run_case Minimal --dark-mode false --tests false --api-docs None --health-checks false --resilience false --seed-data false \
+run_case Minimal --dark-mode false --tests false --api-docs None --health-checks false --seed-data false \
   --jquery-validation false --datatables false --toastr false --fontawesome none
 run_case Net9Postgres -f net9.0 --database PostgreSQL --postgres-version 16 --jquery 4.0.0 --bootstrap 5.2.3 --fontawesome 7.3.1 --serilog
 run_case Net10Sqlite -f net10.0 --database Sqlite --bootstrap 5.1.3 --fontawesome 6.4.2 --api-key --serilog --select2

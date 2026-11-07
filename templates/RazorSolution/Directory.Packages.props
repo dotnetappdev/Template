@@ -72,9 +72,6 @@
 
     <!-- Sites: LibMan restore on build -->
     <PackageVersion Include="Microsoft.Web.LibraryManager.Build" Version="3.0.114" />
-<!--#if (IncludeResilience) -->
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="__RESILIENCE_VERSION__" />
-<!--#endif -->
 <!--#endif -->
 <!--#if (UseTests) -->
 

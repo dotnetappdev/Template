@@ -525,13 +525,6 @@
       "displayName": "Error monitoring key (optional)",
       "description": "Sentry DSN, Raygun API key or Application Insights connection string. Leave blank to set it later in appsettings.json or user-secrets."
     },
-    "IncludeResilience": {
-      "type": "parameter",
-      "datatype": "bool",
-      "defaultValue": "true",
-      "displayName": "Add retries / circuit breaker to API clients (Microsoft.Extensions.Http.Resilience)",
-      "description": "Adds the standard resilience handler (Polly) to the sites' typed HttpClients."
-    },
     "InternalAuthentication": {
       "type": "parameter",
       "datatype": "choice",
@@ -1380,29 +1373,6 @@
           {
             "condition": "(true)",
             "value": "10.0.0"
-          }
-        ]
-      }
-    },
-    "ResilienceVersion": {
-      "type": "generated",
-      "generator": "switch",
-      "replaces": "__RESILIENCE_VERSION__",
-      "parameters": {
-        "evaluator": "C++",
-        "datatype": "string",
-        "cases": [
-          {
-            "condition": "(Framework == \"net8.0\")",
-            "value": "8.10.0"
-          },
-          {
-            "condition": "(Framework == \"net9.0\")",
-            "value": "9.10.0"
-          },
-          {
-            "condition": "(true)",
-            "value": "10.11.0"
           }
         ]
       }

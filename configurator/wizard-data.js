@@ -332,15 +332,6 @@ window.WIZARD_DATA = {
    "choices": [],
    "cli": "--error-monitoring-key"
   },
-  "IncludeResilience": {
-   "id": "IncludeResilience",
-   "kind": "bool",
-   "label": "Add retries / circuit breaker to API clients (Microsoft.Extensions.Http.Resilience)",
-   "description": "Adds the standard resilience handler (Polly) to the sites' typed HttpClients.",
-   "default": "true",
-   "choices": [],
-   "cli": "--resilience"
-  },
   "InternalAuthentication": {
    "id": "InternalAuthentication",
    "kind": "choice",
@@ -927,8 +918,7 @@ window.WIZARD_DATA = {
     "IdentitySignIn",
     "IdentityTwoFactor",
     "IdentityPasskeys",
-    "IdentityAdminUi",
-    "IncludeResilience"
+    "IdentityAdminUi"
    ]
   },
   {
@@ -1078,18 +1068,6 @@ window.WIZARD_DATA = {
     ],
     "InternalAuthentication": [
      "EntraId"
-    ]
-   }
-  ],
-  "IncludeResilience": [
-   {
-    "IncludeInternal": [
-     "true"
-    ]
-   },
-   {
-    "IncludeExternal": [
-     "true"
     ]
    }
   ],
@@ -1888,11 +1866,6 @@ window.WIZARD_DATA = {
     "glyph": "E81C",
     "color": "#1F6FEB"
    },
-   "IncludeResilience": {
-    "fa": "fa-solid fa-rotate",
-    "glyph": "E72C",
-    "color": "#0E7490"
-   },
    "IncludeJQueryValidation": {
     "fa": "fa-solid fa-circle-check",
     "glyph": "E73E",
@@ -1955,7 +1928,6 @@ window.WIZARD_DATA = {
    "IncludeApiKey": "API key",
    "IncludeHealthChecks": "Health checks",
    "IncludeSerilog": "Serilog",
-   "IncludeResilience": "Resilience",
    "IncludeJQueryValidation": "jQuery Validation",
    "IncludeDataTables": "DataTables",
    "IncludeSelect2": "Select2",
@@ -1996,12 +1968,6 @@ window.WIZARD_DATA = {
       "IdentityTwoFactor",
       "IdentityPasskeys",
       "IdentityAdminUi"
-     ]
-    ],
-    [
-     "Sites",
-     [
-      "IncludeResilience"
      ]
     ]
    ],

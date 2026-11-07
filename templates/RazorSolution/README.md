@@ -222,7 +222,7 @@ The sites sign people in through the API (`/api/account/login`, `/refresh`, `/me
 <!--#endif -->
 * **Email:** confirmation and password-reset emails are not sent yet. Register an `IEmailSender<ApplicationUser>` in the API, then set `SignIn.RequireConfirmedAccount = true` in `Identity/IdentitySetup.cs`.
 <!--#endif -->
-<!--#if (UseInternalAuth || UseApiKey || IncludeHealthChecks || IncludeSerilog || IncludeResilience || UseErrorMonitoring) -->
+<!--#if (UseInternalAuth || UseApiKey || IncludeHealthChecks || IncludeSerilog || UseErrorMonitoring) -->
 
 ## Security and operations
 
@@ -257,9 +257,6 @@ The sites sign people in through the API (`/api/account/login`, `/refresh`, `/me
   * **Settings:** `RaygunSettings:ApiKey` in each `appsettings.json`. Raygun stays off until an `ApiKey` is set.
 <!--#elseif (UseAppInsights) -->
 * **Error monitoring, Azure Application Insights:** the API and both sites call `AddApplicationInsightsTelemetry()`. This sends exceptions, requests, dependencies (including the sites' calls to the API) and logs to Azure Monitor. Set `ApplicationInsights:ConnectionString` in `appsettings.json`, or the `APPLICATIONINSIGHTS_CONNECTION_STRING` environment variable (as App Service does). Telemetry stays off until a connection string is set.
-<!--#endif -->
-<!--#if (IncludeResilience) -->
-* **Resilience:** the sites' API clients use `AddStandardResilienceHandler()`, which adds retries with back-off, timeouts and a circuit breaker.
 <!--#endif -->
 <!--#endif -->
 <!--#if (UseTests) -->

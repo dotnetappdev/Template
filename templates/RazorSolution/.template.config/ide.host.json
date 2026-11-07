@@ -340,17 +340,6 @@
       "persistenceScope": "templateGroup"
     },
     {
-      "id": "IncludeResilience",
-      "name": {
-        "text": "Add retries / circuit breaker to API clients (Microsoft.Extensions.Http.Resilience)"
-      },
-      "description": {
-        "text": "Adds the standard resilience handler (Polly) to the sites' typed HttpClients."
-      },
-      "isVisible": true,
-      "persistenceScope": "templateGroup"
-    },
-    {
       "id": "JQueryVersion",
       "name": {
         "text": "jQuery version"

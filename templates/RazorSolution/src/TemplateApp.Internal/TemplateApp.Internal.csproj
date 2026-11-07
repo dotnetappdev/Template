@@ -13,9 +13,6 @@
   <ItemGroup>
     <!-- Restores the client libraries in libman.json into wwwroot/lib on build. -->
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
-<!--#if (IncludeResilience) -->
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
-<!--#endif -->
 <!--#if (IncludeSerilog) -->
     <PackageReference Include="Serilog.AspNetCore" />
 <!--#endif -->

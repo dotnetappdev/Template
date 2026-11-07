@@ -60,11 +60,6 @@ public static class ApiClientServiceCollectionExtensions
             builder.AddHttpMessageHandler<UserTokenHandler>();
         }
 #endif
-#if (IncludeResilience)
-
-        // Retries, timeouts and a circuit breaker (Microsoft.Extensions.Http.Resilience / Polly).
-        builder.AddStandardResilienceHandler();
-#endif
 
         return builder;
     }
