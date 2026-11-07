@@ -17,9 +17,18 @@ Like the [Shiny .NET templates](https://github.com/shinyorg/templates), all the 
 
 Every client library is installed with **LibMan**.
 
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-additional-information-dark.png"><img src="docs/images/wizard-additional-information.png" alt="Additional information page" width="620"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-1-projects-dark.png"><img src="docs/images/wizard-step-1-projects.png" alt="Multi-step wizard: Projects step" width="820"></picture></p>
 
-<sub>Preview of Visual Studio's *Additional information* page for this template. It is rendered from the template's `ide.host.json` / `template.json` by [`docs/tools/render-wizard-preview.js`](docs/tools/render-wizard-preview.js), so it shows the same options, order, labels and defaults. It is not a Visual Studio capture. All screenshots in this README follow your GitHub theme: switch GitHub between light and dark to see the other version.</sub>
+<table>
+<tr>
+<td align="center" width="25%"><a href="#multi-step-wizard-with-test-connection-visual-studio-extension"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-2-database-postgres-dark.png"><img src="docs/images/wizard-step-2-database-postgres.png" alt="Database step with Test connection"></picture></a><br><sub><b>2. Database</b> + Test connection</sub></td>
+<td align="center" width="25%"><a href="#multi-step-wizard-with-test-connection-visual-studio-extension"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-3-api-security-dark.png"><img src="docs/images/wizard-step-3-api-security.png" alt="API, security and sign-in step"></picture></a><br><sub><b>3. API, security &amp; sign-in</b></sub></td>
+<td align="center" width="25%"><a href="#multi-step-wizard-with-test-connection-visual-studio-extension"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-4-front-end-dark.png"><img src="docs/images/wizard-step-4-front-end.png" alt="Front end step"></picture></a><br><sub><b>4. Front end</b></sub></td>
+<td align="center" width="25%"><a href="#multi-step-wizard-with-test-connection-visual-studio-extension"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-step-5-summary-dark.png"><img src="docs/images/wizard-step-5-summary.png" alt="Summary step"></picture></a><br><sub><b>5. Summary</b> + CLI command</sub></td>
+</tr>
+</table>
+
+<sub>The multi-step **Razor Pages Solution (Wizard)** from the Visual Studio extension: big selectable tiles, **Back / Next**, and a real **Test connection**. The previews are rendered from the wizard's own `WizardSteps.json` and the template's `template.json` by [`docs/tools/render-wizard-steps.js`](docs/tools/render-wizard-steps.js); they are not captures of the WPF window. All screenshots in this README follow your GitHub theme: switch GitHub between light and dark to see the other version.</sub>
 
 ---
 
@@ -48,6 +57,14 @@ Every client library is installed with **LibMan**.
 ## The New Project wizard
 
 After you name the solution, Visual Studio shows **Additional information**: one page with every option. Each option has an ⓘ tooltip, and the checkboxes show the NuGet or LibMan package they add.
+
+Without the extension installed, this is the page you get. For the step-by-step tile wizard shown at the top, see [Multi-step wizard](#multi-step-wizard-with-test-connection-visual-studio-extension).
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/wizard-additional-information-dark.png"><img src="docs/images/wizard-additional-information.png" alt="Additional information page" width="620"></picture></p>
+
+<sub>Rendered from the template's `ide.host.json` / `template.json` by [`docs/tools/render-wizard-preview.js`](docs/tools/render-wizard-preview.js), so it shows the same options, order, labels and defaults. It is not a Visual Studio capture.</sub>
+
+Each drop-down:
 
 | .NET version: LTS and STS | Database provider |
 | --- | --- |
