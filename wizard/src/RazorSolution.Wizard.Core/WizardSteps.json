@@ -29,6 +29,22 @@
           "IncludeServices": [
             "true"
           ]
+        },
+        {
+          "IncludeInternal": [
+            "true"
+          ],
+          "InternalAuthentication": [
+            "Identity"
+          ]
+        },
+        {
+          "IncludeExternal": [
+            "true"
+          ],
+          "ExternalAuthentication": [
+            "Identity"
+          ]
         }
       ],
       "fields": [
@@ -47,8 +63,8 @@
     },
     {
       "id": "api",
-      "title": "API & security",
-      "subtitle": "Options for ProjectName.API and how staff sign in to the Internal site.",
+      "title": "API, security & sign-in",
+      "subtitle": "Options for ProjectName.API, error monitoring, and how staff and customers sign in to the sites.",
       "fields": [
         "IncludeSwagger",
         "IncludeApiKey",
@@ -59,6 +75,10 @@
         "InternalAuthentication",
         "EntraTenantId",
         "EntraClientId",
+        "ExternalAuthentication",
+        "IdentityTwoFactor",
+        "IdentityPasskeys",
+        "IdentityAdminUi",
         "IncludeResilience"
       ]
     },
@@ -248,6 +268,67 @@
           "ApplicationInsights"
         ]
       }
+    ],
+    "ExternalAuthentication": [
+      {
+        "IncludeExternal": [
+          "true"
+        ]
+      }
+    ],
+    "IdentityTwoFactor": [
+      {
+        "IncludeInternal": [
+          "true"
+        ],
+        "InternalAuthentication": [
+          "Identity"
+        ]
+      },
+      {
+        "IncludeExternal": [
+          "true"
+        ],
+        "ExternalAuthentication": [
+          "Identity"
+        ]
+      }
+    ],
+    "IdentityPasskeys": [
+      {
+        "IncludeInternal": [
+          "true"
+        ],
+        "InternalAuthentication": [
+          "Identity"
+        ],
+        "Framework": [
+          "net10.0",
+          "net11.0"
+        ]
+      },
+      {
+        "IncludeExternal": [
+          "true"
+        ],
+        "ExternalAuthentication": [
+          "Identity"
+        ],
+        "Framework": [
+          "net10.0",
+          "net11.0"
+        ]
+      }
+    ],
+    "IdentityAdminUi": [
+      {
+        "IncludeInternal": [
+          "true"
+        ],
+        "InternalAuthentication": [
+          "Identity"
+        ]
+      }
     ]
   },
   "passwordFields": [
@@ -268,7 +349,8 @@
       "BootstrapVersion": "compact",
       "BootstrapTheme": "swatch",
       "FontAwesomeVersion": "compact",
-      "ErrorMonitoring": "large"
+      "ErrorMonitoring": "large",
+      "ExternalAuthentication": "large"
     },
     "choices": {
       "Framework": {
@@ -406,6 +488,14 @@
             "fa": "fa-solid fa-id-badge",
             "glyph": "E8D7",
             "color": "#0F6CBD"
+          }
+        },
+        "Identity": {
+          "note": "Accounts in your database (via the API): passwords, 2FA, passkeys",
+          "icon": {
+            "fa": "fa-solid fa-user-lock",
+            "glyph": "E72E",
+            "color": "#5C2D91"
           }
         }
       },
@@ -806,6 +896,24 @@
             "color": "#0078D4"
           }
         }
+      },
+      "ExternalAuthentication": {
+        "None": {
+          "note": "Public pages only; no customer accounts",
+          "icon": {
+            "fa": "fa-solid fa-lock-open",
+            "glyph": "E785",
+            "color": "#6B7280"
+          }
+        },
+        "Identity": {
+          "note": "Customers register and sign in (via the API): 2FA, passkeys",
+          "icon": {
+            "fa": "fa-solid fa-user-lock",
+            "glyph": "E72E",
+            "color": "#5C2D91"
+          }
+        }
       }
     },
     "icons": {
@@ -898,6 +1006,21 @@
         "fa": "fa-solid fa-chart-column",
         "glyph": "E9D2",
         "color": "#FF6384"
+      },
+      "IdentityTwoFactor": {
+        "fa": "fa-solid fa-mobile-screen-button",
+        "glyph": "E8EA",
+        "color": "#107C10"
+      },
+      "IdentityPasskeys": {
+        "fa": "fa-solid fa-fingerprint",
+        "glyph": "E928",
+        "color": "#0F6CBD"
+      },
+      "IdentityAdminUi": {
+        "fa": "fa-solid fa-users-gear",
+        "glyph": "E716",
+        "color": "#B7791F"
       }
     },
     "shortLabels": {
@@ -918,7 +1041,10 @@
       "IncludeSelect2": "Select2",
       "IncludeToastr": "Toastr",
       "IncludeSweetAlert": "SweetAlert2",
-      "IncludeChartJs": "Chart.js"
+      "IncludeChartJs": "Chart.js",
+      "IdentityTwoFactor": "Two-factor (2FA)",
+      "IdentityPasskeys": "Passkeys",
+      "IdentityAdminUi": "User admin UI"
     },
     "groups": {
       "projects": [
@@ -942,6 +1068,14 @@
             "IncludeApiKey",
             "IncludeHealthChecks",
             "IncludeSerilog"
+          ]
+        ],
+        [
+          "ASP.NET Core Identity",
+          [
+            "IdentityTwoFactor",
+            "IdentityPasskeys",
+            "IdentityAdminUi"
           ]
         ],
         [

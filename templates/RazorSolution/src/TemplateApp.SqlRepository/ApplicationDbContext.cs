@@ -1,3 +1,6 @@
+#if (UseIdentity)
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+#endif
 using Microsoft.EntityFrameworkCore;
 using TemplateApp.SqlRepository.Entities;
 
@@ -6,8 +9,15 @@ namespace TemplateApp.SqlRepository;
 /// <summary>
 /// The EF Core unit of work for the application. Entity configuration lives in
 /// the Configurations folder (one <see cref="IEntityTypeConfiguration{TEntity}"/> per entity).
+#if (UseIdentity)
+/// It also stores ASP.NET Core Identity's users, roles, logins, tokens and (on .NET 10+) passkeys.
+#endif
 /// </summary>
+#if (UseIdentity)
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+#else
 public class ApplicationDbContext : DbContext
+#endif
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

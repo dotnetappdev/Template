@@ -5,6 +5,9 @@ using Serilog;
 using Mindscape.Raygun4Net.AspNetCore;
 #endif
 using TemplateApp.External.ApiClients;
+#if (UseExternalIdentity)
+using TemplateApp.External.Auth;
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 #if (IncludeSerilog)
@@ -45,6 +48,13 @@ builder.Services.AddRazorPages();
 
 // Typed HttpClients for TemplateApp.API. This site never talks to the database directly.
 builder.Services.AddApiClients(builder.Configuration);
+#if (UseExternalIdentity)
+
+// ASP.NET Core Identity in TemplateApp.API: customers register and sign in on /Account (two-factor, passkeys);
+// pages stay public unless they say [Authorize]. The API's tokens live in this site's encrypted cookie.
+builder.Services.AddSiteAuthentication(requireSignedInUser: false);
+#endif
+
 #if (IncludeHealthChecks)
 builder.Services.AddHealthChecks();
 #endif
@@ -74,6 +84,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+#if (UseExternalIdentity)
+app.UseAuthentication();
+#endif
 
 app.UseAuthorization();
 

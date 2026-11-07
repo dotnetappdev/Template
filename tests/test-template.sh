@@ -18,7 +18,8 @@ run_case() {
   if ! dotnet new razorsln -n "Acme.$name" -o "$OUT/$name" --no-restore "$@" >/dev/null; then
     echo "!!! $name: dotnet new failed"; failed=1; return
   fi
-  if dotnet build "$OUT/$name/Acme.$name.sln" -nologo -v q -clp:ErrorsOnly \
+  # Known-vulnerable NuGet packages fail the build.
+  if dotnet build "$OUT/$name/Acme.$name.sln" -nologo -v q -clp:ErrorsOnly -p:WarningsAsErrors="NU1901%3BNU1902%3BNU1903%3BNU1904" \
      && { [ ! -d "$OUT/$name/tests" ] || dotnet test "$OUT/$name/Acme.$name.sln" --no-build -nologo -v q; }; then
     echo "--- $name: OK"
   else
@@ -41,6 +42,11 @@ run_case Sentry --error-monitoring Sentry --error-monitoring-key 'https://abc123
 run_case Raygun10 -f net10.0 --error-monitoring Raygun --error-monitoring-key 'rg_key_123' --internal-auth Windows
 run_case AppInsights11 -f net11.0 --error-monitoring ApplicationInsights \
   --error-monitoring-key 'InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://x.in.applicationinsights.azure.com/'
+run_case Identity10 -f net10.0 --internal-auth Identity --external-auth Identity --database Sqlite --serilog --api-key
+run_case Identity8 --internal-auth Identity --external-auth Identity --identity-passkeys --error-monitoring Sentry
+run_case Identity11Pg -f net11.0 --database PostgreSQL --external-auth Identity --internal-auth Windows
+run_case IdentityNoExtras -f net10.0 --internal-auth Identity --identity-2fa false --identity-passkeys false --identity-admin false \
+  --external false --bootstrap 4.6.2 --services false --sql-repository false
 run_case InternalOnlyNoData --external false --services false --sql-repository false
 run_case ExternalOnly --internal false --jquery-ui 1.13.3 --jquery-ui-theme smoothness
 run_case ApiOnly --internal false --external false --api-key

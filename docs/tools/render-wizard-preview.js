@@ -105,6 +105,7 @@ async function shot(pg, file, state, clipToOpen) {
     ['wizard-sql-version-picker.png', 'SqlServerVersion'],
     ['wizard-internal-auth-picker.png', 'InternalAuthentication'],
     ['wizard-error-monitoring-picker.png', 'ErrorMonitoring'],
+    ['wizard-external-auth-picker.png', 'ExternalAuthentication'],
     ['wizard-jquery-picker.png', 'JQueryVersion'],
     ['wizard-jquery-ui-picker.png', 'JQueryUIVersion'],
     ['wizard-jquery-ui-theme-picker.png', 'JQueryUITheme'],

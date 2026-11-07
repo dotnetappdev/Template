@@ -346,6 +346,10 @@ window.WIZARD_DATA = {
     {
      "value": "EntraId",
      "display": "Microsoft Entra ID (Microsoft.Identity.Web)"
+    },
+    {
+     "value": "Identity",
+     "display": "ASP.NET Core Identity (accounts stored by the API)"
     }
    ],
    "cli": "--internal-auth"
@@ -367,6 +371,51 @@ window.WIZARD_DATA = {
    "default": "",
    "choices": [],
    "cli": "--entra-client-id"
+  },
+  "ExternalAuthentication": {
+   "id": "ExternalAuthentication",
+   "kind": "choice",
+   "label": "External site sign-in",
+   "description": "How customers sign in to ProjectName.External.",
+   "default": "None",
+   "choices": [
+    {
+     "value": "None",
+     "display": "None"
+    },
+    {
+     "value": "Identity",
+     "display": "ASP.NET Core Identity (accounts stored by the API)"
+    }
+   ],
+   "cli": "--external-auth"
+  },
+  "IdentityTwoFactor": {
+   "id": "IdentityTwoFactor",
+   "kind": "bool",
+   "label": "Two-factor authentication (authenticator app + recovery codes)",
+   "description": "Users can turn on 2FA with an authenticator app (QR code) and get recovery codes. Used only with ASP.NET Core Identity.",
+   "default": "true",
+   "choices": [],
+   "cli": "--identity-2fa"
+  },
+  "IdentityPasskeys": {
+   "id": "IdentityPasskeys",
+   "kind": "bool",
+   "label": "Passkeys (WebAuthn, .NET 10+)",
+   "description": "Users can add passkeys (Windows Hello, Touch ID, security keys, phones) and sign in with them. Needs .NET 10 or later; ignored for .NET 8/9.",
+   "default": "true",
+   "choices": [],
+   "cli": "--identity-passkeys"
+  },
+  "IdentityAdminUi": {
+   "id": "IdentityAdminUi",
+   "kind": "bool",
+   "label": "User admin UI in the Internal site (users, roles, lockout, 2FA reset)",
+   "description": "Admins manage users and roles: create, lock/unlock, reset two-factor, remove passkeys, delete. Needs ASP.NET Core Identity on the Internal site.",
+   "default": "true",
+   "choices": [],
+   "cli": "--identity-admin"
   },
   "JQueryVersion": {
    "id": "JQueryVersion",
@@ -788,6 +837,22 @@ window.WIZARD_DATA = {
      "IncludeServices": [
       "true"
      ]
+    },
+    {
+     "IncludeInternal": [
+      "true"
+     ],
+     "InternalAuthentication": [
+      "Identity"
+     ]
+    },
+    {
+     "IncludeExternal": [
+      "true"
+     ],
+     "ExternalAuthentication": [
+      "Identity"
+     ]
     }
    ],
    "fields": [
@@ -806,8 +871,8 @@ window.WIZARD_DATA = {
   },
   {
    "id": "api",
-   "title": "API & security",
-   "subtitle": "Options for ProjectName.API and how staff sign in to the Internal site.",
+   "title": "API, security & sign-in",
+   "subtitle": "Options for ProjectName.API, error monitoring, and how staff and customers sign in to the sites.",
    "fields": [
     "IncludeSwagger",
     "IncludeApiKey",
@@ -818,6 +883,10 @@ window.WIZARD_DATA = {
     "InternalAuthentication",
     "EntraTenantId",
     "EntraClientId",
+    "ExternalAuthentication",
+    "IdentityTwoFactor",
+    "IdentityPasskeys",
+    "IdentityAdminUi",
     "IncludeResilience"
    ]
   },
@@ -1007,6 +1076,67 @@ window.WIZARD_DATA = {
      "ApplicationInsights"
     ]
    }
+  ],
+  "ExternalAuthentication": [
+   {
+    "IncludeExternal": [
+     "true"
+    ]
+   }
+  ],
+  "IdentityTwoFactor": [
+   {
+    "IncludeInternal": [
+     "true"
+    ],
+    "InternalAuthentication": [
+     "Identity"
+    ]
+   },
+   {
+    "IncludeExternal": [
+     "true"
+    ],
+    "ExternalAuthentication": [
+     "Identity"
+    ]
+   }
+  ],
+  "IdentityPasskeys": [
+   {
+    "IncludeInternal": [
+     "true"
+    ],
+    "InternalAuthentication": [
+     "Identity"
+    ],
+    "Framework": [
+     "net10.0",
+     "net11.0"
+    ]
+   },
+   {
+    "IncludeExternal": [
+     "true"
+    ],
+    "ExternalAuthentication": [
+     "Identity"
+    ],
+    "Framework": [
+     "net10.0",
+     "net11.0"
+    ]
+   }
+  ],
+  "IdentityAdminUi": [
+   {
+    "IncludeInternal": [
+     "true"
+    ],
+    "InternalAuthentication": [
+     "Identity"
+    ]
+   }
   ]
  },
  "passwordFields": [
@@ -1027,7 +1157,8 @@ window.WIZARD_DATA = {
    "BootstrapVersion": "compact",
    "BootstrapTheme": "swatch",
    "FontAwesomeVersion": "compact",
-   "ErrorMonitoring": "large"
+   "ErrorMonitoring": "large",
+   "ExternalAuthentication": "large"
   },
   "choices": {
    "Framework": {
@@ -1165,6 +1296,14 @@ window.WIZARD_DATA = {
       "fa": "fa-solid fa-id-badge",
       "glyph": "E8D7",
       "color": "#0F6CBD"
+     }
+    },
+    "Identity": {
+     "note": "Accounts in your database (via the API): passwords, 2FA, passkeys",
+     "icon": {
+      "fa": "fa-solid fa-user-lock",
+      "glyph": "E72E",
+      "color": "#5C2D91"
      }
     }
    },
@@ -1565,6 +1704,24 @@ window.WIZARD_DATA = {
       "color": "#0078D4"
      }
     }
+   },
+   "ExternalAuthentication": {
+    "None": {
+     "note": "Public pages only; no customer accounts",
+     "icon": {
+      "fa": "fa-solid fa-lock-open",
+      "glyph": "E785",
+      "color": "#6B7280"
+     }
+    },
+    "Identity": {
+     "note": "Customers register and sign in (via the API): 2FA, passkeys",
+     "icon": {
+      "fa": "fa-solid fa-user-lock",
+      "glyph": "E72E",
+      "color": "#5C2D91"
+     }
+    }
    }
   },
   "icons": {
@@ -1657,6 +1814,21 @@ window.WIZARD_DATA = {
     "fa": "fa-solid fa-chart-column",
     "glyph": "E9D2",
     "color": "#FF6384"
+   },
+   "IdentityTwoFactor": {
+    "fa": "fa-solid fa-mobile-screen-button",
+    "glyph": "E8EA",
+    "color": "#107C10"
+   },
+   "IdentityPasskeys": {
+    "fa": "fa-solid fa-fingerprint",
+    "glyph": "E928",
+    "color": "#0F6CBD"
+   },
+   "IdentityAdminUi": {
+    "fa": "fa-solid fa-users-gear",
+    "glyph": "E716",
+    "color": "#B7791F"
    }
   },
   "shortLabels": {
@@ -1677,7 +1849,10 @@ window.WIZARD_DATA = {
    "IncludeSelect2": "Select2",
    "IncludeToastr": "Toastr",
    "IncludeSweetAlert": "SweetAlert2",
-   "IncludeChartJs": "Chart.js"
+   "IncludeChartJs": "Chart.js",
+   "IdentityTwoFactor": "Two-factor (2FA)",
+   "IdentityPasskeys": "Passkeys",
+   "IdentityAdminUi": "User admin UI"
   },
   "groups": {
    "projects": [
@@ -1701,6 +1876,14 @@ window.WIZARD_DATA = {
       "IncludeApiKey",
       "IncludeHealthChecks",
       "IncludeSerilog"
+     ]
+    ],
+    [
+     "ASP.NET Core Identity",
+     [
+      "IdentityTwoFactor",
+      "IdentityPasskeys",
+      "IdentityAdminUi"
      ]
     ],
     [

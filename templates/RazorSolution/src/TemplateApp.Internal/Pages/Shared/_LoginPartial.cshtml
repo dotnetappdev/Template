@@ -1,0 +1,21 @@
+@using System.Security.Claims
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="account-menu" role="button" data-bs-toggle="dropdown" data-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle me-1 mr-1"></i>@User.Identity.Name
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-right" aria-labelledby="account-menu">
+            <span class="dropdown-item-text small text-muted">@User.FindFirstValue(ClaimTypes.Email)</span>
+            <a class="dropdown-item" asp-page="/Account/Manage/Index"><i class="fas fa-id-card me-2 mr-2"></i>My account</a>
+            <div class="dropdown-divider"></div>
+            <form method="post" asp-page="/Account/Logout" class="px-3 py-1">
+                <button type="submit" class="btn btn-sm btn-outline-secondary w-100"><i class="fas fa-sign-out-alt me-1 mr-1"></i>Sign out</button>
+            </form>
+        </div>
+    </li>
+}
+else
+{
+    <li class="nav-item"><a class="nav-link" asp-page="/Account/Login"><i class="fas fa-sign-in-alt me-1 mr-1"></i>Sign in</a></li>
+}

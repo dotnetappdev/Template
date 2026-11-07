@@ -29,6 +29,11 @@
                         <li class="nav-item"><a class="nav-link" asp-page="/Privacy"><i class="fas fa-lock me-1 mr-1"></i>Privacy</a></li>
                     </ul>
                     <span class="navbar-text small">External / public site</span>
+@*#if (UseExternalIdentity)*@
+                    <ul class="navbar-nav ms-3 ml-3">
+                        <partial name="_LoginPartial" />
+                    </ul>
+@*#endif*@
                 </div>
             </div>
         </nav>

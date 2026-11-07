@@ -1,0 +1,48 @@
+@page
+@model TemplateApp.Internal.Pages.Account.Manage.PasskeysModel
+@{
+    ViewData["Title"] = "Passkeys";
+}
+<h1 class="h2 mb-4"><i class="fas fa-user-circle me-2 mr-2"></i>My account</h1>
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_ManageNav" />
+    </div>
+    <div class="col-md-9">
+        <h2 class="h4">Passkeys</h2>
+        <p class="text-muted">Sign in with your fingerprint, face, device PIN or a security key instead of a password (Windows Hello, Touch ID, Android, iPhone, YubiKey, …).</p>
+        @if (Model.Passkeys.Count == 0)
+        {
+            <div class="alert alert-info"><i class="fas fa-info-circle me-2 mr-2"></i>You have no passkeys yet.</div>
+        }
+        else
+        {
+            <ul class="list-group mb-4" id="passkey-list">
+                @foreach (var passkey in Model.Passkeys)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-fingerprint me-2 mr-2 text-primary"></i><strong>@passkey.Name</strong> <small class="text-muted">added @passkey.CreatedAt.ToLocalTime().ToString("d MMM yyyy")</small></span>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@passkey.Id" class="js-confirm" data-confirm="Remove the passkey &quot;@passkey.Name&quot;?">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i><span class="visually-hidden sr-only">Remove</span></button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+        <form method="post" asp-page-handler="Add" id="passkey-add-form" style="max-width: 28rem">
+            <input type="hidden" name="CredentialJson" />
+            <label for="passkey-name" class="form-label">Name for the new passkey</label>
+            <div class="input-group">
+                <input id="passkey-name" name="Name" class="form-control" placeholder="Work laptop" maxlength="60" />
+                <button type="button" class="btn btn-primary" data-passkey="create" data-form="passkey-add-form"
+                        data-options-url="@Url.Page("Passkeys", "CreationOptions")" data-status="passkey-status">
+                    <i class="fas fa-plus me-1 mr-1"></i>Add a passkey
+                </button>
+            </div>
+            <div id="passkey-status" class="small text-muted mt-2" role="status"></div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/passkeys.js" asp-append-version="true"></script>
+}

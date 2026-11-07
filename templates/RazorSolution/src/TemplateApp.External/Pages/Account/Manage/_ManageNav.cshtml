@@ -1,0 +1,14 @@
+@{
+    var page = ViewContext.RouteData.Values["page"]?.ToString();
+    string Active(string name) => page == "/Account/Manage/" + name ? "active" : string.Empty;
+}
+<nav class="nav nav-pills flex-column mb-4" aria-label="Account">
+    <a class="nav-link @Active("Index")" asp-page="/Account/Manage/Index"><i class="fas fa-id-card me-2 mr-2"></i>Profile</a>
+    <a class="nav-link @Active("ChangePassword")" asp-page="/Account/Manage/ChangePassword"><i class="fas fa-key me-2 mr-2"></i>Password</a>
+@*#if (UseTwoFactor)*@
+    <a class="nav-link @Active("TwoFactor")" asp-page="/Account/Manage/TwoFactor"><i class="fas fa-mobile-alt me-2 mr-2"></i>Two-factor authentication</a>
+@*#endif*@
+@*#if (UsePasskeys)*@
+    <a class="nav-link @Active("Passkeys")" asp-page="/Account/Manage/Passkeys"><i class="fas fa-fingerprint me-2 mr-2"></i>Passkeys</a>
+@*#endif*@
+</nav>

@@ -1,0 +1,44 @@
+@page
+@model TemplateApp.Internal.Pages.Account.Manage.IndexModel
+@{
+    ViewData["Title"] = "My account";
+}
+<h1 class="h2 mb-4"><i class="fas fa-user-circle me-2 mr-2"></i>My account</h1>
+<div class="row">
+    <div class="col-md-3">
+        <partial name="_ManageNav" />
+    </div>
+    <div class="col-md-9">
+        <h2 class="h4">Profile</h2>
+        @if (Model.Me is null)
+        {
+            <div class="alert alert-warning">Your account details could not be loaded from the API.</div>
+        }
+        else
+        {
+            <dl class="row">
+                <dt class="col-sm-4">Email</dt><dd class="col-sm-8">@Model.Me.Email</dd>
+                <dt class="col-sm-4">Name</dt><dd class="col-sm-8">@(Model.Me.DisplayName ?? "-")</dd>
+                <dt class="col-sm-4">Roles</dt>
+                <dd class="col-sm-8">
+                    @foreach (var role in Model.Me.Roles)
+                    {
+                        <span class="badge bg-secondary badge-secondary me-1 mr-1">@role</span>
+                    }
+                    @if (Model.Me.Roles.Count == 0)
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </dd>
+@*#if (UseTwoFactor)*@
+                <dt class="col-sm-4">Two-factor</dt>
+                <dd class="col-sm-8">@(Model.Me.TwoFactorEnabled ? "On" : "Off") · <a asp-page="TwoFactor">Manage</a></dd>
+@*#endif*@
+@*#if (UsePasskeys)*@
+                <dt class="col-sm-4">Passkeys</dt>
+                <dd class="col-sm-8">@Model.Me.PasskeyCount · <a asp-page="Passkeys">Manage</a></dd>
+@*#endif*@
+            </dl>
+        }
+    </div>
+</div>

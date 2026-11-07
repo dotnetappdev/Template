@@ -170,7 +170,8 @@ dl.sum dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
   const matches = conds => !conds || !conds.length || conds.some(c => Object.entries(c).every(([k, vals]) => vals.includes(v[k])));
   const visibleSteps = () => D.steps.filter(s => matches(s.when));
   const fieldVisible = id => matches((D.fieldRules || {})[id]);
-  const usesDb = () => v.IncludeSqlRepository === 'true' || v.IncludeServices === 'true';
+  const usesIdentity = () => (v.IncludeInternal === 'true' && v.InternalAuthentication === 'Identity') || (v.IncludeExternal === 'true' && v.ExternalAuthentication === 'Identity');
+  const usesDb = () => v.IncludeSqlRepository === 'true' || v.IncludeServices === 'true' || usesIdentity();
   const createsApi = () => v.IncludeApi === 'true' || v.IncludeInternal === 'true' || v.IncludeExternal === 'true';
 
   // ---------------------------------------------------------------- connection string (same rules as the template)
@@ -337,6 +338,7 @@ dl.sum dd { margin: 0; min-width: 0; overflow-wrap: anywhere }
         <dt>Projects</dt><dd>${esc(projects.map(p => `${name}.${p}`).join(', '))}</dd>
         ${usesDb() ? `<dt>Database</dt><dd><code>${esc(connectionString(true))}</code></dd>` : ''}
         ${v.IncludeInternal === 'true' ? `<dt>Internal sign-in</dt><dd>${esc(disp('InternalAuthentication'))}</dd>` : ''}
+        ${v.IncludeExternal === 'true' ? `<dt>External sign-in</dt><dd>${esc(disp('ExternalAuthentication'))}</dd>` : ''}
         ${site ? `<dt>Front end</dt><dd>${esc(`${disp('JQueryVersion')}, ${disp('JQueryUIVersion')} (${disp('JQueryUITheme')} theme), ${disp('BootstrapVersion')} (${disp('BootstrapTheme')}), ${disp('FontAwesomeVersion')}`)}</dd>` : ''}
         <dt>Extras</dt><dd>${esc(extras.join(', ') || 'None')}</dd>
       </dl>

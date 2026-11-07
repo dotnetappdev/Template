@@ -87,6 +87,13 @@
       "files": [ "dist/sweetalert2.all.min.js" ]
     },
 //#endif
+//#if (UseTwoFactor && UseExternalIdentity)
+    {
+      "library": "qrcode-generator@1.4.4",
+      "destination": "wwwroot/lib/qrcode-generator/",
+      "files": [ "qrcode.js" ]
+    },
+//#endif
 //#if (UseSentry)
     {
       "provider": "filesystem",

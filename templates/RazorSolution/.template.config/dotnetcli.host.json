@@ -160,11 +160,28 @@
     "ErrorMonitoringKey": {
       "longName": "error-monitoring-key",
       "shortName": ""
+    },
+    "ExternalAuthentication": {
+      "longName": "external-auth",
+      "shortName": ""
+    },
+    "IdentityTwoFactor": {
+      "longName": "identity-2fa",
+      "shortName": ""
+    },
+    "IdentityPasskeys": {
+      "longName": "identity-passkeys",
+      "shortName": ""
+    },
+    "IdentityAdminUi": {
+      "longName": "identity-admin",
+      "shortName": ""
     }
   },
   "usageExamples": [
     "--database SqlServer --sql-version SqlServer2022 --bootstrap-theme flatly --jquery-ui-theme redmond",
     "--external false --internal-auth Windows --serilog --api-key --chartjs --sweetalert",
-    "--error-monitoring Sentry --error-monitoring-key https://<key>@o0.ingest.sentry.io/0"
+    "--error-monitoring Sentry --error-monitoring-key https://<key>@o0.ingest.sentry.io/0",
+    "-f net10.0 --internal-auth Identity --external-auth Identity --identity-2fa --identity-passkeys --identity-admin"
   ]
 }

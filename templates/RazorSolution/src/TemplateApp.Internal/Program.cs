@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Identity.Web;
 #endif
 using TemplateApp.Internal.ApiClients;
+#if (UseInternalIdentity)
+using TemplateApp.Internal.Auth;
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 #if (IncludeSerilog)
@@ -46,7 +49,15 @@ if (!string.IsNullOrWhiteSpace(builder.Configuration["ApplicationInsights:Connec
 #endif
 
 // Razor Pages (no Areas): pages live in /Pages and map to URLs by folder.
+#if (UseIdentityAdmin)
+builder.Services.AddRazorPages(options =>
+{
+    // /Admin pages (user administration) are for the Admin role only.
+    options.Conventions.AuthorizeFolder("/Admin", SiteAuthentication.AdminPolicy);
+});
+#else
 builder.Services.AddRazorPages();
+#endif
 #if (UseWindowsAuth)
 
 // Windows authentication (Negotiate/Kerberos/NTLM). Every page requires a signed-in user.
@@ -58,11 +69,17 @@ builder.Services.AddAuthorization(options => options.FallbackPolicy = options.De
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 builder.Services.AddAuthorization(options => options.FallbackPolicy = options.DefaultPolicy);
+#elseif (UseInternalIdentity)
+
+// ASP.NET Core Identity in TemplateApp.API: staff sign in on /Account/Login (password, two-factor, passkeys);
+// every other page requires a signed-in user. The API's tokens live in this site's encrypted cookie.
+builder.Services.AddSiteAuthentication(requireSignedInUser: true);
 #endif
 
 
 // Typed HttpClients for TemplateApp.API. This site never talks to the database directly.
 builder.Services.AddApiClients(builder.Configuration);
+
 #if (IncludeHealthChecks)
 builder.Services.AddHealthChecks();
 #endif

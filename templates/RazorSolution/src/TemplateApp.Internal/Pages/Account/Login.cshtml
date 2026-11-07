@@ -1,0 +1,95 @@
+@page
+@model TemplateApp.Internal.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3"><i class="fas fa-sign-in-alt me-2 mr-2"></i>Sign in</h1>
+                @if (Model.ErrorMessage is not null)
+                {
+                    <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
+                }
+                <form method="post" id="login-form">
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    @if (Model.RequiresTwoFactor)
+                    {
+                        <input type="hidden" asp-for="PendingLogin" />
+                        <input type="hidden" asp-for="Input.Email" />
+                        <input type="hidden" asp-for="Input.RememberMe" />
+                        <p class="text-muted">Two-factor authentication is on for <strong>@Model.Input.Email</strong>.</p>
+                        @if (Model.UseRecoveryCode)
+                        {
+                            <div class="mb-3 form-group">
+                                <label asp-for="RecoveryCode" class="form-label">Recovery code</label>
+                                <input asp-for="RecoveryCode" class="form-control" autocomplete="off" autofocus />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-3 form-group">
+                                <label asp-for="TwoFactorCode" class="form-label">Code from your authenticator app</label>
+                                <input asp-for="TwoFactorCode" class="form-control" inputmode="numeric" autocomplete="one-time-code" autofocus />
+                            </div>
+                        }
+                        <button type="submit" class="btn btn-primary w-100 btn-block" name="UseRecoveryCode" value="@(Model.UseRecoveryCode ? "true" : "false")">Verify</button>
+                        <div class="mt-3 small">
+                            @if (Model.UseRecoveryCode)
+                            {
+                                <button type="submit" class="btn btn-link p-0" name="UseRecoveryCode" value="false" formnovalidate>Use my authenticator app instead</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-link p-0" name="UseRecoveryCode" value="true" formnovalidate>Lost your device? Use a recovery code</button>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="mb-3 form-group">
+                            <label asp-for="Input.Email" class="form-label"></label>
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username webauthn" autofocus />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 form-group">
+                            <label asp-for="Input.Password" class="form-label"></label>
+                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input asp-for="Input.RememberMe" class="form-check-input" />
+                            <label asp-for="Input.RememberMe" class="form-check-label"></label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 btn-block">Sign in</button>
+                    }
+                </form>
+@*#if (UsePasskeys)*@
+                @if (!Model.RequiresTwoFactor)
+                {
+                    <div class="text-center text-muted small my-3">or</div>
+                    <form method="post" asp-page-handler="Passkey" id="passkey-login-form">
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <input type="hidden" name="CredentialJson" />
+                        <button type="button" class="btn btn-outline-secondary w-100 btn-block" data-passkey="get" data-form="passkey-login-form"
+                                data-email-from="Input_Email" data-options-url="@Url.Page("Login", "PasskeyOptions")" data-status="passkey-status">
+                            <i class="fas fa-fingerprint me-2 mr-2"></i>Sign in with a passkey
+                        </button>
+                        <div id="passkey-status" class="small text-muted mt-2" role="status"></div>
+                    </form>
+                }
+@*#endif*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+@*#if (UsePasskeys)*@
+    <script src="~/js/passkeys.js" asp-append-version="true"></script>
+@*#endif*@
+}

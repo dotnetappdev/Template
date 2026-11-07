@@ -113,6 +113,69 @@
             "src/TemplateApp.Internal/ApiClients/ApiKeyHandler.cs",
             "src/TemplateApp.External/ApiClients/ApiKeyHandler.cs"
           ]
+        },
+        {
+          "condition": "(!UseIdentity)",
+          "exclude": [
+            "src/TemplateApp.API/Identity/**",
+            "src/TemplateApp.API/Controllers/AccountController.cs",
+            "src/TemplateApp.SqlRepository/Entities/ApplicationUser.cs"
+          ]
+        },
+        {
+          "condition": "(!UsePasskeys)",
+          "exclude": [
+            "src/TemplateApp.API/Controllers/PasskeysController.cs",
+            "src/TemplateApp.Internal/Pages/Account/Manage/Passkeys.cshtml",
+            "src/TemplateApp.Internal/Pages/Account/Manage/Passkeys.cshtml.cs",
+            "src/TemplateApp.External/Pages/Account/Manage/Passkeys.cshtml",
+            "src/TemplateApp.External/Pages/Account/Manage/Passkeys.cshtml.cs",
+            "src/TemplateApp.Internal/wwwroot/js/passkeys.js",
+            "src/TemplateApp.External/wwwroot/js/passkeys.js"
+          ]
+        },
+        {
+          "condition": "(!UseTwoFactor)",
+          "exclude": [
+            "src/TemplateApp.Internal/Pages/Account/Manage/TwoFactor.cshtml",
+            "src/TemplateApp.Internal/Pages/Account/Manage/TwoFactor.cshtml.cs",
+            "src/TemplateApp.External/Pages/Account/Manage/TwoFactor.cshtml",
+            "src/TemplateApp.External/Pages/Account/Manage/TwoFactor.cshtml.cs"
+          ]
+        },
+        {
+          "condition": "(!UseIdentityAdmin)",
+          "exclude": [
+            "src/TemplateApp.API/Controllers/AdminUsersController.cs",
+            "src/TemplateApp.Internal/Pages/Admin/**",
+            "src/TemplateApp.Internal/ApiClients/IAdminUsersApiClient.cs",
+            "src/TemplateApp.Internal/ApiClients/AdminUsersApiClient.cs",
+            "src/TemplateApp.Internal/ApiClients/Models/AdminUserModels.cs"
+          ]
+        },
+        {
+          "condition": "(!UseInternalIdentity)",
+          "exclude": [
+            "src/TemplateApp.Internal/Pages/Account/**",
+            "src/TemplateApp.Internal/Auth/**",
+            "src/TemplateApp.Internal/ApiClients/IAccountApiClient.cs",
+            "src/TemplateApp.Internal/ApiClients/AccountApiClient.cs",
+            "src/TemplateApp.Internal/ApiClients/UserTokenHandler.cs",
+            "src/TemplateApp.Internal/ApiClients/Models/AccountModels.cs",
+            "src/TemplateApp.Internal/Pages/Shared/_LoginPartial.cshtml"
+          ]
+        },
+        {
+          "condition": "(!UseExternalIdentity)",
+          "exclude": [
+            "src/TemplateApp.External/Pages/Account/**",
+            "src/TemplateApp.External/Auth/**",
+            "src/TemplateApp.External/ApiClients/IAccountApiClient.cs",
+            "src/TemplateApp.External/ApiClients/AccountApiClient.cs",
+            "src/TemplateApp.External/ApiClients/UserTokenHandler.cs",
+            "src/TemplateApp.External/ApiClients/Models/AccountModels.cs",
+            "src/TemplateApp.External/Pages/Shared/_LoginPartial.cshtml"
+          ]
         }
       ]
     }
@@ -198,7 +261,7 @@
     "UseSqlRepository": {
       "type": "computed",
       "datatype": "bool",
-      "value": "(IncludeSqlRepository || IncludeServices)"
+      "value": "(IncludeSqlRepository || IncludeServices || (IncludeInternal && InternalAuthentication == \"Identity\") || (IncludeExternal && ExternalAuthentication == \"Identity\"))"
     },
     "UseApi": {
       "type": "computed",
@@ -466,6 +529,11 @@
           "choice": "EntraId",
           "displayName": "Microsoft Entra ID (Microsoft.Identity.Web)",
           "description": "Microsoft Entra ID (Microsoft.Identity.Web)"
+        },
+        {
+          "choice": "Identity",
+          "displayName": "ASP.NET Core Identity (accounts stored by the API)",
+          "description": "ASP.NET Core Identity"
         }
       ]
     },
@@ -482,6 +550,46 @@
       "defaultValue": "",
       "displayName": "Entra ID client ID (optional)",
       "description": "Application (client) ID of the app registration for the Internal site. Can be set later in appsettings.json."
+    },
+    "ExternalAuthentication": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "None",
+      "displayName": "External site sign-in",
+      "description": "How customers sign in to ProjectName.External.",
+      "choices": [
+        {
+          "choice": "None",
+          "displayName": "None",
+          "description": "No sign-in"
+        },
+        {
+          "choice": "Identity",
+          "displayName": "ASP.NET Core Identity (accounts stored by the API)",
+          "description": "ASP.NET Core Identity with self-service registration"
+        }
+      ]
+    },
+    "IdentityTwoFactor": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Two-factor authentication (authenticator app + recovery codes)",
+      "description": "Users can turn on 2FA with an authenticator app (QR code) and get recovery codes. Used only with ASP.NET Core Identity."
+    },
+    "IdentityPasskeys": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Passkeys (WebAuthn, .NET 10+)",
+      "description": "Users can add passkeys (Windows Hello, Touch ID, security keys, phones) and sign in with them. Needs .NET 10 or later; ignored for .NET 8/9."
+    },
+    "IdentityAdminUi": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "User admin UI in the Internal site (users, roles, lockout, 2FA reset)",
+      "description": "Admins manage users and roles: create, lock/unlock, reset two-factor, remove passkeys, delete. Needs ASP.NET Core Identity on the Internal site."
     },
     "JQueryVersion": {
       "type": "parameter",
@@ -945,6 +1053,11 @@
       "datatype": "bool",
       "value": "(DatabaseProvider == \"SqlServer\")"
     },
+    "PinSqlClient": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(DatabaseProvider == \"SqlServer\" && (Framework == \"net10.0\" || Framework == \"net11.0\"))"
+    },
     "UsePostgreSql": {
       "type": "computed",
       "datatype": "bool",
@@ -979,6 +1092,36 @@
       "type": "computed",
       "datatype": "bool",
       "value": "(Framework == \"net11.0\")"
+    },
+    "UseInternalIdentity": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeInternal && InternalAuthentication == \"Identity\")"
+    },
+    "UseExternalIdentity": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IncludeExternal && ExternalAuthentication == \"Identity\")"
+    },
+    "UseIdentity": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "((IncludeInternal && InternalAuthentication == \"Identity\") || (IncludeExternal && ExternalAuthentication == \"Identity\"))"
+    },
+    "UseTwoFactor": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IdentityTwoFactor && ((IncludeInternal && InternalAuthentication == \"Identity\") || (IncludeExternal && ExternalAuthentication == \"Identity\")))"
+    },
+    "UsePasskeys": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IdentityPasskeys && (Framework == \"net10.0\" || Framework == \"net11.0\") && ((IncludeInternal && InternalAuthentication == \"Identity\") || (IncludeExternal && ExternalAuthentication == \"Identity\")))"
+    },
+    "UseIdentityAdmin": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IdentityAdminUi && IncludeInternal && InternalAuthentication == \"Identity\")"
     },
     "UseSentry": {
       "type": "computed",

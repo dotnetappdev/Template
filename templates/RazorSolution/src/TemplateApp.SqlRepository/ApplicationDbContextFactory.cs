@@ -1,5 +1,11 @@
+#if (UsePasskeys)
+using Microsoft.AspNetCore.Identity;
+#endif
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+#if (UsePasskeys)
+using Microsoft.Extensions.DependencyInjection;
+#endif
 using TemplateApp.SqlRepository.Extensions;
 
 namespace TemplateApp.SqlRepository;
@@ -20,6 +26,14 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         optionsBuilder.UseConfiguredDatabase(connectionString);
+#if (UsePasskeys)
+
+        // Migrations must include the passkey table (Identity schema version 3), as the API configures at run time.
+        var services = new ServiceCollection()
+            .Configure<IdentityOptions>(o => o.Stores.SchemaVersion = IdentitySchemaVersions.Version3)
+            .BuildServiceProvider();
+        optionsBuilder.UseApplicationServiceProvider(services);
+#endif
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }

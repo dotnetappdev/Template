@@ -1,0 +1,58 @@
+@page
+@model TemplateApp.Internal.Pages.Admin.Users.IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h2 mb-0"><i class="fas fa-users-cog me-2 mr-2"></i>Users</h1>
+    <a asp-page="Create" class="btn btn-primary"><i class="fas fa-user-plus me-1 mr-1"></i>New user</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle js-datatable">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Roles</th>
+                <th>Two-factor</th>
+@*#if (UsePasskeys)*@
+                <th>Passkeys</th>
+@*#endif*@
+                <th>Status</th>
+                <th data-orderable="false"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.DisplayName</td>
+                    <td>
+                        @foreach (var role in user.Roles)
+                        {
+                            <span class="badge bg-primary badge-primary me-1 mr-1">@role</span>
+                        }
+                    </td>
+                    <td>@(user.TwoFactorEnabled ? "On" : "Off")</td>
+@*#if (UsePasskeys)*@
+                    <td>@user.PasskeyCount</td>
+@*#endif*@
+                    <td>
+                        @if (user.LockedOut)
+                        {
+                            <span class="badge bg-danger badge-danger"><i class="fas fa-lock me-1 mr-1"></i>Locked</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success badge-success">Active</span>
+                        }
+                    </td>
+                    <td class="text-end text-right"><a asp-page="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">Manage</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

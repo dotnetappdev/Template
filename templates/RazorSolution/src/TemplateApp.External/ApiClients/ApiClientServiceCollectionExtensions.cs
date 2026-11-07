@@ -17,6 +17,13 @@ public static class ApiClientServiceCollectionExtensions
 #if (UseApiKey)
         services.AddTransient<ApiKeyHandler>();
 #endif
+#if (UseExternalIdentity)
+        services.AddTransient<UserTokenHandler>();
+
+        // Sign-in calls run before there is a user token; the manage client sends the user's token.
+        services.AddApiClient<IAccountApiClient, AccountApiClient>(sendUserToken: false);
+        services.AddApiClient<IAccountManageApiClient, AccountManageApiClient>();
+#endif
 
         services.AddApiClient<IStatusApiClient, StatusApiClient>();
         services.AddApiClient<IContactApiClient, ContactApiClient>();
@@ -24,7 +31,7 @@ public static class ApiClientServiceCollectionExtensions
         return services;
     }
 
-    private static IHttpClientBuilder AddApiClient<TClient, TImplementation>(this IServiceCollection services)
+    private static IHttpClientBuilder AddApiClient<TClient, TImplementation>(this IServiceCollection services, bool sendUserToken = true)
         where TClient : class
         where TImplementation : class, TClient
     {
@@ -39,6 +46,14 @@ public static class ApiClientServiceCollectionExtensions
 
         // Sends the X-Api-Key header the API expects.
         builder.AddHttpMessageHandler<ApiKeyHandler>();
+#endif
+#if (UseExternalIdentity)
+
+        // Sends the signed-in user's API token (ASP.NET Core Identity), refreshing it when needed.
+        if (sendUserToken)
+        {
+            builder.AddHttpMessageHandler<UserTokenHandler>();
+        }
 #endif
 #if (IncludeResilience)
 

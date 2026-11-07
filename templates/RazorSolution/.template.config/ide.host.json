@@ -285,6 +285,50 @@
       "isVisible": true
     },
     {
+      "id": "ExternalAuthentication",
+      "name": {
+        "text": "External site sign-in"
+      },
+      "description": {
+        "text": "How customers sign in to ProjectName.External."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IdentityTwoFactor",
+      "name": {
+        "text": "Two-factor authentication (authenticator app + recovery codes)"
+      },
+      "description": {
+        "text": "Users can turn on 2FA with an authenticator app (QR code) and get recovery codes. Used only with ASP.NET Core Identity."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IdentityPasskeys",
+      "name": {
+        "text": "Passkeys (WebAuthn, .NET 10+)"
+      },
+      "description": {
+        "text": "Users can add passkeys (Windows Hello, Touch ID, security keys, phones) and sign in with them. Needs .NET 10 or later; ignored for .NET 8/9."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IdentityAdminUi",
+      "name": {
+        "text": "User admin UI in the Internal site (users, roles, lockout, 2FA reset)"
+      },
+      "description": {
+        "text": "Admins manage users and roles: create, lock/unlock, reset two-factor, remove passkeys, delete. Needs ASP.NET Core Identity on the Internal site."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
       "id": "IncludeResilience",
       "name": {
         "text": "Add retries / circuit breaker to API clients (Microsoft.Extensions.Http.Resilience)"

@@ -4,6 +4,9 @@ using Serilog;
 #if (UseRaygun)
 using Mindscape.Raygun4Net.AspNetCore;
 #endif
+#if (UseIdentity)
+using TemplateApp.API.Identity;
+#endif
 #if (UseApiKey)
 using TemplateApp.API.Security;
 #endif
@@ -61,6 +64,11 @@ builder.Services.AddApplicationServices(builder.Configuration);
 // ProjectName.SqlRepository: ApplicationDbContext + repositories.
 builder.Services.AddSqlRepository(builder.Configuration);
 #endif
+#if (UseIdentity)
+
+// ASP.NET Core Identity: users, roles, two-factor and passkeys, used by the sites to sign people in.
+builder.Services.AddApiIdentity(builder.Configuration);
+#endif
 #if (IncludeHealthChecks)
 
 #if (UseSqlRepository)
@@ -83,6 +91,11 @@ if (app.Environment.IsDevelopment())
 
     // Creates/migrates the development database (and seeds sample data if enabled).
     await app.Services.InitialiseDatabaseAsync();
+#if (UseIdentity)
+
+    // Creates the Admin role and the development admin account (Identity:SeedAdmin).
+    await app.Services.SeedIdentityAsync();
+#endif
 #endif
 }
 else
@@ -110,9 +123,15 @@ app.UseHttpsRedirection();
 app.UseMiddleware<ApiKeyMiddleware>();
 #endif
 
+#if (UseIdentity)
+app.UseAuthentication();
+#endif
 app.UseAuthorization();
 
 app.MapControllers();
+#if (UseIdentity)
+app.MapApiIdentity();
+#endif
 #if (IncludeHealthChecks)
 app.MapHealthChecks("/health");
 #endif

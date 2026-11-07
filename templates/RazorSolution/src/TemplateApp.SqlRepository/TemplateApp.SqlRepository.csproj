@@ -12,8 +12,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+<!--#if (UseIdentity) -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+<!--#endif -->
 <!--#if (UseSqlServer) -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+<!--#if (PinSqlClient) -->
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+<!--#endif -->
 <!--#elseif (UsePostgreSql) -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 <!--#elseif (UseSqlite) -->

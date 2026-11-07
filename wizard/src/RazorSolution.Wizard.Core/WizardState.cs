@@ -48,7 +48,12 @@ public sealed class WizardState
     public void SetBool(string id, bool value) => this[id] = value ? "true" : "false";
 
     /// <summary>Mirrors the template's computed symbol UseSqlRepository.</summary>
-    public bool UsesDatabase => GetBool("IncludeSqlRepository") || GetBool("IncludeServices");
+    public bool UsesDatabase => GetBool("IncludeSqlRepository") || GetBool("IncludeServices") || UsesIdentity;
+
+    /// <summary>Mirrors the template's computed symbol UseIdentity (ASP.NET Core Identity needs the data layer).</summary>
+    public bool UsesIdentity =>
+        (GetBool("IncludeInternal") && this["InternalAuthentication"] == "Identity") ||
+        (GetBool("IncludeExternal") && this["ExternalAuthentication"] == "Identity");
 
     /// <summary>Mirrors the template's computed symbol UseApi.</summary>
     public bool CreatesApi => GetBool("IncludeApi") || GetBool("IncludeInternal") || GetBool("IncludeExternal");
