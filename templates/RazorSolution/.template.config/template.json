@@ -437,12 +437,29 @@
       "displayName": "Seed sample data (customers)",
       "description": "Seeds a few sample customers when the API starts in Development."
     },
-    "IncludeSwagger": {
+    "ApiDocumentation": {
       "type": "parameter",
-      "datatype": "bool",
-      "defaultValue": "true",
-      "displayName": "Add Swagger UI to the API (Swashbuckle.AspNetCore)",
-      "description": "Adds Swagger / OpenAPI documentation at /swagger in Development."
+      "datatype": "choice",
+      "defaultValue": "Swagger",
+      "displayName": "API documentation",
+      "description": "Interactive API documentation in Development: Swagger UI (/swagger) or Scalar (/scalar). Both use the OpenAPI document Swashbuckle generates.",
+      "choices": [
+        {
+          "choice": "Swagger",
+          "displayName": "Swagger UI (Swashbuckle.AspNetCore)",
+          "description": "Swagger UI at /swagger"
+        },
+        {
+          "choice": "Scalar",
+          "displayName": "Scalar (Scalar.AspNetCore)",
+          "description": "Scalar API reference at /scalar"
+        },
+        {
+          "choice": "None",
+          "displayName": "None",
+          "description": "No API documentation UI"
+        }
+      ]
     },
     "IncludeApiKey": {
       "type": "parameter",
@@ -512,7 +529,7 @@
       "type": "parameter",
       "datatype": "choice",
       "defaultValue": "None",
-      "displayName": "Internal site authentication",
+      "displayName": "Internal site sign-in",
       "description": "How staff sign in to ProjectName.Internal.",
       "choices": [
         {
@@ -567,6 +584,25 @@
           "choice": "Identity",
           "displayName": "ASP.NET Core Identity (accounts stored by the API)",
           "description": "ASP.NET Core Identity with self-service registration"
+        }
+      ]
+    },
+    "IdentitySignIn": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "Separate",
+      "displayName": "Sign-in across Internal and External",
+      "description": "When both sites use ASP.NET Core Identity: sign in to each site separately, or once for both (single sign-on with a shared cookie). The Internal site always needs the Staff or Admin role.",
+      "choices": [
+        {
+          "choice": "Separate",
+          "displayName": "Separate sign-in per site",
+          "description": "Each site has its own sign-in cookie"
+        },
+        {
+          "choice": "Shared",
+          "displayName": "Single sign-on (shared cookie)",
+          "description": "Signing in to one site signs you in to both"
         }
       ]
     },
@@ -1176,7 +1212,22 @@
     "UseSwagger": {
       "type": "computed",
       "datatype": "bool",
-      "value": "(IncludeSwagger)"
+      "value": "(ApiDocumentation != \"None\")"
+    },
+    "UseSwaggerUi": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(ApiDocumentation == \"Swagger\")"
+    },
+    "UseScalar": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(ApiDocumentation == \"Scalar\")"
+    },
+    "UseSharedSignIn": {
+      "type": "computed",
+      "datatype": "bool",
+      "value": "(IdentitySignIn == \"Shared\" && IncludeInternal && InternalAuthentication == \"Identity\" && IncludeExternal && ExternalAuthentication == \"Identity\")"
     },
     "UseApiKey": {
       "type": "computed",

@@ -52,7 +52,7 @@ builder.Services.AddApiClients(builder.Configuration);
 
 // ASP.NET Core Identity in TemplateApp.API: customers register and sign in on /Account (two-factor, passkeys);
 // pages stay public unless they say [Authorize]. The API's tokens live in this site's encrypted cookie.
-builder.Services.AddSiteAuthentication(requireSignedInUser: false);
+builder.Services.AddSiteAuthentication(builder.Configuration, builder.Environment, staffOnly: false);
 #endif
 
 #if (IncludeHealthChecks)

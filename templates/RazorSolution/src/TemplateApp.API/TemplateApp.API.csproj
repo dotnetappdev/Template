@@ -10,6 +10,9 @@
   <ItemGroup>
 <!--#if (UseSwagger) -->
     <PackageReference Include="Swashbuckle.AspNetCore" />
+<!--#if (UseScalar) -->
+    <PackageReference Include="Scalar.AspNetCore" />
+<!--#endif -->
 <!--#endif -->
 <!--#if (IncludeSerilog) -->
     <PackageReference Include="Serilog.AspNetCore" />

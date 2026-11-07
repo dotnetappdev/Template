@@ -248,14 +248,27 @@ window.WIZARD_DATA = {
    "choices": [],
    "cli": "--seed-data"
   },
-  "IncludeSwagger": {
-   "id": "IncludeSwagger",
-   "kind": "bool",
-   "label": "Add Swagger UI to the API (Swashbuckle.AspNetCore)",
-   "description": "Adds Swagger / OpenAPI documentation at /swagger in Development.",
-   "default": "true",
-   "choices": [],
-   "cli": "--swagger"
+  "ApiDocumentation": {
+   "id": "ApiDocumentation",
+   "kind": "choice",
+   "label": "API documentation",
+   "description": "Interactive API documentation in Development: Swagger UI (/swagger) or Scalar (/scalar). Both use the OpenAPI document Swashbuckle generates.",
+   "default": "Swagger",
+   "choices": [
+    {
+     "value": "Swagger",
+     "display": "Swagger UI (Swashbuckle.AspNetCore)"
+    },
+    {
+     "value": "Scalar",
+     "display": "Scalar (Scalar.AspNetCore)"
+    },
+    {
+     "value": "None",
+     "display": "None"
+    }
+   ],
+   "cli": "--api-docs"
   },
   "IncludeApiKey": {
    "id": "IncludeApiKey",
@@ -331,7 +344,7 @@ window.WIZARD_DATA = {
   "InternalAuthentication": {
    "id": "InternalAuthentication",
    "kind": "choice",
-   "label": "Internal site authentication",
+   "label": "Internal site sign-in",
    "description": "How staff sign in to ProjectName.Internal.",
    "default": "None",
    "choices": [
@@ -389,6 +402,24 @@ window.WIZARD_DATA = {
     }
    ],
    "cli": "--external-auth"
+  },
+  "IdentitySignIn": {
+   "id": "IdentitySignIn",
+   "kind": "choice",
+   "label": "Sign-in across Internal and External",
+   "description": "When both sites use ASP.NET Core Identity: sign in to each site separately, or once for both (single sign-on with a shared cookie). The Internal site always needs the Staff or Admin role.",
+   "default": "Separate",
+   "choices": [
+    {
+     "value": "Separate",
+     "display": "Separate sign-in per site"
+    },
+    {
+     "value": "Shared",
+     "display": "Single sign-on (shared cookie)"
+    }
+   ],
+   "cli": "--identity-sign-in"
   },
   "IdentityTwoFactor": {
    "id": "IdentityTwoFactor",
@@ -874,7 +905,7 @@ window.WIZARD_DATA = {
    "title": "API, security & sign-in",
    "subtitle": "Options for ProjectName.API, error monitoring, and how staff and customers sign in to the sites.",
    "fields": [
-    "IncludeSwagger",
+    "ApiDocumentation",
     "IncludeApiKey",
     "IncludeHealthChecks",
     "IncludeSerilog",
@@ -884,6 +915,7 @@ window.WIZARD_DATA = {
     "EntraTenantId",
     "EntraClientId",
     "ExternalAuthentication",
+    "IdentitySignIn",
     "IdentityTwoFactor",
     "IdentityPasskeys",
     "IdentityAdminUi",
@@ -992,23 +1024,6 @@ window.WIZARD_DATA = {
     ],
     "DbAuthentication": [
      "SqlLogin"
-    ]
-   }
-  ],
-  "IncludeSwagger": [
-   {
-    "IncludeApi": [
-     "true"
-    ]
-   },
-   {
-    "IncludeInternal": [
-     "true"
-    ]
-   },
-   {
-    "IncludeExternal": [
-     "true"
     ]
    }
   ],
@@ -1137,6 +1152,39 @@ window.WIZARD_DATA = {
      "Identity"
     ]
    }
+  ],
+  "ApiDocumentation": [
+   {
+    "IncludeApi": [
+     "true"
+    ]
+   },
+   {
+    "IncludeInternal": [
+     "true"
+    ]
+   },
+   {
+    "IncludeExternal": [
+     "true"
+    ]
+   }
+  ],
+  "IdentitySignIn": [
+   {
+    "IncludeInternal": [
+     "true"
+    ],
+    "InternalAuthentication": [
+     "Identity"
+    ],
+    "IncludeExternal": [
+     "true"
+    ],
+    "ExternalAuthentication": [
+     "Identity"
+    ]
+   }
   ]
  },
  "passwordFields": [
@@ -1158,7 +1206,9 @@ window.WIZARD_DATA = {
    "BootstrapTheme": "swatch",
    "FontAwesomeVersion": "compact",
    "ErrorMonitoring": "large",
-   "ExternalAuthentication": "large"
+   "ExternalAuthentication": "large",
+   "ApiDocumentation": "large",
+   "IdentitySignIn": "large"
   },
   "choices": {
    "Framework": {
@@ -1722,6 +1772,50 @@ window.WIZARD_DATA = {
       "color": "#5C2D91"
      }
     }
+   },
+   "ApiDocumentation": {
+    "Swagger": {
+     "note": "Swagger UI at /swagger",
+     "icon": {
+      "fa": "fa-solid fa-book-open",
+      "glyph": "E8A5",
+      "color": "#6A9B12"
+     }
+    },
+    "Scalar": {
+     "note": "Modern API reference at /scalar",
+     "icon": {
+      "fa": "fa-solid fa-code",
+      "glyph": "E943",
+      "color": "#1A1A1A"
+     }
+    },
+    "None": {
+     "note": "OpenAPI and docs UI not added",
+     "icon": {
+      "fa": "fa-solid fa-ban",
+      "glyph": "E711",
+      "color": "#6B7280"
+     }
+    }
+   },
+   "IdentitySignIn": {
+    "Separate": {
+     "note": "Sign in to each site on its own; separate cookies",
+     "icon": {
+      "fa": "fa-solid fa-right-to-bracket",
+      "glyph": "E8FA",
+      "color": "#0F6CBD"
+     }
+    },
+    "Shared": {
+     "note": "Single sign-on: sign in once, signed in to both sites",
+     "icon": {
+      "fa": "fa-solid fa-link",
+      "glyph": "E71B",
+      "color": "#5C2D91"
+     }
+    }
    }
   },
   "icons": {
@@ -1759,11 +1853,6 @@ window.WIZARD_DATA = {
     "fa": "fa-solid fa-seedling",
     "glyph": "E8F1",
     "color": "#107C10"
-   },
-   "IncludeSwagger": {
-    "fa": "fa-solid fa-book-open",
-    "glyph": "E8A5",
-    "color": "#85EA2D"
    },
    "IncludeApiKey": {
     "fa": "fa-solid fa-key",
@@ -1839,7 +1928,6 @@ window.WIZARD_DATA = {
    "IncludeSqlRepository": "SqlRepository",
    "IncludeTests": "Tests",
    "SeedSampleData": "Sample data",
-   "IncludeSwagger": "Swagger UI",
    "IncludeApiKey": "API key",
    "IncludeHealthChecks": "Health checks",
    "IncludeSerilog": "Serilog",
@@ -1872,7 +1960,6 @@ window.WIZARD_DATA = {
     [
      "API",
      [
-      "IncludeSwagger",
       "IncludeApiKey",
       "IncludeHealthChecks",
       "IncludeSerilog"

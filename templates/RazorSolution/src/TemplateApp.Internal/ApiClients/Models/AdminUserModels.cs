@@ -17,5 +17,6 @@ public class CreateUserInput
     [Required, StringLength(100, MinimumLength = 8), DataType(DataType.Password), Display(Name = "Temporary password")]
     public string Password { get; set; } = string.Empty;
 
-    public List<string> Roles { get; set; } = [];
+    /// <summary>New users get the Staff role (needed to sign in to this site) unless you untick it.</summary>
+    public List<string> Roles { get; set; } = ["Staff"];
 }

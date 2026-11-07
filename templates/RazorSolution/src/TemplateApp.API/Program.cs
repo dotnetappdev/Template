@@ -4,6 +4,9 @@ using Serilog;
 #if (UseRaygun)
 using Mindscape.Raygun4Net.AspNetCore;
 #endif
+#if (UseScalar)
+using Scalar.AspNetCore;
+#endif
 #if (UseIdentity)
 using TemplateApp.API.Identity;
 #endif
@@ -83,9 +86,16 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-#if (UseSwagger)
+#if (UseSwaggerUi)
+    // OpenAPI document at /swagger/v1/swagger.json, Swagger UI at /swagger.
     app.UseSwagger();
     app.UseSwaggerUI();
+#elseif (UseScalar)
+    // OpenAPI document (Swashbuckle) at /swagger/v1/swagger.json, Scalar API reference at /scalar.
+    app.UseSwagger();
+    app.MapScalarApiReference(options => options
+        .WithTitle("TemplateApp API")
+        .WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json"));
 #endif
 #if (UseSqlRepository)
 

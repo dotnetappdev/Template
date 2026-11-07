@@ -37,7 +37,11 @@ The sites do **not** reference Services, SqlRepository or EF Core. Each one call
 | `src/TemplateApp.External` | External (public / customer facing) Razor Pages site. Calls the API only. |
 <!--#endif -->
 <!--#if (UseApi) -->
+<!--#if (UseScalar) -->
+| `src/TemplateApp.API` | ASP.NET Core Web API: controllers, Scalar API reference at `/scalar` (OpenAPI document at `/swagger/v1/swagger.json`). The only project that uses the data layer. |
+<!--#else -->
 | `src/TemplateApp.API` | ASP.NET Core Web API: controllers, Swagger UI at `/swagger`. The only project that uses the data layer. |
+<!--#endif -->
 <!--#endif -->
 <!--#if (UseServices) -->
 | `src/TemplateApp.Services` | Business logic: service interfaces (`Interfaces/`) and implementations. |
@@ -183,6 +187,36 @@ To upgrade a library, change its `@version` in `libman.json` in **both** sites a
 The pages include the libraries in `Pages/Shared/_Styles.cshtml`, `_Scripts.cshtml` and `_ValidationScriptsPartial.cshtml`. The site-wide wiring for the plugins is in `wwwroot/js/site.js`.
 
 `Directory.Build.targets` retries the LibMan restore up to three times. This is in case both sites download a new library version at the same moment during a parallel build.
+<!--#endif -->
+<!--#if (UseIdentity) -->
+
+## Sign-in (ASP.NET Core Identity)
+
+Identity lives in `TemplateApp.API` (users, roles, lockout, two-factor and passkeys), stored by `ApplicationDbContext`.
+The sites sign people in through the API (`/api/account/login`, `/refresh`, `/me`), keep the returned tokens in an encrypted cookie, and send the user's token with every API call (`ApiClients/UserTokenHandler.cs`).
+
+* **Development admin:** `admin@example.com` / `Admin!Dev2026` (see `Identity:SeedAdmin` in `src/TemplateApp.API/appsettings.Development.json`). Change it, or remove it before going live.
+<!--#if (UseInternalIdentity) -->
+* **Internal site:** staff only. Every page needs the **Staff** or **Admin** role. Customers get "Access denied".
+<!--#endif -->
+<!--#if (UseExternalIdentity) -->
+* **External site:** customers register on `/Account/Register` and sign in on `/Account/Login`. Pages are public unless they have `[Authorize]`.
+<!--#endif -->
+<!--#if (UseSharedSignIn) -->
+* **Single sign-on:** Internal and External share one cookie (`TemplateApp.Auth`) and one set of Data Protection keys, so signing in or out on one site does the same on the other. In Development the keys are in `.keys/` at the solution root. In production, set `Authentication:SharedKeysFolder` (storage both sites share) and `Authentication:CookieDomain` (for example `.example.com`) in both sites.
+<!--#elseif (UseInternalIdentity && UseExternalIdentity) -->
+* **Separate sign-in:** each site has its own cookie, so people sign in to each site on their own (with the same account).
+<!--#endif -->
+<!--#if (UseTwoFactor) -->
+* **Two-factor:** *My account → Two-factor authentication*: scan the QR code with an authenticator app, then keep the recovery codes.
+<!--#endif -->
+<!--#if (UsePasskeys) -->
+* **Passkeys:** *My account → Passkeys*, then **Sign in with a passkey** on the sign-in page. In the API, set `Identity:Passkeys:ServerDomain` (the sites' shared domain) and `Identity:Passkeys:AllowedOrigins` (each site's https origin) for each environment.
+<!--#endif -->
+<!--#if (UseIdentityAdmin) -->
+* **User admin:** Internal → **Users** (Admin role): create users (with the Staff role by default), set roles, lock/unlock, reset two-factor, remove passkeys, delete.
+<!--#endif -->
+* **Email:** confirmation and password-reset emails are not sent yet. Register an `IEmailSender<ApplicationUser>` in the API, then set `SignIn.RequireConfirmedAccount = true` in `Identity/IdentitySetup.cs`.
 <!--#endif -->
 <!--#if (UseInternalAuth || UseApiKey || IncludeHealthChecks || IncludeSerilog || IncludeResilience || UseErrorMonitoring) -->
 

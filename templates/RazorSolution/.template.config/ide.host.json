@@ -189,12 +189,12 @@
       "persistenceScope": "templateGroup"
     },
     {
-      "id": "IncludeSwagger",
+      "id": "ApiDocumentation",
       "name": {
-        "text": "Add Swagger UI to the API (Swashbuckle.AspNetCore)"
+        "text": "API documentation"
       },
       "description": {
-        "text": "Adds Swagger / OpenAPI documentation at /swagger in Development."
+        "text": "Interactive API documentation in Development: Swagger UI (/swagger) or Scalar (/scalar). Both use the OpenAPI document Swashbuckle generates."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"
@@ -256,7 +256,7 @@
     {
       "id": "InternalAuthentication",
       "name": {
-        "text": "Internal site authentication"
+        "text": "Internal site sign-in"
       },
       "description": {
         "text": "How staff sign in to ProjectName.Internal."
@@ -291,6 +291,17 @@
       },
       "description": {
         "text": "How customers sign in to ProjectName.External."
+      },
+      "isVisible": true,
+      "persistenceScope": "templateGroup"
+    },
+    {
+      "id": "IdentitySignIn",
+      "name": {
+        "text": "Sign-in across Internal and External"
+      },
+      "description": {
+        "text": "When both sites use ASP.NET Core Identity: sign in to each site separately, or once for both (single sign-on with a shared cookie). The Internal site always needs the Staff or Admin role."
       },
       "isVisible": true,
       "persistenceScope": "templateGroup"

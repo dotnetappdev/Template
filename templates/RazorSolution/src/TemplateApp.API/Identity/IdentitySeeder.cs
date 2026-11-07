@@ -4,7 +4,7 @@ using TemplateApp.SqlRepository.Entities;
 namespace TemplateApp.API.Identity;
 
 /// <summary>
-/// Development helper: creates the Admin role and, while there are no users yet, the admin account from
+/// Development helper: creates the Admin and Staff roles and, while there are no users yet, the admin account from
 /// Identity:SeedAdmin (appsettings.Development.json) so you can sign in to the Internal site straight away.
 /// </summary>
 public static class IdentitySeeder
@@ -19,9 +19,12 @@ public static class IdentitySeeder
 
         try
         {
-            if (!await roles.RoleExistsAsync(IdentitySetup.AdminRole))
+            foreach (var role in new[] { IdentitySetup.AdminRole, IdentitySetup.StaffRole })
             {
-                await roles.CreateAsync(new IdentityRole(IdentitySetup.AdminRole));
+                if (!await roles.RoleExistsAsync(role))
+                {
+                    await roles.CreateAsync(new IdentityRole(role));
+                }
             }
 
             var email = configuration["Identity:SeedAdmin:Email"];

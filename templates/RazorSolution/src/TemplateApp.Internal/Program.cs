@@ -72,8 +72,9 @@ builder.Services.AddAuthorization(options => options.FallbackPolicy = options.De
 #elseif (UseInternalIdentity)
 
 // ASP.NET Core Identity in TemplateApp.API: staff sign in on /Account/Login (password, two-factor, passkeys);
-// every other page requires a signed-in user. The API's tokens live in this site's encrypted cookie.
-builder.Services.AddSiteAuthentication(requireSignedInUser: true);
+// every other page requires a signed-in user with the Staff or Admin role. The API's tokens live in the
+// encrypted sign-in cookie (shared with the External site when single sign-on is chosen).
+builder.Services.AddSiteAuthentication(builder.Configuration, builder.Environment, staffOnly: true);
 #endif
 
 

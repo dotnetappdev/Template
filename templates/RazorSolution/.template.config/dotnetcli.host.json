@@ -89,10 +89,6 @@
       "longName": "seed-data",
       "shortName": ""
     },
-    "IncludeSwagger": {
-      "longName": "swagger",
-      "shortName": ""
-    },
     "IncludeApiKey": {
       "longName": "api-key",
       "shortName": ""
@@ -176,12 +172,21 @@
     "IdentityAdminUi": {
       "longName": "identity-admin",
       "shortName": ""
+    },
+    "ApiDocumentation": {
+      "longName": "api-docs",
+      "shortName": ""
+    },
+    "IdentitySignIn": {
+      "longName": "identity-sign-in",
+      "shortName": ""
     }
   },
   "usageExamples": [
     "--database SqlServer --sql-version SqlServer2022 --bootstrap-theme flatly --jquery-ui-theme redmond",
     "--external false --internal-auth Windows --serilog --api-key --chartjs --sweetalert",
     "--error-monitoring Sentry --error-monitoring-key https://<key>@o0.ingest.sentry.io/0",
-    "-f net10.0 --internal-auth Identity --external-auth Identity --identity-2fa --identity-passkeys --identity-admin"
+    "-f net10.0 --internal-auth Identity --external-auth Identity --identity-2fa --identity-passkeys --identity-admin",
+    "--api-docs Scalar --internal-auth Identity --external-auth Identity --identity-sign-in Shared"
   ]
 }

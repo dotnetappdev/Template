@@ -66,7 +66,7 @@
       "title": "API, security & sign-in",
       "subtitle": "Options for ProjectName.API, error monitoring, and how staff and customers sign in to the sites.",
       "fields": [
-        "IncludeSwagger",
+        "ApiDocumentation",
         "IncludeApiKey",
         "IncludeHealthChecks",
         "IncludeSerilog",
@@ -76,6 +76,7 @@
         "EntraTenantId",
         "EntraClientId",
         "ExternalAuthentication",
+        "IdentitySignIn",
         "IdentityTwoFactor",
         "IdentityPasskeys",
         "IdentityAdminUi",
@@ -184,23 +185,6 @@
         ],
         "DbAuthentication": [
           "SqlLogin"
-        ]
-      }
-    ],
-    "IncludeSwagger": [
-      {
-        "IncludeApi": [
-          "true"
-        ]
-      },
-      {
-        "IncludeInternal": [
-          "true"
-        ]
-      },
-      {
-        "IncludeExternal": [
-          "true"
         ]
       }
     ],
@@ -329,6 +313,39 @@
           "Identity"
         ]
       }
+    ],
+    "ApiDocumentation": [
+      {
+        "IncludeApi": [
+          "true"
+        ]
+      },
+      {
+        "IncludeInternal": [
+          "true"
+        ]
+      },
+      {
+        "IncludeExternal": [
+          "true"
+        ]
+      }
+    ],
+    "IdentitySignIn": [
+      {
+        "IncludeInternal": [
+          "true"
+        ],
+        "InternalAuthentication": [
+          "Identity"
+        ],
+        "IncludeExternal": [
+          "true"
+        ],
+        "ExternalAuthentication": [
+          "Identity"
+        ]
+      }
     ]
   },
   "passwordFields": [
@@ -350,7 +367,9 @@
       "BootstrapTheme": "swatch",
       "FontAwesomeVersion": "compact",
       "ErrorMonitoring": "large",
-      "ExternalAuthentication": "large"
+      "ExternalAuthentication": "large",
+      "ApiDocumentation": "large",
+      "IdentitySignIn": "large"
     },
     "choices": {
       "Framework": {
@@ -914,6 +933,50 @@
             "color": "#5C2D91"
           }
         }
+      },
+      "ApiDocumentation": {
+        "Swagger": {
+          "note": "Swagger UI at /swagger",
+          "icon": {
+            "fa": "fa-solid fa-book-open",
+            "glyph": "E8A5",
+            "color": "#6A9B12"
+          }
+        },
+        "Scalar": {
+          "note": "Modern API reference at /scalar",
+          "icon": {
+            "fa": "fa-solid fa-code",
+            "glyph": "E943",
+            "color": "#1A1A1A"
+          }
+        },
+        "None": {
+          "note": "OpenAPI and docs UI not added",
+          "icon": {
+            "fa": "fa-solid fa-ban",
+            "glyph": "E711",
+            "color": "#6B7280"
+          }
+        }
+      },
+      "IdentitySignIn": {
+        "Separate": {
+          "note": "Sign in to each site on its own; separate cookies",
+          "icon": {
+            "fa": "fa-solid fa-right-to-bracket",
+            "glyph": "E8FA",
+            "color": "#0F6CBD"
+          }
+        },
+        "Shared": {
+          "note": "Single sign-on: sign in once, signed in to both sites",
+          "icon": {
+            "fa": "fa-solid fa-link",
+            "glyph": "E71B",
+            "color": "#5C2D91"
+          }
+        }
       }
     },
     "icons": {
@@ -951,11 +1014,6 @@
         "fa": "fa-solid fa-seedling",
         "glyph": "E8F1",
         "color": "#107C10"
-      },
-      "IncludeSwagger": {
-        "fa": "fa-solid fa-book-open",
-        "glyph": "E8A5",
-        "color": "#85EA2D"
       },
       "IncludeApiKey": {
         "fa": "fa-solid fa-key",
@@ -1031,7 +1089,6 @@
       "IncludeSqlRepository": "SqlRepository",
       "IncludeTests": "Tests",
       "SeedSampleData": "Sample data",
-      "IncludeSwagger": "Swagger UI",
       "IncludeApiKey": "API key",
       "IncludeHealthChecks": "Health checks",
       "IncludeSerilog": "Serilog",
@@ -1064,7 +1121,6 @@
         [
           "API",
           [
-            "IncludeSwagger",
             "IncludeApiKey",
             "IncludeHealthChecks",
             "IncludeSerilog"

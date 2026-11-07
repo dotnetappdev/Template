@@ -36,6 +36,9 @@
 
     <!-- API documentation -->
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="__SWASHBUCKLE_VERSION__" />
+<!--#if (UseScalar) -->
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.18.2" />
+<!--#endif -->
 <!--#endif -->
 <!--#if (IncludeSerilog) -->
 

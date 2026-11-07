@@ -10,6 +10,8 @@ Like the [Shiny .NET templates](https://github.com/shinyorg/templates), all the 
 - authentication
 - the jQuery, jQuery UI (and theme), Bootstrap (and Bootswatch theme) and Font Awesome Free versions
 - error monitoring with Sentry, Raygun or Azure Application Insights
+- sign-in with ASP.NET Core Identity (two-factor, passkeys, user admin UI), separate per site or single sign-on
+- API documentation with Swagger UI or Scalar
 - optional extras: DataTables, Select2, Toastr, SweetAlert2, Chart.js, Serilog, health checks, an API key, resilience and unit tests
 
 Every client library is installed with **LibMan**.
@@ -33,11 +35,12 @@ Every client library is installed with **LibMan**.
 9. [All options](#all-options)
 10. [Run the generated solution](#run-the-generated-solution)
 11. [Client-side libraries (LibMan)](#client-side-libraries-libman)
-12. [Error monitoring (Sentry, Raygun, Application Insights)](#error-monitoring-sentry-raygun-application-insights)
-13. [Database and EF Core](#database-and-ef-core)
-14. [Update or uninstall the template](#update-or-uninstall-the-template)
-15. [Troubleshooting](#troubleshooting)
-16. [Working on the template](#working-on-the-template)
+12. [Sign-in with ASP.NET Core Identity](#sign-in-with-aspnet-core-identity)
+13. [Error monitoring (Sentry, Raygun, Application Insights)](#error-monitoring-sentry-raygun-application-insights)
+14. [Database and EF Core](#database-and-ef-core)
+15. [Update or uninstall the template](#update-or-uninstall-the-template)
+16. [Troubleshooting](#troubleshooting)
+17. [Working on the template](#working-on-the-template)
 
 ---
 
@@ -48,7 +51,7 @@ After you name the solution, Visual Studio shows **Additional information**: one
 | .NET version: LTS and STS | Database provider |
 | --- | --- |
 | ![Framework](docs/images/wizard-framework-picker.png) | ![Database](docs/images/wizard-database-picker.png) |
-| **SQL Server version: sets EF Core's compatibility level** | **Internal site authentication** |
+| **SQL Server version: sets EF Core's compatibility level** | **Internal site sign-in** |
 | ![SQL Server version](docs/images/wizard-sql-version-picker.png) | ![Authentication](docs/images/wizard-internal-auth-picker.png) |
 | **jQuery** | **jQuery UI** |
 | ![jQuery](docs/images/wizard-jquery-picker.png) | ![jQuery UI](docs/images/wizard-jquery-ui-picker.png) |
@@ -56,8 +59,8 @@ After you name the solution, Visual Studio shows **Additional information**: one
 | ![jQuery UI theme](docs/images/wizard-jquery-ui-theme-picker.png) | ![Bootstrap](docs/images/wizard-bootstrap-picker.png) |
 | **Bootstrap theme: Bootswatch** | **Font Awesome Free** |
 | ![Bootstrap theme](docs/images/wizard-bootstrap-theme-picker.png) | ![Font Awesome Free](docs/images/wizard-fontawesome-picker.png) |
-| **Error monitoring** | |
-| ![Error monitoring](docs/images/wizard-error-monitoring-picker.png) | |
+| **Error monitoring** | **External site sign-in** |
+| ![Error monitoring](docs/images/wizard-error-monitoring-picker.png) | ![External sign-in](docs/images/wizard-external-auth-picker.png) |
 
 <details>
 <summary>Light theme</summary>
@@ -85,7 +88,7 @@ The steps:
 
 1. **Projects:** .NET version, and which of Internal / External / API / Services / SqlRepository / Tests to create.
 2. **Database:** provider, version, authentication, server, name, user and password (masked), or a full connection string. It shows the exact connection string the API will get, and has a **Test connection** button. Fields you don't need are hidden: there's no user or password for Windows auth, and no server for SQLite.
-3. **API & security:** Swagger, API key, health checks, Serilog, **error monitoring** (Sentry / Raygun / Application Insights, plus the DSN or key), Internal-site sign-in (Windows / Entra ID plus IDs), and resilience.
+3. **API, security & sign-in:** Swagger UI or Scalar, API key, health checks, Serilog, **error monitoring** (Sentry / Raygun / Application Insights, plus the DSN or key), Internal and External **sign-in** (Windows / Entra ID / ASP.NET Core Identity), **single sign-on or separate sign-in**, and the Identity extras (two-factor, passkeys, user admin UI).
 4. **Front end:** jQuery, jQuery UI and theme, Bootstrap and Bootswatch theme, Font Awesome Free, and the plugins.
 5. **Summary:** your choices plus the equivalent `dotnet new razorsln …` command (with **Copy command**). **Create** generates the solution and opens it.
 
@@ -165,7 +168,7 @@ flowchart LR
     end
     I -- "HTTP · typed HttpClient<br/>ICustomerApiClient" --> A
     E -- "HTTP · typed HttpClient<br/>IContactApiClient" --> A
-    A["ProjectName.API<br/>controllers · Swagger · /health<br/>optional X-Api-Key"] --> S["ProjectName.Services<br/>ICustomerService"]
+    A["ProjectName.API<br/>controllers · Swagger/Scalar · /health<br/>ASP.NET Core Identity · optional X-Api-Key"] --> S["ProjectName.Services<br/>ICustomerService"]
     S --> R["ProjectName.SqlRepository<br/>IRepository#lt;T#gt; · ICustomerRepository<br/>ApplicationDbContext (EF Core)"]
     R --> D[(SQL Server 2014–2025 / Azure SQL<br/>PostgreSQL 14–18 / SQLite)]
     T["ProjectName.Tests<br/>xUnit + NSubstitute"] -.-> S
@@ -175,7 +178,7 @@ flowchart LR
 | --- | --- |
 | **ProjectName.Internal** | Staff site with a dashboard (API status, front-end stack, optional Chart.js chart). The Customers page has DataTables, jQuery UI autocomplete, and delete with a SweetAlert2 confirmation. The Create form uses jQuery Validation. Optional Windows or Entra ID sign-in. Calls the API only. |
 | **ProjectName.External** | Public site: home page, and a contact form with a jQuery UI date picker and a Select2 topic picker that posts to the API. Calls the API only. |
-| **ProjectName.API** | Controllers (`api/customers`, `api/contact-requests`, `api/status`), Swagger UI, problem details, `/health` with a database check, an optional `X-Api-Key` check, and optional Sentry / Raygun / Application Insights error monitoring. The **only** project that touches the data layer. |
+| **ProjectName.API** | Controllers (`api/customers`, `api/contact-requests`, `api/status`), Swagger UI or Scalar, optional ASP.NET Core Identity (`/api/account/*`, passkeys, `/api/admin/*`), problem details, `/health` with a database check, an optional `X-Api-Key` check, and optional Sentry / Raygun / Application Insights error monitoring. The **only** project that touches the data layer. |
 | **ProjectName.Services** | Business logic behind interfaces (`ICustomerService` → `CustomerService`) and DTOs. |
 | **ProjectName.SqlRepository** | EF Core: `ApplicationDbContext`, entities, `IEntityTypeConfiguration<T>`, generic `IRepository<T>` / `Repository<T>`, `ICustomerRepository` / `CustomerRepository`, a design-time factory for migrations, and an optional seeder. |
 | **ProjectName.Tests** | xUnit + NSubstitute tests for the services. The repositories are faked through their interfaces, so no database is needed. |
@@ -199,6 +202,8 @@ The screenshots below use the Flatly Bootswatch theme, the Redmond jQuery UI the
 | ![409](docs/images/site-internal-create-409.png) | ![Select2](docs/images/site-external-contact-select2.png) |
 | **External – home page, jQuery UI date picker (Redmond)** | **API – Swagger UI** |
 | ![External home](docs/images/site-external-home.png) | ![Swagger](docs/images/api-swagger.png) |
+| **API – Scalar** | |
+| ![Scalar](docs/images/api-scalar.png) | |
 
 ---
 
@@ -269,8 +274,12 @@ dotnet new list razorsln
    - **Framework**: .NET 8 (LTS), 9 (STS), 10 (LTS) or 11 (STS preview).
    - **Projects**: tick Internal, External, API, Services, SqlRepository and Tests. The API is always created when a site is ticked. Services also adds SqlRepository.
    - **Database**: pick the provider, then the SQL Server or PostgreSQL version and the authentication type. Leave server, name, user and password blank for local defaults, or paste a full connection string. Untick **Seed sample data** if you don't want the demo customers.
-   - **API**: Swagger, API key, health checks and Serilog.
-   - **Internal site authentication**: None, Windows (Negotiate) or Microsoft Entra ID. The tenant and client IDs are optional and can be set later.
+   - **API**: Swagger UI or Scalar, API key, health checks, Serilog and error monitoring.
+   - **Sign-in**:
+     - **Internal site:** None, Windows (Negotiate), Microsoft Entra ID, or ASP.NET Core Identity. The Entra tenant and client IDs are optional and can be set later.
+     - **External site:** None or ASP.NET Core Identity.
+     - **When both sites use Identity:** choose separate sign-in per site, or single sign-on.
+     - **Identity extras:** two-factor, passkeys (.NET 10+) and the user admin UI.
    - **Front end**: jQuery, jQuery UI and its theme, Bootstrap and its Bootswatch theme, Font Awesome Free, and the plugin checkboxes.
 5. Click **Create**, then [set the startup projects](#run-the-generated-solution).
 
@@ -308,6 +317,10 @@ dotnet new razorsln -n MyCompany.Portal --error-monitoring ApplicationInsights
 
 # Older front-end stack
 dotnet new razorsln -n MyCompany.Legacy --bootstrap 4.6.2 --jquery 3.5.1 --jquery-ui 1.12.1 --fontawesome 5.15.4
+
+# ASP.NET Core Identity on both sites with single sign-on, 2FA, passkeys and the admin UI; Scalar for the API
+dotnet new razorsln -n MyCompany.Portal -f net10.0 --internal-auth Identity --external-auth Identity \
+    --identity-sign-in Shared --identity-2fa --identity-passkeys --identity-admin --api-docs Scalar
 
 # API + data layer only, no sites
 dotnet new razorsln -n MyCompany.Api --internal false --external false
@@ -358,13 +371,18 @@ dotnet new razorsln -n MyCompany.Portal --dry-run
 
 | Option | CLI | Package | Default |
 | --- | --- | --- | --- |
-| Swagger UI | `--swagger` | Swashbuckle.AspNetCore | **true** |
+| API documentation | `--api-docs` | `Swagger` (Swashbuckle.AspNetCore, /swagger), `Scalar` (Scalar.AspNetCore, /scalar), `None` | **Swagger** |
 | API key (`X-Api-Key`) | `--api-key` | (none; generated key) | false |
 | Health checks (`/health`) | `--health-checks` | Microsoft.Extensions.Diagnostics.HealthChecks(.EntityFrameworkCore) | **true** |
 | Serilog | `--serilog` | Serilog.AspNetCore | false |
 | Error monitoring | `--error-monitoring` | `None`, `Sentry` (Sentry.AspNetCore + Sentry browser SDK), `Raygun` (Mindscape.Raygun4Net.AspNetCore + raygun4js), `ApplicationInsights` (Microsoft.ApplicationInsights.AspNetCore) | **None** |
 | Error monitoring key | `--error-monitoring-key` | Sentry DSN / Raygun API key / Application Insights connection string | blank (set later) |
-| Internal site authentication | `--internal-auth` | `None`, `Windows` (Microsoft.AspNetCore.Authentication.Negotiate), `EntraId` (Microsoft.Identity.Web) | **None** |
+| Internal site sign-in | `--internal-auth` | `None`, `Windows` (Microsoft.AspNetCore.Authentication.Negotiate), `EntraId` (Microsoft.Identity.Web), `Identity` (ASP.NET Core Identity in the API) | **None** |
+| External site sign-in | `--external-auth` | `None`, `Identity` (ASP.NET Core Identity in the API, self-registration) | **None** |
+| Sign-in across both sites | `--identity-sign-in` | `Separate` (a cookie per site), `Shared` (single sign-on: one cookie, shared Data Protection keys). Only when both sites use Identity | **Separate** |
+| Two-factor (Identity) | `--identity-2fa` | authenticator app (QR code) + recovery codes | **true** |
+| Passkeys (Identity) | `--identity-passkeys` | WebAuthn passkeys; needs .NET 10 or later | **true** |
+| User admin UI (Identity) | `--identity-admin` | Internal site: users, roles, lock/unlock, reset 2FA, remove passkeys, delete | **true** |
 | Entra ID tenant / client ID | `--entra-tenant-id`, `--entra-client-id` | | blank (placeholder GUIDs) |
 | Resilience for API clients | `--resilience` | Microsoft.Extensions.Http.Resilience | **true** |
 
@@ -396,7 +414,7 @@ The sites need the API.
 **Visual Studio:**
 1. Right-click the solution → **Configure Startup Projects…** → **Multiple startup projects**.
 2. Set the **API**, **Internal** and **External** projects to **Start**, with the API first.
-3. Press F5. The API opens on `/swagger`.
+3. Press F5. The API opens on `/swagger` (or `/scalar` with Scalar).
 
 **Command line:**
 
@@ -426,6 +444,54 @@ Each site has its own `libman.json`. Packages come from **jsDelivr** (npm), and 
 - **CLI:** `dotnet tool install -g Microsoft.Web.LibraryManager.Cli`, then `libman restore`.
 
 To upgrade a library, change the `@version` in both sites' `libman.json`. `Directory.Build.targets` retries a restore that collides with the other site's restore during a parallel build.
+
+---
+
+## Sign-in with ASP.NET Core Identity
+
+Choose **ASP.NET Core Identity** for the Internal site, the External site, or both. Identity lives in the **API**, and the sites still never touch the database:
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant S as Internal / External site
+    participant A as API (ASP.NET Core Identity)
+    B->>S: email + password (+ 2FA code) or passkey
+    S->>A: POST /api/account/login (or /api/account/passkeys/login)
+    A-->>S: access + refresh token
+    S->>A: GET /api/account/me (roles, profile)
+    S-->>B: encrypted sign-in cookie (holds the tokens)
+    B->>S: later pages
+    S->>A: API calls with the user's bearer token (refreshed automatically)
+```
+
+| Feature | How |
+| --- | --- |
+| Accounts, roles, lockout | ASP.NET Core Identity (`MapIdentityApi`) in the API, stored by `ApplicationDbContext` (SqlRepository). Choosing Identity adds the data layer automatically |
+| Development admin | `admin@example.com` / `Admin!Dev2026` with the Admin role, from `Identity:SeedAdmin` in the API's `appsettings.Development.json` |
+| Internal = staff only | Internal requires the **Staff** or **Admin** role. Customers who register on External get "Access denied" there. The admin UI gives new users the Staff role by default |
+| Two-factor | Authenticator app (QR code + key) and recovery codes. Sign-in asks for the code; lost device → recovery code |
+| Passkeys (.NET 10+) | Windows Hello, Touch ID, phones and security keys through .NET 10's `IPasskeyHandler`. The WebAuthn state stays on the server. The API accepts the sites' origins from `Identity:Passkeys:AllowedOrigins`, and `ServerDomain` is the sites' shared domain |
+| User admin UI | Internal → **Users**: create, set roles, lock/unlock, reset two-factor, remove passkeys, delete (Admin role) |
+| Separate sign-in | Each site has its own cookie: sign in to each site on its own |
+| Single sign-on | Both sites use one cookie name and shared Data Protection keys, so signing in or out on one site does the same on the other. In Development the keys are kept in `.keys/` at the solution root. In production, set `Authentication:SharedKeysFolder` (storage both sites share) and `Authentication:CookieDomain` (for example `.example.com`), and host both sites under that domain |
+
+| Sign in (password or passkey) | Two-factor code at sign-in |
+| --- | --- |
+| ![Sign in](docs/images/identity-login.png) | ![2FA code](docs/images/identity-login-2fa.png) |
+| **Two-factor setup (QR code)** | **Recovery codes** |
+| ![2FA setup](docs/images/identity-2fa-setup.png) | ![Recovery codes](docs/images/identity-2fa-recovery-codes.png) |
+| **Passkeys** | **Admin – users** |
+| ![Passkeys](docs/images/identity-passkeys.png) | ![Users](docs/images/identity-admin-users.png) |
+| **Admin – edit user (locked)** | **Customer on the Internal site** |
+| ![Edit user](docs/images/identity-admin-edit-user.png) | ![Access denied](docs/images/identity-internal-access-denied.png) |
+
+All of the above runs in a browser test against a generated .NET 10 solution:
+- **Password and two-factor:** password sign-in, turning on two-factor with real authenticator codes, a wrong code being rejected, and a recovery code.
+- **Passkeys:** adding a passkey and signing in with it alone, using Chromium's virtual authenticator.
+- **Admin:** creating and locking a user, and the locked user being refused.
+- **Customers:** registering on External; the customer is refused on Internal.
+- **Single sign-on:** signing in on one site, and signing out on the other.
 
 ---
 
@@ -486,6 +552,9 @@ Restart Visual Studio afterwards.
 | The template is missing in Visual Studio | Check `dotnet new list razorsln`, then restart Visual Studio. You need VS 2022 17.3 or later. On older 2022 builds, enable **Tools → Options → Environment → Preview Features → Show all .NET Core templates in the New project dialog**. |
 | The options don't appear in Visual Studio | VS older than 17.3 ignores `ide.host.json`. Update Visual Studio, or use the CLI. |
 | "API offline" on a site | Start the API, check `Api:BaseUrl`, and trust the dev certificate (`dotnet dev-certs https --trust`), or use the `http` profiles. |
+| A customer can't open the Internal site | That's by design: Internal needs the Staff or Admin role. Give the user the Staff role under **Users**. |
+| Passkey prompt fails with a security error | Add the site's exact origin (scheme, host and port) to `Identity:Passkeys:AllowedOrigins` in the API, and set `ServerDomain` to the sites' shared domain. Passkeys need https, except on localhost. |
+| Single sign-on doesn't carry over | Both sites need the same `Authentication:SharedKeysFolder` and must be on the same domain (`Authentication:CookieDomain`). |
 | 401 from the API | The API key option is on. Check that `Api:ApiKey` (sites) matches `Security:ApiKey` (API). |
 | LibMan errors during build | Make sure `cdn.jsdelivr.net` and `cdnjs.cloudflare.com` are reachable. Behind a proxy, set `HTTPS_PROXY`. |
 | Internal site keeps asking for a login | Windows auth needs a domain or local Windows account (on IIS, enable Windows Authentication). Entra ID needs real `AzureAd:TenantId` and `ClientId` values, and the redirect URI registered. |

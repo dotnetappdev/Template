@@ -32,7 +32,7 @@ run_case Everything --tests --serilog --api-key --health-checks --resilience --i
   --jquery-validation --datatables --select2 --toastr --sweetalert --chartjs --bootstrap-theme flatly --jquery-ui-theme redmond
 run_case EntraBs4 --internal-auth EntraId --entra-tenant-id 11111111-2222-3333-4444-555555555555 --bootstrap 4.6.2 \
   --bootstrap-theme darkly --select2 --datatables --jquery-ui 1.12.1 --jquery 3.5.1 --fontawesome 5.15.4
-run_case Minimal --tests false --swagger false --health-checks false --resilience false --seed-data false \
+run_case Minimal --tests false --api-docs None --health-checks false --resilience false --seed-data false \
   --jquery-validation false --datatables false --toastr false --fontawesome none
 run_case Net9Postgres -f net9.0 --database PostgreSQL --postgres-version 16 --jquery 4.0.0 --bootstrap 5.2.3 --fontawesome 7.3.1 --serilog
 run_case Net10Sqlite -f net10.0 --database Sqlite --bootstrap 5.1.3 --fontawesome 6.4.2 --api-key --serilog --select2
@@ -42,8 +42,8 @@ run_case Sentry --error-monitoring Sentry --error-monitoring-key 'https://abc123
 run_case Raygun10 -f net10.0 --error-monitoring Raygun --error-monitoring-key 'rg_key_123' --internal-auth Windows
 run_case AppInsights11 -f net11.0 --error-monitoring ApplicationInsights \
   --error-monitoring-key 'InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://x.in.applicationinsights.azure.com/'
-run_case Identity10 -f net10.0 --internal-auth Identity --external-auth Identity --database Sqlite --serilog --api-key
-run_case Identity8 --internal-auth Identity --external-auth Identity --identity-passkeys --error-monitoring Sentry
+run_case Identity10 -f net10.0 --internal-auth Identity --external-auth Identity --identity-sign-in Shared --database Sqlite --serilog --api-key --api-docs Scalar
+run_case Identity8 --internal-auth Identity --external-auth Identity --identity-passkeys --error-monitoring Sentry --api-docs Scalar
 run_case Identity11Pg -f net11.0 --database PostgreSQL --external-auth Identity --internal-auth Windows
 run_case IdentityNoExtras -f net10.0 --internal-auth Identity --identity-2fa false --identity-passkeys false --identity-admin false \
   --external false --bootstrap 4.6.2 --services false --sql-repository false

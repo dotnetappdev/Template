@@ -16,6 +16,9 @@ public static class IdentitySetup
 {
     public const string AdminRole = "Admin";
 
+    /// <summary>Needed (or Admin) to sign in to the Internal site. External customers get no role.</summary>
+    public const string StaffRole = "Staff";
+
     public static IServiceCollection AddApiIdentity(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthorization();
